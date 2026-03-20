@@ -3,9 +3,6 @@ plugins {
 }
 
 allprojects {
-    group = "me.ahoo.costore"
-    version = "0.1.0"
-
     repositories {
         mavenCentral()
     }

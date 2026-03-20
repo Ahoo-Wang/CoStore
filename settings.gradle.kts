@@ -1,5 +1,5 @@
-rootProject.name = "costore"
+rootProject.name = "CoStore"
 
-include("costore-core")
-include("costore-s3")
-include("costore-oss")
+include("api")
+include("s3")
+include("oss")

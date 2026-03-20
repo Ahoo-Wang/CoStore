@@ -7,7 +7,7 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":costore-core"))
+    implementation(project(":api"))
     implementation(libs.aliyun.oss)
 
     testImplementation(libs.kotlin.test)

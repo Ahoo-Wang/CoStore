@@ -7,7 +7,7 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":costore-core"))
+    implementation(project(":api"))
     implementation(libs.aws.s3)
     implementation(libs.aws.sts)
 
