@@ -11,7 +11,14 @@ import me.ahoo.costore.core.model.UploadPolicy
 import me.ahoo.costore.core.model.UploadToken
 
 /**
- * Vendor-agnostic cloud storage client interface.
+ * Vendor-agnostic cloud storage client interface — **synchronous (blocking) API**.
+ *
+ * All operations block the calling thread until the underlying provider responds.
+ * They are safe to call from any thread, but callers should be aware that each
+ * call may occupy that thread for the duration of a network round-trip.
+ *
+ * For non-blocking, Kotlin-coroutine-friendly usage see [SuspendStorageClient]
+ * and the [asSuspend] extension.
  *
  * Provides a unified API for common cloud storage operations (put, get, delete, list)
  * as well as generation of temporary upload tokens with policy restrictions,

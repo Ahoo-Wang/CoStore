@@ -7,6 +7,8 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.kotlinx.coroutines.core)
+
     testImplementation(libs.kotlin.test)
     testImplementation(libs.fluent.assert)
     testImplementation(libs.mockk)
