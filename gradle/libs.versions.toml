@@ -1,21 +1,21 @@
 [versions]
-kotlin         = "2.2.21"
-aws-sdk        = "2.31.0"
-aliyun-oss     = "3.17.4"
-mockk          = "1.13.13"
+kotlin = "2.2.21"
+aws-sdk = "2.31.0"
+aliyun-oss = "3.17.4"
+mockk = "1.13.13"
 junit-platform = "1.10.1"
-fluent-assert  = "0.2.2"
-coroutines     = "1.10.1"
+fluent-assert = "0.2.2"
+coroutines = "1.10.1"
 
 [libraries]
-kotlin-test                = { module = "org.jetbrains.kotlin:kotlin-test",                       version.ref = "kotlin" }
-fluent-assert              = { module = "me.ahoo.test:fluent-assert-core",                        version.ref = "fluent-assert" }
-mockk                      = { module = "io.mockk:mockk",                                         version.ref = "mockk" }
-junit-platform-launcher    = { module = "org.junit.platform:junit-platform-launcher",             version.ref = "junit-platform" }
-aws-s3                     = { module = "software.amazon.awssdk:s3",                              version.ref = "aws-sdk" }
-aws-sts                    = { module = "software.amazon.awssdk:sts",                             version.ref = "aws-sdk" }
-aliyun-oss                 = { module = "com.aliyun.oss:aliyun-sdk-oss",                          version.ref = "aliyun-oss" }
-kotlinx-coroutines-core    = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core",          version.ref = "coroutines" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+fluent-assert = { module = "me.ahoo.test:fluent-assert-core", version.ref = "fluent-assert" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
+aws-s3 = { module = "software.amazon.awssdk:s3", version.ref = "aws-sdk" }
+aws-sts = { module = "software.amazon.awssdk:sts", version.ref = "aws-sdk" }
+aliyun-oss = { module = "com.aliyun.oss:aliyun-sdk-oss", version.ref = "aliyun-oss" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
