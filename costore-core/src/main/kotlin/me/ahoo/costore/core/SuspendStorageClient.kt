@@ -15,10 +15,13 @@ import me.ahoo.costore.core.model.UploadToken
 /**
  * Coroutine-friendly counterpart to [StorageClient] — **asynchronous (suspend) API**.
  *
- * All operations are declared as `suspend fun` and are safe to call from any
- * coroutine without blocking the calling thread.  The default implementation,
- * [DefaultSuspendStorageClient], executes each call on [Dispatchers.IO] so that
- * blocking I/O is offloaded from the coroutine dispatcher.
+ * Combines [SuspendObjectOperations] (put, get, delete, list) with
+ * [SuspendCredentialsOperations] (upload tokens, presigned URLs) into a single
+ * unified client.
+ *
+ * All operations are non-blocking when called from a coroutine.  The default
+ * implementation, [DefaultSuspendStorageClient], executes each call on
+ * [Dispatchers.IO] so that blocking I/O is offloaded from the coroutine dispatcher.
  *
  * Obtain an instance from an existing [StorageClient] via the [asSuspend] extension:
  * ```kotlin
@@ -28,60 +31,7 @@ import me.ahoo.costore.core.model.UploadToken
  * @see StorageClient the synchronous (blocking) equivalent
  * @see DefaultSuspendStorageClient the standard adapter implementation
  */
-interface SuspendStorageClient : AutoCloseable {
-
-    /**
-     * Uploads an object to the specified bucket.
-     *
-     * @param request the put-object request containing bucket, key, and content
-     * @return [PutObjectResponse] containing the resulting ETag and optional version ID
-     */
-    suspend fun putObject(request: PutObjectRequest): PutObjectResponse
-
-    /**
-     * Downloads an object from the specified bucket.
-     *
-     * @param request the get-object request containing bucket and key
-     * @return [StorageObject] with content stream and metadata
-     * @throws me.ahoo.costore.core.exception.ObjectNotFoundException if the object does not exist
-     */
-    suspend fun getObject(request: GetObjectRequest): StorageObject
-
-    /**
-     * Deletes an object from the specified bucket.
-     *
-     * @param request the delete-object request containing bucket and key
-     */
-    suspend fun deleteObject(request: DeleteObjectRequest)
-
-    /**
-     * Lists objects in a bucket, with optional prefix filtering and pagination.
-     *
-     * @param request the list-objects request
-     * @return [ListObjectsResponse] with the page of results
-     */
-    suspend fun listObjects(request: ListObjectsRequest): ListObjectsResponse
-
-    /**
-     * Generates a temporary upload token governed by the given [UploadPolicy].
-     *
-     * @param policy the policy that constrains the allowed bucket, key prefix,
-     *               content types, max content length, and token lifetime
-     * @return [UploadToken] ready for use by the calling client
-     */
-    suspend fun generateUploadToken(policy: UploadPolicy): UploadToken
-
-    /**
-     * Generates a presigned URL that allows downloading the specified object
-     * without requiring cloud-provider credentials.
-     *
-     * @param bucket        the bucket containing the object
-     * @param key           the object key
-     * @param expireSeconds how many seconds the URL remains valid (default 3600)
-     * @return a presigned download URL string
-     */
-    suspend fun generatePresignedDownloadUrl(bucket: String, key: String, expireSeconds: Long = 3600): String
-}
+interface SuspendStorageClient : SuspendObjectOperations, SuspendCredentialsOperations, AutoCloseable
 
 /**
  * Default implementation of [SuspendStorageClient] that adapts a blocking
