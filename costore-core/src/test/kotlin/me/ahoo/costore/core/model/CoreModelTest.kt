@@ -2,13 +2,10 @@ package me.ahoo.costore.core.model
 
 import me.ahoo.costore.core.exception.ObjectNotFoundException
 import me.ahoo.costore.core.exception.StorageException
-import org.junit.jupiter.api.assertThrows
+import me.ahoo.test.asserts.assert
+import me.ahoo.test.asserts.assertThrownBy
 import java.time.Instant
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class UploadPolicyTest {
 
@@ -21,20 +18,20 @@ class UploadPolicyTest {
             allowedContentTypes = listOf("image/jpeg", "image/png"),
             expireSeconds = 600,
         )
-        assertEquals("my-bucket", policy.bucket)
-        assertEquals("uploads/", policy.keyPrefix)
-        assertEquals(5 * 1024 * 1024, policy.maxContentLength)
-        assertEquals(listOf("image/jpeg", "image/png"), policy.allowedContentTypes)
-        assertEquals(600, policy.expireSeconds)
+        policy.bucket.assert().isEqualTo("my-bucket")
+        policy.keyPrefix.assert().isEqualTo("uploads/")
+        policy.maxContentLength.assert().isEqualTo(5 * 1024 * 1024)
+        policy.allowedContentTypes.assert().isEqualTo(listOf("image/jpeg", "image/png"))
+        policy.expireSeconds.assert().isEqualTo(600)
     }
 
     @Test
     fun `valid policy with only required bucket`() {
         val policy = UploadPolicy(bucket = "bucket")
-        assertNull(policy.keyPrefix)
-        assertNull(policy.maxContentLength)
-        assertNull(policy.allowedContentTypes)
-        assertEquals(3600, policy.expireSeconds)
+        policy.keyPrefix.assert().isNull()
+        policy.maxContentLength.assert().isNull()
+        policy.allowedContentTypes.assert().isNull()
+        policy.expireSeconds.assert().isEqualTo(3600)
     }
 
     @Test
@@ -42,41 +39,41 @@ class UploadPolicyTest {
         val before = Instant.now()
         val policy = UploadPolicy(bucket = "bucket", expireSeconds = 60)
         val expiresAt = policy.expiresAt()
-        assertTrue(expiresAt.isAfter(before))
-        assertTrue(expiresAt.isBefore(before.plusSeconds(120)))
+        expiresAt.assert().isAfter(before)
+        expiresAt.assert().isBefore(before.plusSeconds(120))
     }
 
     @Test
     fun `blank bucket throws IllegalArgumentException`() {
-        assertThrows<IllegalArgumentException> {
+        assertThrownBy<IllegalArgumentException> {
             UploadPolicy(bucket = "  ")
         }
     }
 
     @Test
     fun `zero expireSeconds throws IllegalArgumentException`() {
-        assertThrows<IllegalArgumentException> {
+        assertThrownBy<IllegalArgumentException> {
             UploadPolicy(bucket = "bucket", expireSeconds = 0)
         }
     }
 
     @Test
     fun `negative expireSeconds throws IllegalArgumentException`() {
-        assertThrows<IllegalArgumentException> {
+        assertThrownBy<IllegalArgumentException> {
             UploadPolicy(bucket = "bucket", expireSeconds = -1)
         }
     }
 
     @Test
     fun `zero maxContentLength throws IllegalArgumentException`() {
-        assertThrows<IllegalArgumentException> {
+        assertThrownBy<IllegalArgumentException> {
             UploadPolicy(bucket = "bucket", maxContentLength = 0)
         }
     }
 
     @Test
     fun `negative maxContentLength throws IllegalArgumentException`() {
-        assertThrows<IllegalArgumentException> {
+        assertThrownBy<IllegalArgumentException> {
             UploadPolicy(bucket = "bucket", maxContentLength = -100)
         }
     }
@@ -93,10 +90,10 @@ class UploadTokenTest {
             headers = mapOf("Content-Type" to "image/jpeg"),
             expiresAt = expiresAt,
         )
-        assertEquals(HttpMethod.PUT, token.method)
-        assertTrue(token.fields.isEmpty())
-        assertEquals("image/jpeg", token.headers["Content-Type"])
-        assertEquals(expiresAt, token.expiresAt)
+        token.method.assert().isEqualTo(HttpMethod.PUT)
+        token.fields.assert().isEmpty()
+        token.headers["Content-Type"].assert().isEqualTo("image/jpeg")
+        token.expiresAt.assert().isEqualTo(expiresAt)
     }
 
     @Test
@@ -113,9 +110,9 @@ class UploadTokenTest {
             ),
             expiresAt = expiresAt,
         )
-        assertEquals(HttpMethod.POST, token.method)
-        assertTrue(token.headers.isEmpty())
-        assertEquals("ACCESS_KEY", token.fields["OSSAccessKeyId"])
+        token.method.assert().isEqualTo(HttpMethod.POST)
+        token.headers.assert().isEmpty()
+        token.fields["OSSAccessKeyId"].assert().isEqualTo("ACCESS_KEY")
     }
 }
 
@@ -125,25 +122,23 @@ class StorageExceptionTest {
     fun `StorageException carries message and cause`() {
         val cause = RuntimeException("network error")
         val ex = StorageException("upload failed", cause)
-        assertEquals("upload failed", ex.message)
-        assertEquals(cause, ex.cause)
+        ex.message.assert().isEqualTo("upload failed")
+        ex.cause.assert().isEqualTo(cause)
     }
 
     @Test
     fun `ObjectNotFoundException formats message correctly`() {
         val ex = ObjectNotFoundException(bucket = "my-bucket", key = "path/to/file.jpg")
-        assertNotNull(ex.message)
-        assertTrue(ex.message!!.contains("my-bucket"))
-        assertTrue(ex.message!!.contains("path/to/file.jpg"))
-        assertEquals("my-bucket", ex.bucket)
-        assertEquals("path/to/file.jpg", ex.key)
-        assertNull(ex.cause)
+        ex.message.assert().isNotNull().contains("my-bucket").contains("path/to/file.jpg")
+        ex.bucket.assert().isEqualTo("my-bucket")
+        ex.key.assert().isEqualTo("path/to/file.jpg")
+        ex.cause.assert().isNull()
     }
 
     @Test
     fun `ObjectNotFoundException is a StorageException`() {
         val ex: Any = ObjectNotFoundException(bucket = "b", key = "k")
-        assertTrue(ex is StorageException)
+        ex.assert().isInstanceOf(StorageException::class.java)
     }
 }
 
@@ -152,9 +147,9 @@ class ListObjectsRequestTest {
     @Test
     fun `default values are applied`() {
         val req = ListObjectsRequest(bucket = "bucket")
-        assertNull(req.prefix)
-        assertNull(req.delimiter)
-        assertEquals(1000, req.maxKeys)
-        assertNull(req.continuationToken)
+        req.prefix.assert().isNull()
+        req.delimiter.assert().isNull()
+        req.maxKeys.assert().isEqualTo(1000)
+        req.continuationToken.assert().isNull()
     }
 }

@@ -22,15 +22,14 @@ import me.ahoo.costore.core.model.HttpMethod
 import me.ahoo.costore.core.model.ListObjectsRequest
 import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.UploadPolicy
+import me.ahoo.test.asserts.assert
+import me.ahoo.test.asserts.assertThrownBy
 import java.io.ByteArrayInputStream
 import java.net.URI
 import java.net.URL
 import java.time.Instant
 import java.util.Date
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class OssStorageClientTest {
 
@@ -54,7 +53,7 @@ class OssStorageClientTest {
             ),
         )
 
-        assertEquals("abc123", response.eTag)
+        response.eTag.assert().isEqualTo("abc123")
     }
 
     // ── getObject ────────────────────────────────────────────────────────────
@@ -75,9 +74,9 @@ class OssStorageClientTest {
 
         val result = client.getObject(GetObjectRequest(bucket = "bucket", key = "key.txt"))
 
-        assertEquals("key.txt", result.key)
-        assertEquals(5L, result.contentLength)
-        assertEquals("text/plain", result.contentType)
+        result.key.assert().isEqualTo("key.txt")
+        result.contentLength.assert().isEqualTo(5L)
+        result.contentType.assert().isEqualTo("text/plain")
     }
 
     @Test
@@ -87,13 +86,10 @@ class OssStorageClientTest {
         }
         every { ossClient.getObject(any<OssGetObjectRequest>()) } throws ossEx
 
-        try {
+        assertThrownBy<ObjectNotFoundException> {
             client.getObject(GetObjectRequest(bucket = "bucket", key = "missing.txt"))
-            error("expected ObjectNotFoundException")
-        } catch (e: ObjectNotFoundException) {
-            assertEquals("bucket", e.bucket)
-            assertEquals("missing.txt", e.key)
-        }
+        }.hasFieldOrPropertyWithValue("bucket", "bucket")
+            .hasFieldOrPropertyWithValue("key", "missing.txt")
     }
 
     @Test
@@ -103,12 +99,9 @@ class OssStorageClientTest {
         }
         every { ossClient.getObject(any<OssGetObjectRequest>()) } throws ossEx
 
-        try {
+        assertThrownBy<StorageException> {
             client.getObject(GetObjectRequest(bucket = "bucket", key = "key.txt"))
-            error("expected StorageException")
-        } catch (e: StorageException) {
-            assertTrue(e !is ObjectNotFoundException)
-        }
+        }.isNotInstanceOf(ObjectNotFoundException::class.java)
     }
 
     // ── deleteObject ─────────────────────────────────────────────────────────
@@ -142,9 +135,9 @@ class OssStorageClientTest {
 
         val result = client.listObjects(ListObjectsRequest(bucket = "bucket", prefix = "files/"))
 
-        assertEquals(1, result.objects.size)
-        assertEquals("file.txt", result.objects[0].key)
-        assertEquals(42L, result.objects[0].size)
+        result.objects.assert().hasSize(1)
+        result.objects[0].key.assert().isEqualTo("file.txt")
+        result.objects[0].size.assert().isEqualTo(42L)
     }
 
     // ── generateUploadToken ───────────────────────────────────────────────────
@@ -164,13 +157,13 @@ class OssStorageClientTest {
         )
         val token = client.generateUploadToken(policy)
 
-        assertEquals(HttpMethod.POST, token.method)
-        assertTrue(token.uploadUrl.startsWith("https://"))
-        assertEquals("ACCESS_KEY", token.fields["OSSAccessKeyId"])
-        assertNotNull(token.fields["policy"])
-        assertEquals("SIG", token.fields["Signature"])
-        assertEquals("image/jpeg", token.fields["Content-Type"])
-        assertTrue(token.expiresAt.isAfter(Instant.now()))
+        token.method.assert().isEqualTo(HttpMethod.POST)
+        token.uploadUrl.assert().startsWith("https://")
+        token.fields["OSSAccessKeyId"].assert().isEqualTo("ACCESS_KEY")
+        token.fields["policy"].assert().isNotNull()
+        token.fields["Signature"].assert().isEqualTo("SIG")
+        token.fields["Content-Type"].assert().isEqualTo("image/jpeg")
+        token.expiresAt.assert().isAfter(Instant.now())
     }
 
     @Test
@@ -181,7 +174,7 @@ class OssStorageClientTest {
 
         val token = client.generateUploadToken(UploadPolicy(bucket = "b", keyPrefix = "docs/"))
 
-        assertTrue(token.fields["key"]!!.startsWith("docs/"))
+        token.fields["key"].assert().isNotNull().startsWith("docs/")
     }
 
     // ── generatePresignedDownloadUrl ─────────────────────────────────────────
@@ -193,8 +186,7 @@ class OssStorageClientTest {
 
         val url = client.generatePresignedDownloadUrl("bucket", "key.txt", 3600)
 
-        assertTrue(url.startsWith("https://"))
-        assertTrue(url.contains("Signature"))
+        url.assert().startsWith("https://").contains("Signature")
     }
 
     // ── close ────────────────────────────────────────────────────────────────
