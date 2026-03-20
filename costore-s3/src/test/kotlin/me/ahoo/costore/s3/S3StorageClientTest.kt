@@ -5,13 +5,14 @@ import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
 import me.ahoo.costore.core.exception.ObjectNotFoundException
-import me.ahoo.costore.core.exception.StorageException
 import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.GetObjectRequest
 import me.ahoo.costore.core.model.HttpMethod
 import me.ahoo.costore.core.model.ListObjectsRequest
 import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.UploadPolicy
+import me.ahoo.test.asserts.assert
+import me.ahoo.test.asserts.assertThrownBy
 import software.amazon.awssdk.core.ResponseInputStream
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
@@ -34,9 +35,6 @@ import java.io.ByteArrayInputStream
 import java.net.URL
 import java.time.Instant
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class S3StorageClientTest {
 
@@ -64,7 +62,7 @@ class S3StorageClientTest {
             ),
         )
 
-        assertEquals("\"abc123\"", result.eTag)
+        result.eTag.assert().isEqualTo("\"abc123\"")
     }
 
     // ── getObject ────────────────────────────────────────────────────────────
@@ -85,10 +83,10 @@ class S3StorageClientTest {
 
         val result = client.getObject(GetObjectRequest(bucket = "bucket", key = "key.txt"))
 
-        assertEquals("key.txt", result.key)
-        assertEquals(10L, result.contentLength)
-        assertEquals("text/plain", result.contentType)
-        assertEquals("test", result.metadata["author"])
+        result.key.assert().isEqualTo("key.txt")
+        result.contentLength.assert().isEqualTo(10L)
+        result.contentType.assert().isEqualTo("text/plain")
+        result.metadata["author"].assert().isEqualTo("test")
     }
 
     @Test
@@ -96,13 +94,10 @@ class S3StorageClientTest {
         every { s3Client.getObject(any<S3GetObjectRequest>()) } throws
             NoSuchKeyException.builder().message("NoSuchKey").build()
 
-        try {
+        assertThrownBy<ObjectNotFoundException> {
             client.getObject(GetObjectRequest(bucket = "bucket", key = "missing.txt"))
-            error("expected ObjectNotFoundException")
-        } catch (e: ObjectNotFoundException) {
-            assertEquals("bucket", e.bucket)
-            assertEquals("missing.txt", e.key)
-        }
+        }.hasFieldOrPropertyWithValue("bucket", "bucket")
+            .hasFieldOrPropertyWithValue("key", "missing.txt")
     }
 
     // ── deleteObject ─────────────────────────────────────────────────────────
@@ -139,9 +134,9 @@ class S3StorageClientTest {
 
         val result = client.listObjects(ListObjectsRequest(bucket = "bucket", prefix = "files/"))
 
-        assertEquals(1, result.objects.size)
-        assertEquals("file.txt", result.objects[0].key)
-        assertEquals(100L, result.objects[0].size)
+        result.objects.assert().hasSize(1)
+        result.objects[0].key.assert().isEqualTo("file.txt")
+        result.objects[0].size.assert().isEqualTo(100L)
     }
 
     // ── generateUploadToken ───────────────────────────────────────────────────
@@ -162,11 +157,10 @@ class S3StorageClientTest {
         )
         val token = client.generateUploadToken(policy)
 
-        assertEquals(HttpMethod.PUT, token.method)
-        assertTrue(token.uploadUrl.startsWith("https://"))
-        assertEquals("image/jpeg", token.headers["Content-Type"])
-        assertNotNull(token.expiresAt)
-        assertTrue(token.expiresAt.isAfter(Instant.now()))
+        token.method.assert().isEqualTo(HttpMethod.PUT)
+        token.uploadUrl.assert().startsWith("https://")
+        token.headers["Content-Type"].assert().isEqualTo("image/jpeg")
+        token.expiresAt.assert().isNotNull().isAfter(Instant.now())
     }
 
     @Test
@@ -179,7 +173,7 @@ class S3StorageClientTest {
         val policy = UploadPolicy(bucket = "bucket", keyPrefix = "uploads/")
         val token = client.generateUploadToken(policy)
 
-        assertTrue(token.uploadUrl.contains("uploads/"))
+        token.uploadUrl.assert().contains("uploads/")
     }
 
     // ── generatePresignedDownloadUrl ─────────────────────────────────────────
@@ -193,8 +187,7 @@ class S3StorageClientTest {
 
         val url = client.generatePresignedDownloadUrl("bucket", "key.txt", 3600)
 
-        assertTrue(url.startsWith("https://"))
-        assertTrue(url.contains("X-Amz-Signature"))
+        url.assert().startsWith("https://").contains("X-Amz-Signature")
     }
 
     // ── close ────────────────────────────────────────────────────────────────
