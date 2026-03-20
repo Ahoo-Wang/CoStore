@@ -5,6 +5,7 @@ aliyun-oss     = "3.17.4"
 mockk          = "1.13.13"
 junit-platform = "1.10.1"
 fluent-assert  = "0.2.2"
+coroutines     = "1.10.1"
 
 [libraries]
 kotlin-test                = { module = "org.jetbrains.kotlin:kotlin-test",                       version.ref = "kotlin" }
@@ -14,6 +15,7 @@ junit-platform-launcher    = { module = "org.junit.platform:junit-platform-launc
 aws-s3                     = { module = "software.amazon.awssdk:s3",                              version.ref = "aws-sdk" }
 aws-sts                    = { module = "software.amazon.awssdk:sts",                             version.ref = "aws-sdk" }
 aliyun-oss                 = { module = "com.aliyun.oss:aliyun-sdk-oss",                          version.ref = "aliyun-oss" }
+kotlinx-coroutines-core    = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core",          version.ref = "coroutines" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
