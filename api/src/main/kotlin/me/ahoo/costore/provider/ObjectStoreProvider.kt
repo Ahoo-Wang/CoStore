@@ -1,4 +1,4 @@
-package me.ahoo.costore.api.provider
+package me.ahoo.costore.provider
 
 import me.ahoo.costore.api.ObjectStore
 
