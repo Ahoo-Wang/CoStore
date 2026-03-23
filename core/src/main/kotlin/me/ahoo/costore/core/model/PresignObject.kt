@@ -1,0 +1,12 @@
+package me.ahoo.costore.core.model
+
+interface PresignGetObjectRequest
+
+interface PresignGetObjectResponse
+
+interface PresignPutObjectRequest
+
+interface PresignPutObjectResponse
+
+interface PresignDeleteObjectRequest
+interface PresignDeleteObjectResponse
