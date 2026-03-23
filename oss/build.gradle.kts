@@ -3,6 +3,3 @@ dependencies {
     implementation(libs.aliyun.oss)
 }
 
-tasks.test {
-    useJUnitPlatform()
-}

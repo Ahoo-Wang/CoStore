@@ -4,6 +4,3 @@ dependencies {
     implementation(libs.aws.sts)
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
