@@ -40,7 +40,6 @@ class ListObjectsTest {
                     override val lastModified: java.time.Instant? = null
                     override val eTag: String? = null
                     override val metadata: Map<String, String> = emptyMap()
-                    override val storageClass: String? = "STANDARD"
                 },
                 object : StoredObjectMetadata {
                     override val bucket: BucketName = "test-bucket"
@@ -50,7 +49,6 @@ class ListObjectsTest {
                     override val lastModified: java.time.Instant? = null
                     override val eTag: String? = null
                     override val metadata: Map<String, String> = emptyMap()
-                    override val storageClass: String? = "STANDARD"
                 },
             )
         val commonPrefixes = listOf("prefix1/", "prefix2/")

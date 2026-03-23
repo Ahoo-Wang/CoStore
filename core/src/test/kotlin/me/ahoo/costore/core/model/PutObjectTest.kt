@@ -13,7 +13,6 @@ class PutObjectTest {
         val content: InputStream = "test content".byteInputStream()
         val contentType = "application/json"
         val metadata = mapOf("x-custom" to "value")
-        val storageClass = "STANDARD"
 
         val request =
             object : PutObjectRequest {
@@ -22,14 +21,12 @@ class PutObjectTest {
                 override val content: InputStream = content
                 override val contentType: String? = contentType
                 override val metadata: Map<String, String> = metadata
-                override val storageClass: String? = storageClass
             }
 
         request.bucket.assert().isEqualTo(bucket)
         request.key.assert().isEqualTo(key)
         request.contentType.assert().isEqualTo(contentType)
         request.metadata.assert().isEqualTo(metadata)
-        request.storageClass.assert().isEqualTo(storageClass)
     }
 
     @Test

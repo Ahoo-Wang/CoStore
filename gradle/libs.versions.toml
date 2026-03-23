@@ -27,6 +27,7 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 reactor-core = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
+reactor-test = { module = "io.projectreactor:reactor-test", version.ref = "reactor" }
 
 aws-s3 = { module = "software.amazon.awssdk:s3", version.ref = "aws-sdk" }
 aliyun-oss = { module = "com.aliyun.oss:aliyun-sdk-oss", version.ref = "aliyun-oss" }

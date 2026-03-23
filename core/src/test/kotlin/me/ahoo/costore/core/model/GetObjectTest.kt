@@ -40,7 +40,6 @@ class GetObjectTest {
         val lastModified = Instant.now()
         val eTag = "\"d41d8cd98f00b204e9800998ecf8427e\""
         val metadata = mapOf("x-custom" to "value")
-        val storageClass = "STANDARD"
 
         val response =
             object : GetObjectResponse {
@@ -52,7 +51,6 @@ class GetObjectTest {
                 override val contentType: String? = contentType
                 override val lastModified: Instant? = lastModified
                 override val eTag: String? = eTag
-                override val storageClass: String? = storageClass
             }
 
         response.bucket.assert().isEqualTo(bucket)
@@ -62,6 +60,5 @@ class GetObjectTest {
         response.contentType.assert().isEqualTo(contentType)
         response.lastModified.assert().isEqualTo(lastModified)
         response.eTag.assert().isEqualTo(eTag)
-        response.storageClass.assert().isEqualTo(storageClass)
     }
 }

@@ -15,7 +15,6 @@ class StoredObjectTest {
         val lastModified = Instant.now()
         val eTag = "\"d41d8cd98f00b204e9800998ecf8427e\""
         val metadata = mapOf("x-custom" to "value")
-        val storageClass = "STANDARD"
 
         val instance =
             object : StoredObjectMetadata {
@@ -26,7 +25,6 @@ class StoredObjectTest {
                 override val lastModified: Instant? = lastModified
                 override val eTag: String? = eTag
                 override val metadata: Map<String, String> = metadata
-                override val storageClass: String? = storageClass
             }
 
         instance.bucket.assert().isEqualTo(bucket)
@@ -36,7 +34,6 @@ class StoredObjectTest {
         instance.lastModified.assert().isEqualTo(lastModified)
         instance.eTag.assert().isEqualTo(eTag)
         instance.metadata.assert().isEqualTo(metadata)
-        instance.storageClass.assert().isEqualTo(storageClass)
     }
 
     @Test
@@ -48,7 +45,6 @@ class StoredObjectTest {
         val lastModified = Instant.now()
         val eTag = "\"d41d8cd98f00b204e9800998ecf8427e\""
         val metadata = mapOf("x-custom" to "value")
-        val storageClass = "STANDARD"
         val content: InputStream = "test content".byteInputStream()
 
         val instance =
@@ -60,7 +56,6 @@ class StoredObjectTest {
                 override val lastModified: Instant? = lastModified
                 override val eTag: String? = eTag
                 override val metadata: Map<String, String> = metadata
-                override val storageClass: String? = storageClass
                 override val content: InputStream = content
             }
 
@@ -71,6 +66,5 @@ class StoredObjectTest {
         instance.lastModified.assert().isEqualTo(lastModified)
         instance.eTag.assert().isEqualTo(eTag)
         instance.metadata.assert().isEqualTo(metadata)
-        instance.storageClass.assert().isEqualTo(storageClass)
     }
 }
