@@ -9,7 +9,6 @@ interface PutObjectRequest :
     val content: InputStream
     val contentType: String?
     val metadata: Map<String, String>
-    val storageClass: String?
 }
 
 interface PutObjectResponse {
