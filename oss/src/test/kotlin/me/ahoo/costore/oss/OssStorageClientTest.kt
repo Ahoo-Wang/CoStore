@@ -2,8 +2,6 @@ package me.ahoo.costore.oss
 
 import com.aliyun.oss.OSSClient
 import com.aliyun.oss.OSSException
-import com.aliyun.oss.model.GetObjectRequest as OssGetObjectRequest
-import com.aliyun.oss.model.ListObjectsV2Request as OssListObjectsV2Request
 import com.aliyun.oss.model.ListObjectsV2Result
 import com.aliyun.oss.model.OSSObject
 import com.aliyun.oss.model.OSSObjectSummary
@@ -30,6 +28,8 @@ import java.net.URL
 import java.time.Instant
 import java.util.Date
 import kotlin.test.Test
+import com.aliyun.oss.model.GetObjectRequest as OssGetObjectRequest
+import com.aliyun.oss.model.ListObjectsV2Request as OssListObjectsV2Request
 
 class OssStorageClientTest {
 
@@ -41,7 +41,9 @@ class OssStorageClientTest {
     @Test
     fun `putObject returns eTag on success`() {
         val result = mockk<PutObjectResult> { every { eTag } returns "abc123" }
-        every { ossClient.putObject(any<String>(), any<String>(), any<java.io.InputStream>(), any<ObjectMetadata>()) } returns result
+        every {
+            ossClient.putObject(any<String>(), any<String>(), any<java.io.InputStream>(), any<ObjectMetadata>())
+        } returns result
 
         val response = client.putObject(
             PutObjectRequest(
@@ -144,7 +146,9 @@ class OssStorageClientTest {
 
     @Test
     fun `generateUploadToken returns POST token with OSS form fields`() {
-        every { ossClient.generatePostPolicy(any<Date>(), any()) } returns """{"expiration":"2099-01-01T00:00:00.000Z","conditions":[]}"""
+        every {
+            ossClient.generatePostPolicy(any<Date>(), any())
+        } returns """{"expiration":"2099-01-01T00:00:00.000Z","conditions":[]}"""
         every { ossClient.calculatePostSignature(any<String>()) } returns "SIG"
         every { ossClient.endpoint } returns URI.create("https://oss-cn-hangzhou.aliyuncs.com")
 

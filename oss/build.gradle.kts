@@ -13,7 +13,6 @@ dependencies {
     testImplementation(libs.kotlin.test)
     testImplementation(libs.fluent.assert)
     testImplementation(libs.mockk)
-    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.test {

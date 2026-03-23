@@ -16,15 +16,11 @@ import me.ahoo.test.asserts.assertThrownBy
 import software.amazon.awssdk.core.ResponseInputStream
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest as S3DeleteObjectRequest
 import software.amazon.awssdk.services.s3.model.DeleteObjectResponse
-import software.amazon.awssdk.services.s3.model.GetObjectRequest as S3GetObjectRequest
 import software.amazon.awssdk.services.s3.model.GetObjectResponse
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException
-import software.amazon.awssdk.services.s3.model.PutObjectRequest as S3PutObjectRequest
-import software.amazon.awssdk.services.s3.model.PutObjectResponse as S3PutObjectResponse
 import software.amazon.awssdk.services.s3.model.S3Object
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
@@ -35,6 +31,10 @@ import java.io.ByteArrayInputStream
 import java.net.URL
 import java.time.Instant
 import kotlin.test.Test
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest as S3DeleteObjectRequest
+import software.amazon.awssdk.services.s3.model.GetObjectRequest as S3GetObjectRequest
+import software.amazon.awssdk.services.s3.model.PutObjectRequest as S3PutObjectRequest
+import software.amazon.awssdk.services.s3.model.PutObjectResponse as S3PutObjectResponse
 
 class S3StorageClientTest {
 

@@ -2,8 +2,6 @@ package me.ahoo.costore.oss
 
 import com.aliyun.oss.OSSClient
 import com.aliyun.oss.OSSException
-import com.aliyun.oss.model.GetObjectRequest as OssGetObjectRequest
-import com.aliyun.oss.model.ListObjectsV2Request as OssListObjectsV2Request
 import com.aliyun.oss.model.MatchMode
 import com.aliyun.oss.model.ObjectMetadata
 import com.aliyun.oss.model.PolicyConditions
@@ -24,6 +22,8 @@ import me.ahoo.costore.core.model.UploadToken
 import java.util.Base64
 import java.util.Date
 import java.util.UUID
+import com.aliyun.oss.model.GetObjectRequest as OssGetObjectRequest
+import com.aliyun.oss.model.ListObjectsV2Request as OssListObjectsV2Request
 
 /**
  * Alibaba Cloud OSS implementation of [StorageClient].

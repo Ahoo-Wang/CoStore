@@ -6,19 +6,13 @@ interface PresignObjectOperations {
     fun presignDeleteObject(request: PresignDeleteObjectRequest): PresignDeleteObjectResponse
 }
 
-interface PresignGetObjectRequest {
-}
+interface PresignGetObjectRequest
 
-interface PresignGetObjectResponse {
-}
+interface PresignGetObjectResponse
 
-interface PresignPutObjectRequest {
-}
+interface PresignPutObjectRequest
 
-interface PresignPutObjectResponse {
-}
+interface PresignPutObjectResponse
 
-interface PresignDeleteObjectRequest {
-}
-interface PresignDeleteObjectResponse {
-}
+interface PresignDeleteObjectRequest
+interface PresignDeleteObjectResponse

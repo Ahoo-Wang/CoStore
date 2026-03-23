@@ -4,8 +4,6 @@ interface PutObjectOperations {
     fun putObject(request: PutObjectRequest): PutObjectResponse
 }
 
-interface PutObjectRequest {
-}
+interface PutObjectRequest
 
-interface PutObjectResponse {
-}
+interface PutObjectResponse

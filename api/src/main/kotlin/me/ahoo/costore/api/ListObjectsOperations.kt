@@ -4,8 +4,6 @@ interface ListObjectsOperations {
     fun listObjects(request: ListObjectsRequest): ListObjectsResponse
 }
 
-interface ListObjectsRequest {
-}
+interface ListObjectsRequest
 
-interface ListObjectsResponse {
-}
+interface ListObjectsResponse
