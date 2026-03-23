@@ -1,19 +1,7 @@
-plugins {
-    alias(libs.plugins.kotlin.jvm)
-}
-
-kotlin {
-    jvmToolchain(17)
-}
-
 dependencies {
-    implementation(project(":api"))
+    implementation(project(":core"))
     implementation(libs.aws.s3)
     implementation(libs.aws.sts)
-
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.fluent.assert)
-    testImplementation(libs.mockk)
 }
 
 tasks.test {

@@ -99,8 +99,9 @@ configure(libraryProjects) {
     }
     dependencies {
         testImplementation(platform(rootProject.libs.junit.bom))
-        testImplementation("me.ahoo.test:fluent-assert-core")
-        testImplementation("io.mockk:mockk") {
+        testImplementation(rootProject.libs.kotlin.test)
+        testImplementation(rootProject.libs.fluent.assert)
+        testImplementation(rootProject.libs.mockk) {
             exclude(group = "org.slf4j", module = "slf4j-api")
         }
         testImplementation("org.junit.jupiter:junit-jupiter-api")
