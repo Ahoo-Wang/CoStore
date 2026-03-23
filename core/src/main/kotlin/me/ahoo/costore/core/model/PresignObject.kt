@@ -1,12 +1,34 @@
 package me.ahoo.costore.core.model
 
-interface PresignGetObjectRequest
+import java.time.Duration
 
-interface PresignGetObjectResponse
+interface PresignGetObjectRequest :
+    BucketCapable,
+    ObjectKeyCapable {
+    val expiration: Duration
+}
 
-interface PresignPutObjectRequest
+interface PresignGetObjectResponse {
+    val presignedUrl: String
+}
 
-interface PresignPutObjectResponse
+interface PresignPutObjectRequest :
+    BucketCapable,
+    ObjectKeyCapable {
+    val expiration: Duration
+    val contentType: String?
+}
 
-interface PresignDeleteObjectRequest
-interface PresignDeleteObjectResponse
+interface PresignPutObjectResponse {
+    val presignedUrl: String
+}
+
+interface PresignDeleteObjectRequest :
+    BucketCapable,
+    ObjectKeyCapable {
+    val expiration: Duration
+}
+
+interface PresignDeleteObjectResponse {
+    val presignedUrl: String
+}

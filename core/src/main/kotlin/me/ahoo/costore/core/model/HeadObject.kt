@@ -1,5 +1,15 @@
 package me.ahoo.costore.core.model
 
-interface HeadObjectRequest
+import java.time.Instant
 
-interface HeadObjectResponse
+interface HeadObjectRequest :
+    BucketCapable,
+    ObjectKeyCapable
+
+interface HeadObjectResponse {
+    val contentLength: Long
+    val contentType: String?
+    val lastModified: Instant?
+    val eTag: String?
+    val metadata: Map<String, String>
+}

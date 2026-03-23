@@ -2,6 +2,7 @@
 # Libs
 aws-sdk = "2.31.0"
 aliyun-oss = "3.17.4"
+reactor = "3.7.3"
 
 # Test
 mockk = "1.14.9"
@@ -25,6 +26,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+reactor-core = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
 
 aws-s3 = { module = "software.amazon.awssdk:s3", version.ref = "aws-sdk" }
 aliyun-oss = { module = "com.aliyun.oss:aliyun-sdk-oss", version.ref = "aliyun-oss" }

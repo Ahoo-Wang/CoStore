@@ -1,5 +1,12 @@
 package me.ahoo.costore.core.model
 
-interface DeleteObjectRequest : ObjectRequest
+interface DeleteObjectRequest :
+    BucketCapable,
+    ObjectKeyCapable {
+    val versionId: String?
+}
 
-interface DeleteObjectResponse : ObjectResponse
+interface DeleteObjectResponse {
+    val deleteMarker: Boolean
+    val versionId: String?
+}

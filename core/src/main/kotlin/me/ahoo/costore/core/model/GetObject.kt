@@ -1,5 +1,18 @@
 package me.ahoo.costore.core.model
 
-interface GetObjectRequest : BucketCapable, ObjectKeyCapable
+import java.time.Instant
 
-interface GetObjectResponse
+interface GetObjectRequest :
+    BucketCapable,
+    ObjectKeyCapable {
+    val range: LongRange?
+    val ifModifiedSince: Instant?
+    val ifNoneMatch: String?
+}
+
+interface GetObjectResponse : StoredObject {
+    val contentLength: Long
+    val contentType: String?
+    val lastModified: Instant?
+    val eTag: String?
+}
