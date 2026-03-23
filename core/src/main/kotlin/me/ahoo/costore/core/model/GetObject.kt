@@ -10,9 +10,4 @@ interface GetObjectRequest :
     val ifNoneMatch: String?
 }
 
-interface GetObjectResponse : StoredObject {
-    val contentLength: Long
-    val contentType: String?
-    val lastModified: Instant?
-    val eTag: String?
-}
+interface GetObjectResponse : StoredObject

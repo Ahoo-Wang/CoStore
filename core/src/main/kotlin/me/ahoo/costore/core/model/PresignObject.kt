@@ -8,9 +8,11 @@ interface PresignGetObjectRequest :
     val expiration: Duration
 }
 
-interface PresignGetObjectResponse {
+interface PresignedUrlCapable {
     val presignedUrl: String
 }
+
+interface PresignGetObjectResponse : PresignedUrlCapable
 
 interface PresignPutObjectRequest :
     BucketCapable,
@@ -19,9 +21,7 @@ interface PresignPutObjectRequest :
     val contentType: String?
 }
 
-interface PresignPutObjectResponse {
-    val presignedUrl: String
-}
+interface PresignPutObjectResponse : PresignedUrlCapable
 
 interface PresignDeleteObjectRequest :
     BucketCapable,
@@ -29,6 +29,4 @@ interface PresignDeleteObjectRequest :
     val expiration: Duration
 }
 
-interface PresignDeleteObjectResponse {
-    val presignedUrl: String
-}
+interface PresignDeleteObjectResponse : PresignedUrlCapable

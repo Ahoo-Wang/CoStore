@@ -35,12 +35,22 @@ class ListObjectsTest {
                 object : StoredObjectMetadata {
                     override val bucket: BucketName = "test-bucket"
                     override val key: ObjectKey = "key1"
+                    override val contentLength: Long = 1024L
+                    override val contentType: String? = "application/json"
+                    override val lastModified: java.time.Instant? = null
+                    override val eTag: String? = null
                     override val metadata: Map<String, String> = emptyMap()
+                    override val storageClass: String? = "STANDARD"
                 },
                 object : StoredObjectMetadata {
                     override val bucket: BucketName = "test-bucket"
                     override val key: ObjectKey = "key2"
+                    override val contentLength: Long = 2048L
+                    override val contentType: String? = "text/plain"
+                    override val lastModified: java.time.Instant? = null
+                    override val eTag: String? = null
                     override val metadata: Map<String, String> = emptyMap()
+                    override val storageClass: String? = "STANDARD"
                 },
             )
         val commonPrefixes = listOf("prefix1/", "prefix2/")
