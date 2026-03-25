@@ -1,9 +1,10 @@
 package me.ahoo.costore.core.model
 
-data class GetObjectRequest(
-    override val bucket: BucketName,
-    override val key: ObjectKey,
-) : BucketCapable,
-    ObjectKeyCapable
+interface GetObjectRequest : BucketCapable, ObjectKeyCapable, NullableContentTypeCapable, NullableVersionIdCapable
 
 typealias GetObjectResponse = StoredObject
+
+
+fun GetObject(block: GetObjectRequest.() -> Unit): GetObjectRequest {
+    TODO()
+}

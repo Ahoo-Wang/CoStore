@@ -25,7 +25,10 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
         val getObjectResponse = client.getObject {
             it.bucket(request.bucket)
                 .key(request.key)
+                .responseContentType(request.contentType)
+                .versionId(request.versionId)
         }
+        val contentLength = getObjectResponse.response().expires()
         TODO("Not yet implemented")
     }
 

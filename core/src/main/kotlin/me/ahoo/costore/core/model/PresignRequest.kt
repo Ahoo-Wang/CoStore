@@ -4,16 +4,12 @@ import java.net.URL
 import java.time.Duration
 import java.time.Instant
 
-interface PresignedUrlCapable {
-    val presignedUrl: String
-}
-
 interface PresignRequest : BucketCapable,
     ObjectKeyCapable {
     val expiration: Duration
 }
 
-interface PresignObjectResponse : PresignedUrlCapable {
+interface PresignObjectResponse {
     val url: URL
     val expiration: Instant
     val headers: Map<String, List<String>>
@@ -27,8 +23,8 @@ interface PresignPutObjectRequest : PresignRequest {
     val contentType: String?
 }
 
-interface PresignPutObjectResponse : PresignedUrlCapable
+interface PresignPutObjectResponse : PresignObjectResponse
 
 interface PresignDeleteObjectRequest : PresignRequest, NullableVersionIdCapable
 
-interface PresignDeleteObjectResponse : PresignedUrlCapable
+interface PresignDeleteObjectResponse : PresignObjectResponse
