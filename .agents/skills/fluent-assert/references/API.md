@@ -1,275 +1,133 @@
-# FluentAssert API Reference
+# FluentAssert
 
-## Extension Functions
+## Project Overview
 
-| Type | Extension |
-|------|-----------|
-| `Boolean?` | `.assert(): BooleanAssert` |
-| `Byte?` | `.assert(): ByteAssert` |
-| `Short?` | `.assert(): ShortAssert` |
-| `Int?` | `.assert(): IntegerAssert` |
-| `Long?` | `.assert(): LongAssert` |
-| `Float?` | `.assert(): FloatAssert` |
-| `Double?` | `.assert(): DoubleAssert` |
-| `BigDecimal?` | `.assert(): BigDecimalAssert` |
-| `String?` | `.assert(): StringAssert` |
-| `T?` | `.assert(): ObjectAssert<T>` |
-| `T : Comparable<T>?` | `.assert(): GenericComparableAssert<T>` |
-| `Iterable<T>?` | `.assert(): IterableAssert<T>` |
-| `Iterator<T>?` | `.assert(): IteratorAssert<T>` |
-| `Collection<T>?` | `.assert(): CollectionAssert<T>` |
-| `Array<T>?` | `.assert(): ObjectArrayAssert<T>` |
-| `List<T>?` | `.assert(): ListAssert<T>` |
-| `Optional<T>?` | `.assert(): OptionalAssert<T>` |
-| `Map<K,V>?` | `.assert(): MapAssert<K,V>` |
-| `Stream<T>?` | `.assert(): ListAssert<T>` |
-| `Date?` | `.assert(): DateAssert` |
-| `ZonedDateTime?` | `.assert(): ZonedDateTimeAssert` |
-| `Temporal?` | `.assert(): TemporalAssert` |
-| `LocalDateTime?` | `.assert(): LocalDateTimeAssert` |
-| `OffsetDateTime?` | `.assert(): OffsetDateTimeAssert` |
-| `OffsetTime?` | `.assert(): OffsetTimeAssert` |
-| `LocalTime?` | `.assert(): LocalTimeAssert` |
-| `LocalDate?` | `.assert(): LocalDateAssert` |
-| `YearMonth?` | `.assert(): YearMonthAssert` |
-| `Instant?` | `.assert(): InstantAssert` |
-| `Duration?` | `.assert(): DurationAssert` |
-| `Period?` | `.assert(): PeriodAssert` |
-| `Path?` | `.assert(): PathAssert` |
-| `File?` | `.assert(): FileAssert` |
-| `URL?` | `.assert(): UrlAssert` |
-| `URI?` | `.assert(): UriAssert` |
-| `Future<V>?` | `.assert(): FutureAssert<V>` |
-| `CompletableFuture<V>?` | `.assert(): CompletableFutureAssert<V>` |
-| `CompletionStage<V>?` | `.assert(): CompletionStageAssert<V>` |
-| `Predicate<T>?` | `.assert(): PredicateAssert<T>` |
-| `Throwable?` | `.assert(): ThrowableAssert<T>` |
+FluentAssert is a Kotlin library that provides fluent assertions for JDK types, making your tests more readable and expressive. The library wraps AssertJ assertions with Kotlin extension functions for better syntax.
 
-## BooleanAssert
+**Key Features:**
+
+- Fluent API for chaining assertions
+- Null-safe operations for all types
+- Comprehensive JDK type coverage
+- Kotlin-first design with excellent IDE support
+- Zero runtime dependencies (only AssertJ)
+
+**Version:** 0.2.6
+
+**Language:** Kotlin
+
+**Platform:** JVM (Java 17+)
+
+**License:** Apache License 2.0
+
+## Quick Start
 
 ```kotlin
-true.assert().isTrue()
-false.assert().isFalse()
-nullableBool.assert().isNull()
+import me.ahoo.test.asserts.assert
+
+// Basic usage
+"hello".assert().startsWith("h").endsWith("o")
+42.assert().isGreaterThan(0).isLessThan(100)
+listOf(1, 2, 3).assert().hasSize(3).contains(2)
 ```
 
-## IntegerAssert / LongAssert / etc.
+## Core API
 
-```kotlin
-value.assert()
-    .isEqualTo(42)
-    .isNotEqualTo(0)
-    .isGreaterThan(0)
-    .isLessThan(100)
-    .isBetween(0, 100)
-    .isPositive()
-    .isNegative()
-    .isZero()
+### Extension Functions Pattern
+
+All assertions follow the pattern: `value.assert().assertionMethod(parameters)`
+
+### Supported Types
+
+- **Primitives:** Boolean, Byte, Short, Int, Long, Float, Double, BigDecimal
+- **Text:** String
+- **Collections:** Iterable<T>, Iterator<T>, Collection<T>, Array<T>, List<T>, Map<K,V>, Optional<T>, Stream<T>
+- **Time/Date:** Date, ZonedDateTime, LocalDateTime, OffsetDateTime, OffsetTime, LocalTime, LocalDate, YearMonth, Instant, Duration, Period, Temporal
+- **I/O:** Path, File, URL, URI
+- **Concurrent:** Future<V>, CompletableFuture<V>, CompletionStage<V>
+- **Functional:** Predicate<T>
+- **Exceptions:** Throwable
+
+## Project Structure
+
+```
+FluentAssert/
+├── core/src/main/kotlin/me/ahoo/test/asserts/
+│   ├── Jdk.kt          # Core JDK type assertions
+│   ├── JdkConcurrent.kt # Concurrent programming assertions
+│   ├── JdkFunction.kt  # Functional programming assertions
+│   ├── JdkIO.kt        # I/O assertions
+│   ├── JdkTime.kt      # Time/date assertions
+│   └── Throwable.kt     # Exception testing
+├── core/src/test/kotlin/ # Comprehensive test suite
+├── dependencies/       # Dependency management
+├── config/             # Build and analysis configuration
+└── build.gradle.kts    # Build configuration
 ```
 
-## StringAssert
+## Development
 
-```kotlin
-"hello".assert()
-    .isEqualTo("hello")
-    .isNotEqualTo("world")
-    .startsWith("hel")
-    .endsWith("llo")
-    .contains("ell")
-    .doesNotContain("xyz")
-    .hasLength(5)
-    .isBlank()
-    .isNotBlank()
-    .matches("^hel.*")
-    .doesNotMatch("^xyz")
+### Requirements
+
+- Java 17+
+- Kotlin 1.8.0+
+- Gradle 7.0+
+
+### Build Commands
+
+```bash
+./gradlew build    # Full build
+./gradlew test     # Run tests
+./gradlew detekt   # Code analysis
+./gradlew jacocoTestReport  # Coverage report
 ```
 
-## CollectionAssert / IterableAssert
+### Testing
+
+- JUnit 5 for test execution
+- AssertJ for assertions
+- Comprehensive test coverage
+- Null-safety testing for all types
+
+## Key Design Principles
+
+1. **Fluent Interface:** Method chaining for readable assertions
+2. **Null Safety:** All functions handle nullable types appropriately
+3. **Type Safety:** Full Kotlin type system integration
+4. **Performance:** Minimal overhead, delegates to optimized AssertJ
+5. **Consistency:** Same API patterns across all supported types
+
+## Usage Examples
+
+### Collections
 
 ```kotlin
-listOf(1, 2, 3).assert()
-    .hasSize(3)
-    .contains(1, 2)
-    .contains(2)
-    .doesNotContain(4)
-    .containsExactly(1, 2, 3)
-    .containsExactlyInAnyOrder(3, 2, 1)
+val numbers = listOf(1, 2, 3, 4, 5)
+numbers.assert()
+    .hasSize(5)
+    .contains(3)
     .allMatch { it > 0 }
-    .anyMatch { it == 2 }
-    .noneMatch { it < 0 }
-    .isEmpty()
-    .isNotEmpty()
 ```
 
-## ListAssert
+### Exception Testing
 
 ```kotlin
-listOf("a", "b", "c").assert()
-    .hasSize(3)
-    .contains("a")
-    .element(0).isEqualTo("a")
-    .element(1).isNotNull()
-    .first().isEqualTo("a")
-    .last().isEqualTo("c")
-```
-
-## MapAssert
-
-```kotlin
-mapOf("key1" to "value1", "key2" to "value2").assert()
-    .hasSize(2)
-    .containsKey("key1")
-    .doesNotContainKey("key3")
-    .containsValue("value1")
-    .doesNotContainValue("value3")
-    .containsEntry("key1", "value1")
-    .doesNotContainEntry("key1", "value2")
-```
-
-## OptionalAssert
-
-```kotlin
-Optional.of("value").assert()
-    .isPresent()
-    .contains("value")
-    .doesNotContain("other")
-
-Optional.empty<String>().assert()
-    .isEmpty()
-    .isNotPresent()
-```
-
-## PathAssert / FileAssert
-
-```kotlin
-path.assert()
-    .exists()
-    .doesNotExist()
-    .isReadable()
-    .isWritable()
-    .isExecutable()
-    .isRegularFile()
-    .isDirectory()
-    .hasFileName("test.txt")
-    .hasParent("parent")
-    .startsWithRawPath(Paths.get("/tmp"))
-
-file.assert()
-    .exists()
-    .isFile()
-    .isDirectory()
-    .canRead()
-    .canWrite()
-    .hasName("test.txt")
-    .hasSize(100)
-```
-
-## URLAssert / UriAssert
-
-```kotlin
-url.assert()
-    .hasProtocol("https")
-    .hasHost("example.com")
-    .hasPort(443)
-    .hasPath("/api/v1")
-    .hasQuery("key=value")
-    .hasNoQuery()
-
-uri.assert()
-    .hasScheme("https")
-    .hasHost("example.com")
-    .hasPath("/api/v1")
-    .hasQuery("key=value")
-```
-
-## Date / Time Assertions
-
-```kotlin
-date.assert()
-    .isToday()
-    .isBefore(otherDate)
-    .isAfter(otherDate)
-    .isBetween(start, end)
-
-instant.assert()
-    .isBefore(otherInstant)
-    .isAfter(otherInstant)
-    .isEqualTo(otherInstant)
-
-localDate.assert()
-    .isToday()
-    .hasYear(2024)
-    .hasMonth(3)
-    .hasDayOfMonth(15)
-    .isBefore(otherDate)
-    .isAfter(otherDate)
-
-localDateTime.assert()
-    .isToday()
-    .hasYear(2024)
-    .hasHour(10)
-    .hasMinute(30)
-    .isBefore(other)
-
-zonedDateTime.assert()
-    .isToday()
-    .hasZone(ZoneId.systemDefault())
-    .hasOffset(ZoneOffset.UTC)
-```
-
-## FutureAssert / CompletableFutureAssert
-
-```kotlin
-future.assert()
-    .isDone()
-    .isNotDone()
-    .isCancelled()
-    .isNotCancelled()
-    .isCompleted()
-    .isCompletedWithValue("result")
-    .isCompletedWithException()
-    .willCompleteWithin(1, TimeUnit.SECONDS)
-
-completableFuture.assert()
-    .isCompleted()
-    .isCompletedWithValue("success")
-    .isCompletedExceptionally()
-```
-
-## ThrowableAssert
-
-```kotlin
-exception.assert()
-    .hasMessage("error message")
-    .hasNoMessage()
-    .hasCause(originalCause)
-    .hasRootCause(rootCause)
-    .isInstanceOf(IllegalArgumentException::class.java)
-    .hasStackTraceContaining("at line 42")
-    .hasSuppressed(suppressed)
-```
-
-## assertThrownBy
-
-```kotlin
-// Kotlin reified version (preferred)
 assertThrownBy<IllegalArgumentException> {
-    throw IllegalArgumentException("invalid")
-}.assert()
-    .hasMessage("invalid")
-    .isInstanceOf(IllegalArgumentException::class.java)
-
-// With class parameter
-assertThrownBy(IllegalArgumentException::class.java) {
-    throw IllegalArgumentException("invalid")
-}.assert().hasMessage("invalid")
+    throw IllegalArgumentException("error")
+}.assert().hasMessage("error")
 ```
 
-## PredicateAssert
+### Time Assertions
 
 ```kotlin
-val isEven = Predicate<Int> { it % 2 == 0 }
-isEven.assert()
-    .accepts(2, 4, 6)
-    .rejects(1, 3, 5)
+LocalDate.now().assert().isToday()
+Instant.now().assert().isBefore(Instant.now().plusSeconds(1))
 ```
+
+## Contributing
+
+See CONTRIBUTING.md for detailed contribution guidelines.
+
+## License
+
+Apache License 2.0 - see LICENSE file for details.
