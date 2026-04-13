@@ -1,9 +1,5 @@
 package me.ahoo.costore.starter.oss
 
-import me.ahoo.costore.core.provider.StoreProviderCredentials
+import me.ahoo.costore.oss.provider.OssCredentials as ProviderOssCredentials
 
-data class OssCredentials(
-    val endpoint: String,
-    val accessKey: String,
-    val secretKey: String
-) : StoreProviderCredentials
+typealias OssCredentials = ProviderOssCredentials

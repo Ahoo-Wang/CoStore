@@ -1,5 +1,6 @@
 package me.ahoo.costore.starter.s3
 
+import me.ahoo.costore.s3.provider.S3ObjectStoreProvider
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty

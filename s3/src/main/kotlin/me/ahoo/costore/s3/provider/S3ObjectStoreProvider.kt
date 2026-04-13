@@ -1,7 +1,8 @@
-package me.ahoo.costore.starter.s3
+package me.ahoo.costore.s3.provider
 
 import me.ahoo.costore.core.api.sync.ObjectStore
 import me.ahoo.costore.core.provider.AbstractObjectStoreProvider
+import me.ahoo.costore.core.provider.StoreProviderCredentials
 import me.ahoo.costore.s3.S3ObjectStore
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
@@ -27,3 +28,9 @@ class S3ObjectStoreProvider : AbstractObjectStoreProvider<S3Credentials>() {
         return S3ObjectStore(client, presigner)
     }
 }
+
+data class S3Credentials(
+    val region: String,
+    val accessKey: String,
+    val secretKey: String
+) : StoreProviderCredentials

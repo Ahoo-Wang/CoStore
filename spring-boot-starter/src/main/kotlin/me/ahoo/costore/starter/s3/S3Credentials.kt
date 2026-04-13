@@ -1,9 +1,5 @@
 package me.ahoo.costore.starter.s3
 
-import me.ahoo.costore.core.provider.StoreProviderCredentials
+import me.ahoo.costore.s3.provider.S3Credentials as ProviderS3Credentials
 
-data class S3Credentials(
-    val region: String,
-    val accessKey: String,
-    val secretKey: String
-) : StoreProviderCredentials
+typealias S3Credentials = ProviderS3Credentials

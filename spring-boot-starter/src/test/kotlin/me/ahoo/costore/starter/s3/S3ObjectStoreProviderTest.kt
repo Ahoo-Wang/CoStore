@@ -1,6 +1,7 @@
 package me.ahoo.costore.starter.s3
 
 import me.ahoo.costore.core.api.sync.ObjectStore
+import me.ahoo.costore.s3.provider.S3ObjectStoreProvider
 import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
