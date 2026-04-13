@@ -13,6 +13,14 @@ import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import java.net.URI
 
+/**
+ * AWS S3 credentials for authentication.
+ *
+ * @property accessKeyId The AWS access key ID
+ * @property secretAccessKey The AWS secret access key
+ * @property region The AWS region (e.g., "us-east-1"). Optional for standard AWS S3.
+ * @property endpoint Custom endpoint URL for S3-compatible services. Optional.
+ */
 data class S3Credentials(
     override val accessKeyId: String,
     override val secretAccessKey: String,
@@ -20,6 +28,12 @@ data class S3Credentials(
     override val endpoint: String? = null,
 ) : NullableRegionCapable, CommonStoreProviderCredentials, NullableEndpointCapable
 
+/**
+ * Provider for creating S3 [ObjectStore] instances from [S3Credentials].
+ *
+ * Supports both standard AWS S3 and S3-compatible services by allowing
+ * a custom endpoint to be specified.
+ */
 class S3ObjectStoreProvider : AbstractObjectStoreProvider<S3Credentials>() {
 
     override fun sync(credentials: S3Credentials): ObjectStore {

@@ -28,6 +28,14 @@ import java.time.Instant
 import com.aliyun.oss.model.GetObjectRequest as OssGetObjectRequest
 import com.aliyun.oss.model.ListObjectsRequest as OssListObjectsRequest
 
+/**
+ * Aliyun OSS implementation of [ObjectStore].
+ *
+ * This implementation wraps the Aliyun OSS Java SDK [OSS] client to provide
+ * a consistent interface for OSS-compatible object storage operations.
+ *
+ * @property client The underlying OSS client for all operations
+ */
 class OssObjectStore(private val client: OSS) : ObjectStore {
 
     override fun getObject(request: GetObjectRequest): GetObjectResponse {

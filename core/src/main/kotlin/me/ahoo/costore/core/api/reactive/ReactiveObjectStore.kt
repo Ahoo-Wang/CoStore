@@ -18,6 +18,14 @@ import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.PutObjectResponse
 import reactor.core.publisher.Mono
 
+/**
+ * Reactive object store interface using Project Reactor [Mono].
+ *
+ * Provides reactive, non-blocking operations for managing objects in S3-compatible storage backends.
+ * All operations return [Mono] for lazy evaluation and proper backpressure support.
+ *
+ * @see ObjectStore for the synchronous counterpart
+ */
 interface ReactiveObjectStore :
     ReactiveGetObjectOperations,
     ReactivePutObjectOperations,
@@ -25,29 +33,36 @@ interface ReactiveObjectStore :
     ReactiveListObjectsOperations,
     ReactiveHeadObjectOperations,
     ReactivePresignObjectOperations {
+    /** Closes the store and releases resources. */
     fun close(): Mono<Void>
 }
 
+/** Reactive get object operation. */
 interface ReactiveGetObjectOperations {
     fun getObject(request: GetObjectRequest): Mono<GetObjectResponse>
 }
 
+/** Reactive put object operation. */
 interface ReactivePutObjectOperations {
     fun putObject(request: PutObjectRequest): Mono<PutObjectResponse>
 }
 
+/** Reactive delete object operation. */
 interface ReactiveDeleteObjectOperations {
     fun deleteObject(request: DeleteObjectRequest): Mono<DeleteObjectResponse>
 }
 
+/** Reactive list objects operation. */
 interface ReactiveListObjectsOperations {
     fun listObjects(request: ListObjectsRequest): Mono<ListObjectsResponse>
 }
 
+/** Reactive head object operation. */
 interface ReactiveHeadObjectOperations {
     fun headObject(request: HeadObjectRequest): Mono<HeadObjectResponse>
 }
 
+/** Reactive pre-sign operations for generating temporary access URLs. */
 interface ReactivePresignObjectOperations {
     fun presignGetObject(request: PresignGetObjectRequest): Mono<PresignGetObjectResponse>
 

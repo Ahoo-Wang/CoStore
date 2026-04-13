@@ -17,6 +17,14 @@ import me.ahoo.costore.core.model.PresignPutObjectResponse
 import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.PutObjectResponse
 
+/**
+ * Coroutines-based object store interface using Kotlin suspend functions.
+ *
+ * Provides structured concurrency for managing objects in S3-compatible storage backends.
+ * Operations are suspending functions that can be used with Kotlin coroutines and structured concurrency.
+ *
+ * @see ObjectStore for the synchronous counterpart
+ */
 interface CoroutinesObjectStore :
     CoroutinesGetObjectOperations,
     CoroutinesPutObjectOperations,
@@ -24,29 +32,36 @@ interface CoroutinesObjectStore :
     CoroutinesListObjectsOperations,
     CoroutinesHeadObjectOperations,
     CoroutinesPresignObjectOperations {
+    /** Closes the store and releases resources. */
     suspend fun close()
 }
 
+/** Suspending get object operation. */
 interface CoroutinesGetObjectOperations {
     suspend fun getObject(request: GetObjectRequest): GetObjectResponse
 }
 
+/** Suspending put object operation. */
 interface CoroutinesPutObjectOperations {
     suspend fun putObject(request: PutObjectRequest): PutObjectResponse
 }
 
+/** Suspending delete object operation. */
 interface CoroutinesDeleteObjectOperations {
     suspend fun deleteObject(request: DeleteObjectRequest): DeleteObjectResponse
 }
 
+/** Suspending list objects operation. */
 interface CoroutinesListObjectsOperations {
     suspend fun listObjects(request: ListObjectsRequest): ListObjectsResponse
 }
 
+/** Suspending head object operation. */
 interface CoroutinesHeadObjectOperations {
     suspend fun headObject(request: HeadObjectRequest): HeadObjectResponse
 }
 
+/** Suspending pre-sign operations for generating temporary access URLs. */
 interface CoroutinesPresignObjectOperations {
     suspend fun presignGetObject(request: PresignGetObjectRequest): PresignGetObjectResponse
 
