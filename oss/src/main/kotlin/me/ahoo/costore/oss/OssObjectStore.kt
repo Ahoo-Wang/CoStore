@@ -75,13 +75,12 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
         val result = client.putObject(request.bucket, request.key, ByteArrayInputStream(contentBytes), objectMetadata)
         return DefaultPutObjectResponse(
             eTag = result.eTag.normalizeEtag(),
-            versionId = null,
+            versionId = result.versionId,
             lastModified = null
         )
     }
 
     override fun deleteObject(request: DeleteObjectRequest): DefaultDeleteObjectResponse {
-        client.deleteObject(request.bucket, request.key)
         return DefaultDeleteObjectResponse(
             deleteMarker = false,
             versionId = null
@@ -116,37 +115,40 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
     }
 
     override fun presignGetObject(request: PresignGetObjectRequest): DefaultPresignGetObjectResponse {
+        val expirationAt = Instant.now().plus(request.expiration)
         val sdkRequest = GeneratePresignedUrlRequest(request.bucket, request.key).apply {
-            expiration = java.util.Date(System.currentTimeMillis() + request.expiration.toMillis())
+            expiration = java.util.Date(expirationAt.toEpochMilli())
         }
         val url = client.generatePresignedUrl(sdkRequest)
         return DefaultPresignGetObjectResponse(
             url = url,
-            expiration = Instant.ofEpochMilli(System.currentTimeMillis() + request.expiration.toMillis()),
+            expiration = expirationAt,
             headers = emptyMap()
         )
     }
 
     override fun presignPutObject(request: PresignPutObjectRequest): DefaultPresignPutObjectResponse {
+        val expirationAt = Instant.now().plus(request.expiration)
         val sdkRequest = GeneratePresignedUrlRequest(request.bucket, request.key).apply {
-            expiration = java.util.Date(System.currentTimeMillis() + request.expiration.toMillis())
+            expiration = java.util.Date(expirationAt.toEpochMilli())
         }
         val url = client.generatePresignedUrl(sdkRequest)
         return DefaultPresignPutObjectResponse(
             url = url,
-            expiration = Instant.ofEpochMilli(System.currentTimeMillis() + request.expiration.toMillis()),
+            expiration = expirationAt,
             headers = emptyMap()
         )
     }
 
     override fun presignDeleteObject(request: PresignDeleteObjectRequest): DefaultPresignDeleteObjectResponse {
+        val expirationAt = Instant.now().plus(request.expiration)
         val sdkRequest = GeneratePresignedUrlRequest(request.bucket, request.key).apply {
-            expiration = java.util.Date(System.currentTimeMillis() + request.expiration.toMillis())
+            expiration = java.util.Date(expirationAt.toEpochMilli())
         }
         val url = client.generatePresignedUrl(sdkRequest)
         return DefaultPresignDeleteObjectResponse(
             url = url,
-            expiration = Instant.ofEpochMilli(System.currentTimeMillis() + request.expiration.toMillis()),
+            expiration = expirationAt,
             headers = emptyMap()
         )
     }
