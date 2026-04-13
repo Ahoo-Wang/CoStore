@@ -25,11 +25,13 @@ import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.normalizeEtag
 import java.io.ByteArrayInputStream
 import java.time.Instant
+import com.aliyun.oss.model.GetObjectRequest as OssGetObjectRequest
+import com.aliyun.oss.model.ListObjectsRequest as OssListObjectsRequest
 
 class OssObjectStore(private val client: OSS) : ObjectStore {
 
     override fun getObject(request: GetObjectRequest): GetObjectResponse {
-        val sdkRequest = com.aliyun.oss.model.GetObjectRequest(request.bucket, request.key)
+        val sdkRequest = OssGetObjectRequest(request.bucket, request.key)
         client.getObject(sdkRequest).use { ossObject ->
             val contentBytes = ossObject.objectContent.readAllBytes()
             val objectMetadata = ossObject.objectMetadata
@@ -87,7 +89,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
     }
 
     override fun listObjects(request: ListObjectsRequest): DefaultListObjectsResponse {
-        val sdkRequest = com.aliyun.oss.model.ListObjectsRequest(request.bucket).apply {
+        val sdkRequest = OssListObjectsRequest(request.bucket).apply {
             prefix = request.prefix
             delimiter = request.delimiter
             marker = request.marker
