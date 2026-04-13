@@ -2,18 +2,17 @@ package me.ahoo.costore.s3
 
 import io.mockk.mockk
 import me.ahoo.costore.core.model.BucketName
-import me.ahoo.costore.core.model.DeleteObjectRequest
-import me.ahoo.costore.core.model.HeadObjectRequest
-import me.ahoo.costore.core.model.ListObjectsRequest
+import me.ahoo.costore.core.model.DefaultDeleteObjectRequest
+import me.ahoo.costore.core.model.DefaultHeadObjectRequest
+import me.ahoo.costore.core.model.DefaultListObjectsRequest
+import me.ahoo.costore.core.model.DefaultPresignDeleteObjectRequest
+import me.ahoo.costore.core.model.DefaultPresignGetObjectRequest
+import me.ahoo.costore.core.model.DefaultPresignPutObjectRequest
+import me.ahoo.costore.core.model.DefaultPutObjectRequest
 import me.ahoo.costore.core.model.ObjectKey
-import me.ahoo.costore.core.model.PresignDeleteObjectRequest
-import me.ahoo.costore.core.model.PresignGetObjectRequest
-import me.ahoo.costore.core.model.PresignPutObjectRequest
-import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.InputStream
 import java.time.Duration
 
 class S3ObjectStoreTest {
@@ -30,12 +29,12 @@ class S3ObjectStoreTest {
 
     @Test
     fun `should head object`() {
-        val bucket = "test-bucket" as BucketName
-        val key = "test-key" as ObjectKey
-        val request = object : HeadObjectRequest {
-            override val bucket: BucketName = bucket
-            override val key: ObjectKey = key
-        }
+        val bucket: BucketName = "test-bucket"
+        val key: ObjectKey = "test-key"
+        val request = DefaultHeadObjectRequest(
+            bucket = bucket,
+            key = key
+        )
 
         val response = store.headObject(request)
 
@@ -47,18 +46,18 @@ class S3ObjectStoreTest {
 
     @Test
     fun `should put object`() {
-        val bucket = "test-bucket" as BucketName
-        val key = "test-key" as ObjectKey
+        val bucket: BucketName = "test-bucket"
+        val key: ObjectKey = "test-key"
         val content = "test content".byteInputStream()
         val contentType = "text/plain"
         val metadata = mapOf("meta1" to "value1")
-        val request = object : PutObjectRequest {
-            override val bucket: BucketName = bucket
-            override val key: ObjectKey = key
-            override val content: InputStream = content
-            override val contentType: String? = contentType
-            override val metadata: Map<String, String> = metadata
-        }
+        val request = DefaultPutObjectRequest(
+            bucket = bucket,
+            key = key,
+            content = content,
+            contentType = contentType,
+            metadata = metadata
+        )
 
         val response = store.putObject(request)
 
@@ -67,13 +66,12 @@ class S3ObjectStoreTest {
 
     @Test
     fun `should delete object`() {
-        val bucket = "test-bucket" as BucketName
-        val key = "test-key" as ObjectKey
-        val request = object : DeleteObjectRequest {
-            override val bucket: BucketName = bucket
-            override val key: ObjectKey = key
-            override val versionId: String? = null
-        }
+        val bucket: BucketName = "test-bucket"
+        val key: ObjectKey = "test-key"
+        val request = DefaultDeleteObjectRequest(
+            bucket = bucket,
+            key = key
+        )
 
         val response = store.deleteObject(request)
 
@@ -82,14 +80,13 @@ class S3ObjectStoreTest {
 
     @Test
     fun `should list objects`() {
-        val bucket = "test-bucket" as BucketName
-        val request = object : ListObjectsRequest {
-            override val bucket: BucketName = bucket
-            override val prefix: String? = "prefix/"
-            override val delimiter: String? = "/"
-            override val marker: String? = null
-            override val maxKeys: Int = 100
-        }
+        val bucket: BucketName = "test-bucket"
+        val request = DefaultListObjectsRequest(
+            bucket = bucket,
+            prefix = "prefix/",
+            delimiter = "/",
+            maxKeys = 100
+        )
 
         val response = store.listObjects(request)
 
@@ -101,13 +98,13 @@ class S3ObjectStoreTest {
 
     @Test
     fun `should presign get object`() {
-        val bucket = "test-bucket" as BucketName
-        val key = "test-key" as ObjectKey
-        val request = object : PresignGetObjectRequest {
-            override val bucket: BucketName = bucket
-            override val key: ObjectKey = key
-            override val expiration: Duration = Duration.ofMinutes(15)
-        }
+        val bucket: BucketName = "test-bucket"
+        val key: ObjectKey = "test-key"
+        val request = DefaultPresignGetObjectRequest(
+            bucket = bucket,
+            key = key,
+            expiration = Duration.ofMinutes(15)
+        )
 
         val response = store.presignGetObject(request)
 
@@ -117,14 +114,14 @@ class S3ObjectStoreTest {
 
     @Test
     fun `should presign put object`() {
-        val bucket = "test-bucket" as BucketName
-        val key = "test-key" as ObjectKey
-        val request = object : PresignPutObjectRequest {
-            override val bucket: BucketName = bucket
-            override val key: ObjectKey = key
-            override val expiration: Duration = Duration.ofMinutes(15)
-            override val contentType: String? = "text/plain"
-        }
+        val bucket: BucketName = "test-bucket"
+        val key: ObjectKey = "test-key"
+        val request = DefaultPresignPutObjectRequest(
+            bucket = bucket,
+            key = key,
+            expiration = Duration.ofMinutes(15),
+            contentType = "text/plain"
+        )
 
         val response = store.presignPutObject(request)
 
@@ -134,14 +131,13 @@ class S3ObjectStoreTest {
 
     @Test
     fun `should presign delete object`() {
-        val bucket = "test-bucket" as BucketName
-        val key = "test-key" as ObjectKey
-        val request = object : PresignDeleteObjectRequest {
-            override val bucket: BucketName = bucket
-            override val key: ObjectKey = key
-            override val expiration: Duration = Duration.ofMinutes(15)
-            override val versionId: String? = null
-        }
+        val bucket: BucketName = "test-bucket"
+        val key: ObjectKey = "test-key"
+        val request = DefaultPresignDeleteObjectRequest(
+            bucket = bucket,
+            key = key,
+            expiration = Duration.ofMinutes(15)
+        )
 
         val response = store.presignDeleteObject(request)
 
