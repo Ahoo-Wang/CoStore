@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.spring)
+    kotlin("kapt")
 }
 java {
     registerFeature("ossSupport") {
@@ -22,6 +23,7 @@ dependencies {
 
     implementation(libs.spring.boot)
     implementation(libs.spring.boot.autoconfigure)
-
+    kapt(libs.spring.boot.configuration.processor)
+    kapt(libs.spring.boot.autoconfigure.processor)
     testImplementation(libs.spring.boot.starter.test)
 }
