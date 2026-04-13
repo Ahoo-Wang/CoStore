@@ -1,14 +1,27 @@
 plugins {
     alias(libs.plugins.kotlin.spring)
 }
+java {
+    registerFeature("ossSupport") {
+        usingSourceSet(sourceSets[SourceSet.MAIN_SOURCE_SET_NAME])
+        capability(group.toString(), "oss-support", version.toString())
+    }
+    registerFeature("s3Support") {
+        usingSourceSet(sourceSets[SourceSet.MAIN_SOURCE_SET_NAME])
+        capability(group.toString(), "s3-support", version.toString())
+    }
+}
+
 dependencies {
     implementation(project(":core"))
     implementation(project(":s3"))
     implementation(project(":oss"))
 
-    api(libs.aws.s3)
-    api(libs.aliyun.oss)
+    "ossSupportImplementation"(libs.aliyun.oss)
+    "s3SupportImplementation"(libs.aws.s3)
 
     implementation(libs.spring.boot)
     implementation(libs.spring.boot.autoconfigure)
+
+    testImplementation(libs.spring.boot.starter.test)
 }
