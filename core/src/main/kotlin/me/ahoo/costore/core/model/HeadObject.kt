@@ -5,3 +5,8 @@ interface HeadObjectRequest :
     ObjectKeyCapable
 
 typealias HeadObjectResponse = StoredObjectMetadata
+
+data class DefaultHeadObjectRequest(
+    override val bucket: BucketName,
+    override val key: ObjectKey
+) : HeadObjectRequest

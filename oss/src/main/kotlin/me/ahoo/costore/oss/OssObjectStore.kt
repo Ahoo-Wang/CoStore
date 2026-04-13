@@ -4,10 +4,7 @@ import com.aliyun.oss.OSS
 import com.aliyun.oss.model.GeneratePresignedUrlRequest
 import com.aliyun.oss.model.ObjectMetadata
 import me.ahoo.costore.core.api.sync.ObjectStore
-import me.ahoo.costore.core.model.BucketName
 import me.ahoo.costore.core.model.DefaultDeleteObjectResponse
-import me.ahoo.costore.core.model.GetObjectResponse
-import me.ahoo.costore.core.model.HeadObjectResponse
 import me.ahoo.costore.core.model.DefaultListObjectsResponse
 import me.ahoo.costore.core.model.DefaultPresignDeleteObjectResponse
 import me.ahoo.costore.core.model.DefaultPresignGetObjectResponse
@@ -17,21 +14,19 @@ import me.ahoo.costore.core.model.DefaultStoredObject
 import me.ahoo.costore.core.model.DefaultStoredObjectMetadata
 import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.GetObjectRequest
+import me.ahoo.costore.core.model.GetObjectResponse
 import me.ahoo.costore.core.model.HeadObjectRequest
+import me.ahoo.costore.core.model.HeadObjectResponse
 import me.ahoo.costore.core.model.ListObjectsRequest
-import me.ahoo.costore.core.model.ObjectKey
 import me.ahoo.costore.core.model.PresignDeleteObjectRequest
 import me.ahoo.costore.core.model.PresignGetObjectRequest
 import me.ahoo.costore.core.model.PresignPutObjectRequest
 import me.ahoo.costore.core.model.PutObjectRequest
+import me.ahoo.costore.core.model.normalizeEtag
 import java.io.ByteArrayInputStream
 import java.time.Instant
 
 class OssObjectStore(private val client: OSS) : ObjectStore {
-
-    private fun normalizeEtag(etag: String?): String? = etag?.let {
-        if (it.startsWith("\"")) it else "\"$it\""
-    }
 
     override fun getObject(request: GetObjectRequest): GetObjectResponse {
         val sdkRequest = com.aliyun.oss.model.GetObjectRequest(request.bucket, request.key)
@@ -44,7 +39,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
                 contentLength = objectMetadata.contentLength,
                 contentType = objectMetadata.contentType,
                 lastModified = objectMetadata.lastModified?.time?.let { Instant.ofEpochMilli(it) },
-                eTag = normalizeEtag(objectMetadata.eTag),
+                eTag = objectMetadata.eTag.normalizeEtag(),
                 metadata = objectMetadata.userMetadata ?: emptyMap(),
                 versionId = objectMetadata.versionId
             )
@@ -63,7 +58,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
             contentLength = metadata.contentLength,
             contentType = metadata.contentType,
             lastModified = metadata.lastModified?.time?.let { Instant.ofEpochMilli(it) },
-            eTag = normalizeEtag(metadata.eTag),
+            eTag = metadata.eTag.normalizeEtag(),
             metadata = metadata.userMetadata ?: emptyMap(),
             versionId = metadata.versionId
         )
@@ -77,7 +72,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
         }
         val result = client.putObject(request.bucket, request.key, ByteArrayInputStream(contentBytes), objectMetadata)
         return DefaultPutObjectResponse(
-            eTag = normalizeEtag(result.eTag),
+            eTag = result.eTag.normalizeEtag(),
             versionId = null,
             lastModified = null
         )
@@ -107,7 +102,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
                     contentLength = summary.size,
                     contentType = null,
                     lastModified = summary.lastModified?.time?.let { Instant.ofEpochMilli(it) },
-                    eTag = normalizeEtag(summary.eTag),
+                    eTag = summary.eTag.normalizeEtag(),
                     metadata = emptyMap(),
                     versionId = null
                 )

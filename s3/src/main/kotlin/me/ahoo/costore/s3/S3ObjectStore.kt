@@ -1,10 +1,7 @@
 package me.ahoo.costore.s3
 
 import me.ahoo.costore.core.api.sync.ObjectStore
-import me.ahoo.costore.core.model.BucketName
 import me.ahoo.costore.core.model.DefaultDeleteObjectResponse
-import me.ahoo.costore.core.model.GetObjectResponse
-import me.ahoo.costore.core.model.HeadObjectResponse
 import me.ahoo.costore.core.model.DefaultListObjectsResponse
 import me.ahoo.costore.core.model.DefaultPresignDeleteObjectResponse
 import me.ahoo.costore.core.model.DefaultPresignGetObjectResponse
@@ -12,31 +9,29 @@ import me.ahoo.costore.core.model.DefaultPresignPutObjectResponse
 import me.ahoo.costore.core.model.DefaultPutObjectResponse
 import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.GetObjectRequest
+import me.ahoo.costore.core.model.GetObjectResponse
 import me.ahoo.costore.core.model.HeadObjectRequest
+import me.ahoo.costore.core.model.HeadObjectResponse
 import me.ahoo.costore.core.model.ListObjectsRequest
-import me.ahoo.costore.core.model.ObjectKey
 import me.ahoo.costore.core.model.PresignDeleteObjectRequest
 import me.ahoo.costore.core.model.PresignGetObjectRequest
 import me.ahoo.costore.core.model.PresignPutObjectRequest
 import me.ahoo.costore.core.model.PutObjectRequest
+import me.ahoo.costore.core.model.normalizeEtag
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.s3.presigner.S3Presigner
+import software.amazon.awssdk.services.s3.presigner.model.PresignedDeleteObjectRequest
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest
+import java.time.Instant
 import software.amazon.awssdk.services.s3.model.GetObjectRequest as S3GetObjectRequest
 import software.amazon.awssdk.services.s3.model.HeadObjectResponse as S3HeadObjectResponse
 import software.amazon.awssdk.services.s3.model.ListObjectsResponse as S3ListObjectsResponse
 import software.amazon.awssdk.services.s3.model.PutObjectRequest as S3PutObjectRequest
 import software.amazon.awssdk.services.s3.model.S3Object as S3ObjectSummary
-import software.amazon.awssdk.services.s3.presigner.S3Presigner
-import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest
-import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest
-import software.amazon.awssdk.services.s3.presigner.model.PresignedDeleteObjectRequest
-import java.time.Instant
 
 class S3ObjectStore(private val client: S3Client, private val presigner: S3Presigner) : ObjectStore {
-
-    private fun normalizeEtag(etag: String?): String? = etag?.let {
-        if (it.startsWith("\"")) it else "\"$it\""
-    }
 
     override fun getObject(request: GetObjectRequest): GetObjectResponse {
         val sdkRequest = S3GetObjectRequest.builder()
@@ -73,7 +68,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
             contentLength = sdkResponse.contentLength(),
             contentType = sdkResponse.contentType(),
             lastModified = sdkResponse.lastModified(),
-            eTag = normalizeEtag(sdkResponse.eTag()),
+            eTag = sdkResponse.eTag().normalizeEtag(),
             metadata = sdkResponse.metadata() ?: emptyMap(),
             versionId = sdkResponse.versionId()
         )
@@ -91,7 +86,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
 
         val sdkResponse = client.putObject(sdkRequest, RequestBody.fromBytes(contentBytes))
         return DefaultPutObjectResponse(
-            eTag = normalizeEtag(sdkResponse.eTag()),
+            eTag = sdkResponse.eTag().normalizeEtag(),
             versionId = sdkResponse.versionId(),
             lastModified = null
         )
@@ -125,7 +120,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
                     contentLength = s3Object.size(),
                     contentType = null,
                     lastModified = s3Object.lastModified(),
-                    eTag = normalizeEtag(s3Object.eTag()),
+                    eTag = s3Object.eTag().normalizeEtag(),
                     metadata = emptyMap(),
                     versionId = null
                 )

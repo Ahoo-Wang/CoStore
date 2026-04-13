@@ -33,3 +33,19 @@ interface StoredObjectMetadataCapable {
 interface StoredObject : StoredObjectMetadataCapable {
     val content: InputStream
 }
+
+data class DefaultStoredObjectMetadata(
+    override val bucket: BucketName,
+    override val key: ObjectKey,
+    override val contentLength: Long? = null,
+    override val contentType: String? = null,
+    override val lastModified: Instant? = null,
+    override val eTag: String? = null,
+    override val metadata: Map<String, String> = emptyMap(),
+    override val versionId: String? = null
+) : StoredObjectMetadata
+
+data class DefaultStoredObject(
+    override val content: InputStream,
+    override val metadata: StoredObjectMetadata
+) : StoredObject
