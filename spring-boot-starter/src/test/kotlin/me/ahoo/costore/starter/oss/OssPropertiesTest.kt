@@ -8,16 +8,16 @@ class OssPropertiesTest {
     fun `should create credentials from properties`() {
         val properties = OssProperties().apply {
             endpoint = "https://oss-cn-hangzhou.aliyuncs.com"
-            accessKey = "test-access-key"
-            secretKey = "test-secret-key"
+            accessKeyId = "test-access-key"
+            secretAccessKey = "test-secret-key"
         }
 
         val credentials = properties.toCredentials()
 
         with(credentials) {
             endpoint.assert().isEqualTo("https://oss-cn-hangzhou.aliyuncs.com")
-            accessKey.assert().isEqualTo("test-access-key")
-            secretKey.assert().isEqualTo("test-secret-key")
+            accessKeyId.assert().isEqualTo("test-access-key")
+            secretAccessKey.assert().isEqualTo("test-secret-key")
         }
     }
 }

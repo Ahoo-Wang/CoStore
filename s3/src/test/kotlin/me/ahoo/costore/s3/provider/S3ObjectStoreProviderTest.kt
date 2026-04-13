@@ -17,8 +17,8 @@ class S3ObjectStoreProviderTest {
     @Test
     fun `should create sync ObjectStore from S3Credentials`() {
         val credentials = S3Credentials(
-            accessKey = "test-access-key",
-            secretKey = "test-secret-key",
+            accessKeyId = "test-access-key",
+            secretAccessKey = "test-secret-key",
             region = "us-east-1"
         )
 
@@ -30,8 +30,8 @@ class S3ObjectStoreProviderTest {
     @Test
     fun `should create ObjectStore that can be closed`() {
         val credentials = S3Credentials(
-            accessKey = "my-access-key",
-            secretKey = "my-secret-key",
+            accessKeyId = "my-access-key",
+            secretAccessKey = "my-secret-key",
             region = "us-west-2"
         )
 

@@ -10,8 +10,8 @@ import me.ahoo.costore.oss.OssObjectStore
 
 data class OssCredentials(
     override val endpoint: String,
-    override val accessKey: String,
-    override val secretKey: String,
+    override val accessKeyId: String,
+    override val secretAccessKey: String,
 ) : CommonStoreProviderCredentials, EndpointCapable
 
 class OssObjectStoreProvider : AbstractObjectStoreProvider<OssCredentials>() {
@@ -19,8 +19,8 @@ class OssObjectStoreProvider : AbstractObjectStoreProvider<OssCredentials>() {
     override fun sync(credentials: OssCredentials): ObjectStore {
         val client: OSS = OSSClientBuilder().build(
             credentials.endpoint,
-            credentials.accessKey,
-            credentials.secretKey
+            credentials.accessKeyId,
+            credentials.secretAccessKey
         )
         return OssObjectStore(client)
     }

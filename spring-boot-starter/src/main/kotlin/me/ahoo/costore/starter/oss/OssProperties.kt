@@ -8,13 +8,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties(prefix = "${CoStore.BRAND_PREFIX}oss")
 data class OssProperties(
     override var endpoint: String = "",
-    override var accessKey: String = "",
-    override var secretKey: String = "",
+    override var accessKeyId: String = "",
+    override var secretAccessKey: String = "",
 ) : CommonStoreProviderCredentials, EndpointCapable {
 
     fun toCredentials(): OssCredentials = OssCredentials(
         endpoint = endpoint,
-        accessKey = accessKey,
-        secretKey = secretKey
+        accessKeyId = accessKeyId,
+        secretAccessKey = secretAccessKey
     )
 }

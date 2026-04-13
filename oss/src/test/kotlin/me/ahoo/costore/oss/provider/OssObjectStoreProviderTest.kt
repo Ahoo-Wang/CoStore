@@ -23,8 +23,8 @@ class OssObjectStoreProviderTest {
     fun `should create sync ObjectStore`() {
         val credentials = OssCredentials(
             endpoint = "https://oss-cn-hangzhou.aliyuncs.com",
-            accessKey = "test-access-key",
-            secretKey = "test-secret-key"
+            accessKeyId = "test-access-key",
+            secretAccessKey = "test-secret-key"
         )
 
         val store = provider.sync(credentials)
@@ -37,8 +37,8 @@ class OssObjectStoreProviderTest {
     fun `should create async ObjectStore`() {
         val credentials = OssCredentials(
             endpoint = "https://oss-cn-hangzhou.aliyuncs.com",
-            accessKey = "test-access-key",
-            secretKey = "test-secret-key"
+            accessKeyId = "test-access-key",
+            secretAccessKey = "test-secret-key"
         )
 
         val store = provider.async(credentials)
@@ -51,8 +51,8 @@ class OssObjectStoreProviderTest {
     fun `should create reactive ObjectStore`() {
         val credentials = OssCredentials(
             endpoint = "https://oss-cn-hangzhou.aliyuncs.com",
-            accessKey = "test-access-key",
-            secretKey = "test-secret-key"
+            accessKeyId = "test-access-key",
+            secretAccessKey = "test-secret-key"
         )
 
         val store = provider.reactive(credentials)
@@ -65,8 +65,8 @@ class OssObjectStoreProviderTest {
     fun `should create coroutines ObjectStore`() {
         val credentials = OssCredentials(
             endpoint = "https://oss-cn-hangzhou.aliyuncs.com",
-            accessKey = "test-access-key",
-            secretKey = "test-secret-key"
+            accessKeyId = "test-access-key",
+            secretAccessKey = "test-secret-key"
         )
 
         val store = provider.coroutines(credentials)
@@ -79,8 +79,8 @@ class OssObjectStoreProviderTest {
     fun `should create ObjectStore that can be closed`() {
         val credentials = OssCredentials(
             endpoint = "https://oss-cn-beijing.aliyuncs.com",
-            accessKey = "my-access-key",
-            secretKey = "my-secret-key"
+            accessKeyId = "my-access-key",
+            secretAccessKey = "my-secret-key"
         )
 
         val store = provider.sync(credentials)

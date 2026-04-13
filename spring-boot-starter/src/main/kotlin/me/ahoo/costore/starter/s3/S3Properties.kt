@@ -8,15 +8,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "${CoStore.BRAND_PREFIX}s3")
 class S3Properties(
-    override var accessKey: String = "",
-    override var secretKey: String = "",
+    override var accessKeyId: String = "",
+    override var secretAccessKey: String = "",
     override var region: String? = null,
     override var endpoint: String? = null,
 ) : NullableRegionCapable, CommonStoreProviderCredentials, NullableEndpointCapable {
 
     fun toCredentials(): S3Credentials = S3Credentials(
         region = region,
-        accessKey = accessKey,
-        secretKey = secretKey
+        accessKeyId = accessKeyId,
+        secretAccessKey = secretAccessKey
     )
 }

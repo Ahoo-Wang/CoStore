@@ -14,8 +14,8 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import java.net.URI
 
 data class S3Credentials(
-    override val accessKey: String,
-    override val secretKey: String,
+    override val accessKeyId: String,
+    override val secretAccessKey: String,
     override val region: String? = null,
     override val endpoint: String? = null,
 ) : NullableRegionCapable, CommonStoreProviderCredentials, NullableEndpointCapable
@@ -27,8 +27,8 @@ class S3ObjectStoreProvider : AbstractObjectStoreProvider<S3Credentials>() {
             URI(it)
         }
         val awsCredentials = AwsBasicCredentials.create(
-            credentials.accessKey,
-            credentials.secretKey
+            credentials.accessKeyId,
+            credentials.secretAccessKey
         )
         val awsCredentialsProvider = StaticCredentialsProvider.create(awsCredentials)
         val awsRegion = credentials.region?.let {

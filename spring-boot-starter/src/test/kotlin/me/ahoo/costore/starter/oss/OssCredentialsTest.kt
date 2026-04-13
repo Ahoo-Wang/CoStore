@@ -9,8 +9,8 @@ class OssCredentialsTest {
     fun `should implement StoreProviderCredentials`() {
         val credentials = OssCredentials(
             endpoint = "https://oss-cn-hangzhou.aliyuncs.com",
-            accessKey = "test-access-key",
-            secretKey = "test-secret-key"
+            accessKeyId = "test-access-key",
+            secretAccessKey = "test-secret-key"
         )
 
         credentials.assert().isInstanceOf(StoreProviderCredentials::class.java)
@@ -20,14 +20,14 @@ class OssCredentialsTest {
     fun `should store all properties`() {
         val credentials = OssCredentials(
             endpoint = "https://oss-cn-beijing.aliyuncs.com",
-            accessKey = "my-access-key",
-            secretKey = "my-secret-key"
+            accessKeyId = "my-access-key",
+            secretAccessKey = "my-secret-key"
         )
 
         with(credentials) {
             endpoint.assert().isEqualTo("https://oss-cn-beijing.aliyuncs.com")
-            accessKey.assert().isEqualTo("my-access-key")
-            secretKey.assert().isEqualTo("my-secret-key")
+            accessKeyId.assert().isEqualTo("my-access-key")
+            secretAccessKey.assert().isEqualTo("my-secret-key")
         }
     }
 }

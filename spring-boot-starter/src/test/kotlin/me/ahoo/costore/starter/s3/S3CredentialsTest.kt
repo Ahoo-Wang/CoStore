@@ -9,8 +9,8 @@ class S3CredentialsTest {
     fun `should implement StoreProviderCredentials`() {
         val credentials = S3Credentials(
             region = "us-east-1",
-            accessKey = "test-access-key",
-            secretKey = "test-secret-key"
+            accessKeyId = "test-access-key",
+            secretAccessKey = "test-secret-key"
         )
 
         credentials.assert().isInstanceOf(StoreProviderCredentials::class.java)
@@ -20,14 +20,14 @@ class S3CredentialsTest {
     fun `should store all properties`() {
         val credentials = S3Credentials(
             region = "us-west-2",
-            accessKey = "my-access-key",
-            secretKey = "my-secret-key"
+            accessKeyId = "my-access-key",
+            secretAccessKey = "my-secret-key"
         )
 
         with(credentials) {
             region.assert().isEqualTo("us-west-2")
-            accessKey.assert().isEqualTo("my-access-key")
-            secretKey.assert().isEqualTo("my-secret-key")
+            accessKeyId.assert().isEqualTo("my-access-key")
+            secretAccessKey.assert().isEqualTo("my-secret-key")
         }
     }
 }

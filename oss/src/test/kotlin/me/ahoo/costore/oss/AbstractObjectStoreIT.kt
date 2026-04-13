@@ -14,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 
 @EnabledIfEnvironmentVariable(named = "OSS_ACCESS_KEY_ID", matches = ".+")
-@EnabledIfEnvironmentVariable(named = "OSS_ACCESS_KEY_SECRET", matches = ".+")
+@EnabledIfEnvironmentVariable(named = "OSS_SECRET_ACCESS_KEY", matches = ".+")
 @EnabledIfEnvironmentVariable(named = "OSS_ENDPOINT", matches = ".+")
 @EnabledIfEnvironmentVariable(named = "OSS_BUCKET", matches = ".+")
 abstract class AbstractObjectStoreIT {
@@ -25,7 +25,7 @@ abstract class AbstractObjectStoreIT {
     fun setup() {
         val endpoint = System.getenv("OSS_ENDPOINT")!!
         val accessKey = System.getenv("OSS_ACCESS_KEY_ID")!!
-        val secretKey = System.getenv("OSS_ACCESS_KEY_SECRET")!!
+        val secretKey = System.getenv("OSS_SECRET_ACCESS_KEY")!!
         bucket = System.getenv("OSS_BUCKET") as BucketName
 
         val client: OSS = OSSClientBuilder().build(endpoint, accessKey, secretKey)
