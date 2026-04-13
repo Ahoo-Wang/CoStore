@@ -33,7 +33,7 @@ jobs:
         run: ./gradlew code-coverage-report:koverXmlReport --stacktrace
         env:
           OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
-          OSS_ACCESS_KEY: ${{ secrets.OSS_ACCESS_KEY }}
+          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
           OSS_SECRET_KEY: ${{ secrets.OSS_SECRET_KEY }}
           OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
 
