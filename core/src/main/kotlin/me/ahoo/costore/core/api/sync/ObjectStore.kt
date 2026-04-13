@@ -17,6 +17,15 @@ import me.ahoo.costore.core.model.PresignPutObjectResponse
 import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.PutObjectResponse
 
+/**
+ * Synchronous object store interface for blocking I/O operations.
+ *
+ * This is the base interface for all object store implementations. It provides
+ * blocking operations for managing objects in S3-compatible storage backends.
+ *
+ * Implementations are auto-closeable and should be used within a try-with-resources block
+ * or explicitly closed after use.
+ */
 interface ObjectStore :
     GetObjectOperations,
     HeadObjectOperations,
@@ -26,26 +35,65 @@ interface ObjectStore :
     PresignObjectOperations,
     AutoCloseable
 
+/**
+ * Retrieves an object from the store.
+ *
+ * @param request The get object request containing bucket, key, and optional parameters
+ * @return The object content and metadata
+ * @throws ObjectNotFoundError if the object does not exist
+ */
 interface DeleteObjectOperations {
     fun deleteObject(request: DeleteObjectRequest): DeleteObjectResponse
 }
 
+/**
+ * Retrieves an object from the store.
+ *
+ * @param request The get object request containing bucket, key, and optional parameters
+ * @return The object content and metadata
+ * @throws ObjectNotFoundError if the object does not exist
+ */
 interface GetObjectOperations {
     fun getObject(request: GetObjectRequest): GetObjectResponse
 }
 
+/**
+ * Retrieves object metadata without the content.
+ *
+ * @param request The head object request containing bucket and key
+ * @return Object metadata (content length, type, etag, etc.)
+ * @throws ObjectNotFoundError if the object does not exist
+ */
 interface HeadObjectOperations {
     fun headObject(request: HeadObjectRequest): HeadObjectResponse
 }
 
+/**
+ * Lists objects in a bucket with optional prefix filtering.
+ *
+ * @param request The list objects request containing bucket and filter parameters
+ * @return Paginated list of objects and common prefixes
+ */
 interface ListObjectsOperations {
     fun listObjects(request: ListObjectsRequest): ListObjectsResponse
 }
 
+/**
+ * Stores an object in the bucket.
+ *
+ * @param request The put object request containing bucket, key, content, and metadata
+ * @return The result of the put operation (etag, versionId, etc.)
+ */
 interface PutObjectOperations {
     fun putObject(request: PutObjectRequest): PutObjectResponse
 }
 
+/**
+ * Generates pre-signed URLs for temporary object access.
+ *
+ * Pre-signed URLs allow temporary access to private objects without requiring
+ * AWS credentials in the request.
+ */
 interface PresignObjectOperations {
     fun presignGetObject(request: PresignGetObjectRequest): PresignGetObjectResponse
     fun presignPutObject(request: PresignPutObjectRequest): PresignPutObjectResponse

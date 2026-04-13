@@ -33,6 +33,15 @@ import software.amazon.awssdk.services.s3.model.ListObjectsResponse as S3ListObj
 import software.amazon.awssdk.services.s3.model.PutObjectRequest as S3PutObjectRequest
 import software.amazon.awssdk.services.s3.model.S3Object as S3ObjectSummary
 
+/**
+ * AWS S3 implementation of [ObjectStore].
+ *
+ * This implementation wraps the AWS SDK v2 [S3Client] and [S3Presigner] to provide
+ * a consistent interface for S3-compatible object storage operations.
+ *
+ * @property client The underlying S3 client for all operations
+ * @property presigner The pre-signer for generating temporary access URLs
+ */
 class S3ObjectStore(private val client: S3Client, private val presigner: S3Presigner) : ObjectStore {
 
     override fun getObject(request: GetObjectRequest): GetObjectResponse {
