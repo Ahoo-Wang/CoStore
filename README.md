@@ -2,7 +2,10 @@
 
 A Kotlin multi-module library providing unified object storage abstractions for S3 and OSS-compatible backends.
 
-**Version:** 0.0.1 | **Target:** JVM 17
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://github.com/Ahoo-Wang/CoStore/blob/main/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/Ahoo-Wang/CoStore.svg)](https://github.com/Ahoo-Wang/CoStore/releases)
+[![Maven Central Version](https://img.shields.io/maven-central/v/me.ahoo.costore/costore-core)](https://central.sonatype.com/artifact/me.ahoo.costore/costore-core)
+[![codecov](https://codecov.io/gh/Ahoo-Wang/CoStore/branch/main/graph/badge.svg?token=uloJrLoQir)](https://codecov.io/gh/Ahoo-Wang/CoStore)
 
 ---
 
