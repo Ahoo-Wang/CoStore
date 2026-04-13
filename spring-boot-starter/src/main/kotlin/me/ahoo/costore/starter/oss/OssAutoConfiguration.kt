@@ -1,5 +1,6 @@
 package me.ahoo.costore.starter.oss
 
+import me.ahoo.costore.core.CoStore
 import me.ahoo.costore.oss.provider.OssObjectStoreProvider
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -10,7 +11,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(OssObjectStoreProvider::class)
-@ConditionalOnProperty(prefix = "costore.oss", name = ["endpoint"])
+@ConditionalOnProperty(prefix = "${CoStore.BRAND_PREFIX}oss", name = ["endpoint"])
 @EnableConfigurationProperties(OssProperties::class)
 class OssAutoConfiguration(
     private val ossProperties: OssProperties

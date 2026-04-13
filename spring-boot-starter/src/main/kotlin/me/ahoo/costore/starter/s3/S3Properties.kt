@@ -1,8 +1,9 @@
 package me.ahoo.costore.starter.s3
 
+import me.ahoo.costore.core.CoStore
 import org.springframework.boot.context.properties.ConfigurationProperties
 
-@ConfigurationProperties(prefix = "costore.s3")
+@ConfigurationProperties(prefix = "${CoStore.BRAND_PREFIX}s3")
 class S3Properties {
     var region: String = ""
     var accessKey: String = ""

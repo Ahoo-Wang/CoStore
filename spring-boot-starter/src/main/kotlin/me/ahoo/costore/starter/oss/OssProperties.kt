@@ -1,8 +1,9 @@
 package me.ahoo.costore.starter.oss
 
+import me.ahoo.costore.core.CoStore
 import org.springframework.boot.context.properties.ConfigurationProperties
 
-@ConfigurationProperties(prefix = "costore.oss")
+@ConfigurationProperties(prefix = "${CoStore.BRAND_PREFIX}oss")
 class OssProperties {
     var endpoint: String = ""
     var accessKey: String = ""

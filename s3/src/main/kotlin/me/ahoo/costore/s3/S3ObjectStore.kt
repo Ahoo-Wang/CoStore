@@ -7,6 +7,8 @@ import me.ahoo.costore.core.model.DefaultPresignDeleteObjectResponse
 import me.ahoo.costore.core.model.DefaultPresignGetObjectResponse
 import me.ahoo.costore.core.model.DefaultPresignPutObjectResponse
 import me.ahoo.costore.core.model.DefaultPutObjectResponse
+import me.ahoo.costore.core.model.DefaultStoredObject
+import me.ahoo.costore.core.model.DefaultStoredObjectMetadata
 import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.GetObjectRequest
 import me.ahoo.costore.core.model.GetObjectResponse
@@ -45,13 +47,13 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
             inputStream.readAllBytes()
         }
 
-        val objectMetadata = me.ahoo.costore.core.model.DefaultStoredObjectMetadata(
+        val objectMetadata = DefaultStoredObjectMetadata(
             bucket = request.bucket,
             key = request.key,
             contentType = request.contentType,
             versionId = request.versionId
         )
-        return me.ahoo.costore.core.model.DefaultStoredObject(
+        return DefaultStoredObject(
             content = java.io.ByteArrayInputStream(contentBytes),
             metadata = objectMetadata
         )
@@ -62,7 +64,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
             it.bucket(request.bucket)
                 .key(request.key)
         }
-        return me.ahoo.costore.core.model.DefaultStoredObjectMetadata(
+        return DefaultStoredObjectMetadata(
             bucket = request.bucket,
             key = request.key,
             contentLength = sdkResponse.contentLength(),
@@ -99,7 +101,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
                 .versionId(request.versionId)
         }
         return DefaultDeleteObjectResponse(
-            deleteMarker = sdkResponse.deleteMarker(),
+            deleteMarker = sdkResponse.deleteMarker() ?: false,
             versionId = sdkResponse.versionId()
         )
     }
@@ -114,7 +116,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
         }
         return DefaultListObjectsResponse(
             objects = sdkResponse.contents().map { s3Object: S3ObjectSummary ->
-                me.ahoo.costore.core.model.DefaultStoredObjectMetadata(
+                DefaultStoredObjectMetadata(
                     bucket = request.bucket,
                     key = s3Object.key(),
                     contentLength = s3Object.size(),
