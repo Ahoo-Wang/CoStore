@@ -17,9 +17,11 @@ class DeleteObjectTest {
                 override val versionId: String? = versionId
             }
 
-        request.bucket.assert().isEqualTo(bucket)
-        request.key.assert().isEqualTo(key)
-        request.versionId.assert().isEqualTo(versionId)
+        with(request) {
+            bucket.assert().isEqualTo(bucket)
+            key.assert().isEqualTo(key)
+            this.versionId.assert().isNotNull().isEqualTo(versionId)
+        }
     }
 
     @Test
@@ -27,13 +29,14 @@ class DeleteObjectTest {
         val deleteMarker = true
         val versionId = "version-123"
 
-        val response =
-            object : DeleteObjectResponse {
-                override val deleteMarker: Boolean = deleteMarker
-                override val versionId: String? = versionId
-            }
+        val response = DefaultDeleteObjectResponse(
+            deleteMarker = deleteMarker,
+            versionId = versionId
+        )
 
-        response.deleteMarker.assert().isTrue()
-        response.versionId.assert().isEqualTo(versionId)
+        with(response) {
+            deleteMarker.assert().isTrue()
+            this.versionId.assert().isNotNull().isEqualTo(versionId)
+        }
     }
 }

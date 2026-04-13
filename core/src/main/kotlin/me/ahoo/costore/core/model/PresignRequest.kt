@@ -4,7 +4,8 @@ import java.net.URL
 import java.time.Duration
 import java.time.Instant
 
-interface PresignRequest : BucketCapable,
+interface PresignRequest :
+    BucketCapable,
     ObjectKeyCapable {
     val expiration: Duration
 }

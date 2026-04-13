@@ -10,24 +10,23 @@ class GetObjectTest {
     fun `should create GetObjectRequest instance`() {
         val bucket = "test-bucket"
         val key = "test/key"
-        val range = 0L..1023L
-        val ifModifiedSince = Instant.now()
-        val ifNoneMatch = "\"etag-value\""
+        val contentType = "application/json"
+        val versionId = "version-123"
 
         val request =
             object : GetObjectRequest {
                 override val bucket: BucketName = bucket
                 override val key: ObjectKey = key
-                override val range: LongRange? = range
-                override val ifModifiedSince: Instant? = ifModifiedSince
-                override val ifNoneMatch: String? = ifNoneMatch
+                override val contentType: String? = contentType
+                override val versionId: String? = versionId
             }
 
-        request.bucket.assert().isEqualTo(bucket)
-        request.key.assert().isEqualTo(key)
-        request.range.assert().isEqualTo(range)
-        request.ifModifiedSince.assert().isEqualTo(ifModifiedSince)
-        request.ifNoneMatch.assert().isEqualTo(ifNoneMatch)
+        with(request) {
+            bucket.assert().isEqualTo(bucket)
+            key.assert().isEqualTo(key)
+            contentType.assert().isNotNull().isEqualTo(contentType)
+            this.versionId.assert().isNotNull().isEqualTo(versionId)
+        }
     }
 
     @Test
@@ -39,26 +38,31 @@ class GetObjectTest {
         val contentType = "text/plain"
         val lastModified = Instant.now()
         val eTag = "\"d41d8cd98f00b204e9800998ecf8427e\""
-        val metadata = mapOf("x-custom" to "value")
+        val userMetadata = mapOf("x-custom" to "value")
 
-        val response =
-            object : GetObjectResponse {
-                override val bucket: BucketName = bucket
-                override val key: ObjectKey = key
-                override val metadata: Map<String, String> = metadata
-                override val content: InputStream = content
-                override val contentLength: Long = contentLength
-                override val contentType: String? = contentType
-                override val lastModified: Instant? = lastModified
-                override val eTag: String? = eTag
-            }
+        val storedMetadata = DefaultStoredObjectMetadata(
+            bucket = bucket,
+            key = key,
+            contentLength = contentLength,
+            contentType = contentType,
+            lastModified = lastModified,
+            eTag = eTag,
+            metadata = userMetadata
+        )
 
-        response.bucket.assert().isEqualTo(bucket)
-        response.key.assert().isEqualTo(key)
-        response.metadata.assert().isEqualTo(metadata)
-        response.contentLength.assert().isEqualTo(contentLength)
-        response.contentType.assert().isEqualTo(contentType)
-        response.lastModified.assert().isEqualTo(lastModified)
-        response.eTag.assert().isEqualTo(eTag)
+        val response = DefaultStoredObject(
+            content = content,
+            metadata = storedMetadata
+        )
+
+        with(response.metadata) {
+            bucket.assert().isEqualTo(bucket)
+            key.assert().isEqualTo(key)
+            contentLength.assert().isEqualTo(contentLength)
+            contentType.assert().isNotNull().isEqualTo(contentType)
+            lastModified.assert().isNotNull().isEqualTo(lastModified)
+            eTag.assert().isNotNull().isEqualTo(eTag)
+            this.metadata.assert().isEqualTo(userMetadata)
+        }
     }
 }

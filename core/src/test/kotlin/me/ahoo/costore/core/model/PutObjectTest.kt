@@ -23,10 +23,12 @@ class PutObjectTest {
                 override val metadata: Map<String, String> = metadata
             }
 
-        request.bucket.assert().isEqualTo(bucket)
-        request.key.assert().isEqualTo(key)
-        request.contentType.assert().isEqualTo(contentType)
-        request.metadata.assert().isEqualTo(metadata)
+        with(request) {
+            bucket.assert().isEqualTo(bucket)
+            key.assert().isEqualTo(key)
+            contentType.assert().isNotNull().isEqualTo(contentType)
+            this.metadata.assert().isEqualTo(metadata)
+        }
     }
 
     @Test
@@ -35,15 +37,16 @@ class PutObjectTest {
         val versionId = "version-123"
         val lastModified = Instant.now()
 
-        val response =
-            object : PutObjectResponse {
-                override val eTag: String? = eTag
-                override val versionId: String? = versionId
-                override val lastModified: Instant? = lastModified
-            }
+        val response = DefaultPutObjectResponse(
+            eTag = eTag,
+            versionId = versionId,
+            lastModified = lastModified
+        )
 
-        response.eTag.assert().isEqualTo(eTag)
-        response.versionId.assert().isEqualTo(versionId)
-        response.lastModified.assert().isEqualTo(lastModified)
+        with(response) {
+            eTag.assert().isNotNull().isEqualTo(eTag)
+            this.versionId.assert().isNotNull().isEqualTo(versionId)
+            this.lastModified.assert().isNotNull().isEqualTo(lastModified)
+        }
     }
 }

@@ -17,7 +17,10 @@ interface NullableContentTypeCapable {
 
 interface StoredObjectMetadata :
     BucketCapable,
-    ObjectKeyCapable, NullableContentLengthCapable, NullableContentTypeCapable, NullableVersionIdCapable {
+    ObjectKeyCapable,
+    NullableContentLengthCapable,
+    NullableContentTypeCapable,
+    NullableVersionIdCapable {
     val lastModified: Instant?
     val eTag: String?
     val metadata: Map<String, String>

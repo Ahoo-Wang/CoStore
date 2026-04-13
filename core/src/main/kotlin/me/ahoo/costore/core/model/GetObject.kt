@@ -4,7 +4,6 @@ interface GetObjectRequest : BucketCapable, ObjectKeyCapable, NullableContentTyp
 
 typealias GetObjectResponse = StoredObject
 
-
 fun GetObject(block: GetObjectRequest.() -> Unit): GetObjectRequest {
     TODO()
 }
