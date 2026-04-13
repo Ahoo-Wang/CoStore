@@ -3,6 +3,7 @@ package me.ahoo.costore.starter.oss
 import me.ahoo.costore.core.CoStore
 import me.ahoo.costore.core.provider.CommonStoreProviderCredentials
 import me.ahoo.costore.core.provider.EndpointCapable
+import me.ahoo.costore.oss.provider.OssCredentials
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "${CoStore.BRAND_PREFIX}oss")

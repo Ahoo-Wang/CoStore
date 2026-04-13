@@ -20,8 +20,8 @@ class OssAutoConfigurationTest {
         contextRunner
             .withPropertyValues(
                 "costore.oss.endpoint=https://oss-cn-hangzhou.aliyuncs.com",
-                "costore.oss.access-key=test-access-key",
-                "costore.oss.secret-key=test-secret-key"
+                "costore.oss.access-key-id=test-access-key",
+                "costore.oss.secret-access-key=test-secret-key"
             )
             .run { context ->
                 context.assertThat()
@@ -34,8 +34,8 @@ class OssAutoConfigurationTest {
     fun `should not configure when endpoint is missing`() {
         contextRunner
             .withPropertyValues(
-                "costore.oss.access-key=test-access-key",
-                "costore.oss.secret-key=test-secret-key"
+                "costore.oss.access-key-id=test-access-key",
+                "costore.oss.secret-access-key=test-secret-key"
             )
             .run { context ->
                 context.assertThat()

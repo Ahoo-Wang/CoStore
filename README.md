@@ -105,9 +105,9 @@ val coroutinesStore: CoroutinesObjectStore = syncStore.asCoroutines()
 
 ```kotlin
 val credentials = S3Credentials(
-    accessKey = "your-access-key",
-    secretKey = "your-secret-key",
-    region = "us-east-1"        // optional
+    accessKeyId = "your-access-key-id",
+    secretAccessKey = "your-secret-access-key",
+    region = "us-east-1"         // optional
     endpoint = "https://..."     // optional, for S3-compatible stores
 )
 
@@ -120,8 +120,8 @@ val store = provider.sync(credentials)
 ```kotlin
 val credentials = OssCredentials(
     endpoint = "https://oss-cn-hangzhou.aliyuncs.com",  // required
-    accessKey = "your-access-key",
-    secretKey = "your-secret-key"
+    accessKeyId = "your-access-key-id",
+    secretAccessKey = "your-secret-access-key"
 )
 
 val provider = OssObjectStoreProvider()
@@ -147,8 +147,8 @@ dependencies {
 ```yaml
 costore:
   s3:
-    access-key: ${AWS_ACCESS_KEY}
-    secret-key: ${AWS_SECRET_KEY}
+    access-key-id: ${AWS_ACCESS_KEY_ID}
+    secret-access-key: ${AWS_SECRET_ACCESS_KEY}
     region: us-east-1
 ```
 
@@ -158,8 +158,8 @@ costore:
 costore:
   oss:
     endpoint: https://oss-cn-hangzhou.aliyuncs.com
-    access-key: ${OSS_ACCESS_KEY}
-    secret-key: ${OSS_SECRET_KEY}
+    access-key-id: ${OSS_ACCESS_KEY_ID}
+    secret-access-key: ${OSS_SECRET_ACCESS_KEY}
 ```
 
 ### Usage

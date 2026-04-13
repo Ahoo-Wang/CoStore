@@ -4,6 +4,7 @@ import me.ahoo.costore.core.CoStore
 import me.ahoo.costore.core.provider.CommonStoreProviderCredentials
 import me.ahoo.costore.core.provider.NullableEndpointCapable
 import me.ahoo.costore.core.provider.NullableRegionCapable
+import me.ahoo.costore.s3.provider.S3Credentials
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "${CoStore.BRAND_PREFIX}s3")

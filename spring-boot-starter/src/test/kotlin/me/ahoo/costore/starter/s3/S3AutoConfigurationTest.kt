@@ -20,8 +20,8 @@ class S3AutoConfigurationTest {
         contextRunner
             .withPropertyValues(
                 "costore.s3.region=us-east-1",
-                "costore.s3.access-key=test-access-key",
-                "costore.s3.secret-key=test-secret-key"
+                "costore.s3.access-key-id=test-access-key",
+                "costore.s3.secret-access-key=test-secret-key"
             )
             .run { context ->
                 context.assertThat()
@@ -34,8 +34,8 @@ class S3AutoConfigurationTest {
     fun `should not configure when region is missing`() {
         contextRunner
             .withPropertyValues(
-                "costore.s3.access-key=test-access-key",
-                "costore.s3.secret-key=test-secret-key"
+                "costore.s3.access-key-id=test-access-key",
+                "costore.s3.secret-access-key=test-secret-key"
             )
             .run { context ->
                 context.assertThat()
