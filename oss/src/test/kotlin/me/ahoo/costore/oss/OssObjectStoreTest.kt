@@ -109,6 +109,7 @@ class OssObjectStoreTest {
         val response = store.presignGetObject(request)
 
         response.url.assert().isNotNull()
+        response.expiration.assert().isNotNull()
     }
 
     @Test
@@ -125,6 +126,7 @@ class OssObjectStoreTest {
         val response = store.presignPutObject(request)
 
         response.url.assert().isNotNull()
+        response.expiration.assert().isNotNull()
     }
 
     @Test
@@ -141,5 +143,6 @@ class OssObjectStoreTest {
         val response = store.presignDeleteObject(request)
 
         response.url.assert().isNotNull()
+        response.expiration.assert().isNotNull()
     }
 }

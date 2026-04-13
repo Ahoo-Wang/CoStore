@@ -13,8 +13,6 @@ import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import software.amazon.awssdk.services.s3.S3Client
-import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import java.io.InputStream
 import java.time.Duration
 
@@ -52,12 +50,14 @@ class S3ObjectStoreTest {
         val bucket = "test-bucket" as BucketName
         val key = "test-key" as ObjectKey
         val content = "test content".byteInputStream()
+        val contentType = "text/plain"
+        val metadata = mapOf("meta1" to "value1")
         val request = object : PutObjectRequest {
             override val bucket: BucketName = bucket
             override val key: ObjectKey = key
             override val content: InputStream = content
-            override val contentType: String? = "text/plain"
-            override val metadata: Map<String, String> = emptyMap()
+            override val contentType: String? = contentType
+            override val metadata: Map<String, String> = metadata
         }
 
         val response = store.putObject(request)
@@ -112,6 +112,7 @@ class S3ObjectStoreTest {
         val response = store.presignGetObject(request)
 
         response.url.assert().isNotNull()
+        response.expiration.assert().isNotNull()
     }
 
     @Test
@@ -128,6 +129,7 @@ class S3ObjectStoreTest {
         val response = store.presignPutObject(request)
 
         response.url.assert().isNotNull()
+        response.expiration.assert().isNotNull()
     }
 
     @Test
@@ -144,5 +146,9 @@ class S3ObjectStoreTest {
         val response = store.presignDeleteObject(request)
 
         response.url.assert().isNotNull()
+        response.expiration.assert().isNotNull()
     }
 }
+
+private typealias S3Client = software.amazon.awssdk.services.s3.S3Client
+private typealias S3Presigner = software.amazon.awssdk.services.s3.presigner.S3Presigner
