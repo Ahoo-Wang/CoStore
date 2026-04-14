@@ -18,7 +18,7 @@ import java.net.URI
  *
  * @property accessKeyId The AWS access key ID
  * @property secretAccessKey The AWS secret access key
- * @property region The AWS region (e.g., "us-east-1"). Optional for standard AWS S3.
+ * @property region The AWS region.
  * @property endpoint Custom endpoint URL for S3-compatible services. Optional.
  */
 data class S3Credentials(
@@ -54,7 +54,7 @@ class S3ObjectStoreProvider : AbstractObjectStoreProvider<S3Credentials>() {
             .credentialsProvider(awsCredentialsProvider)
             .build()
         val presigner = S3Presigner.builder()
-            .region(awsRegion ?: Region.US_EAST_1)
+            .region(awsRegion)
             .credentialsProvider(awsCredentialsProvider)
             .build()
         return S3ObjectStore(client, presigner)
