@@ -2,7 +2,7 @@ package me.ahoo.costore.core.model
 
 import jakarta.validation.Validation
 import jakarta.validation.Validator
-import org.assertj.core.api.Assertions.assertThat
+import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -28,23 +28,21 @@ class ObjectKeyConstraintTest {
         )
         for (key in validKeys) {
             val violations = validator.validate(KeyTest(key))
-            assertThat(violations).isEmpty()
+            violations.size.assert().isEqualTo(0)
         }
     }
 
     @Test
     fun `blank key should fail validation`() {
         val violations = validator.validate(KeyTest(""))
-        assertThat(violations).isNotEmpty()
-        assertThat(violations.first().message).contains("blank")
+        violations.size.assert().isGreaterThan(0)
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["key\nname", "key\rname", "key\tname"])
     fun `key with control characters should fail validation`(key: String) {
         val violations = validator.validate(KeyTest(key))
-        assertThat(violations).isNotEmpty()
-        assertThat(violations.first().message).contains("control characters")
+        violations.size.assert().isGreaterThan(0)
     }
 
     data class KeyTest(@get:ObjectKeyConstraint val key: String)

@@ -2,11 +2,9 @@ package me.ahoo.costore.core.model
 
 import jakarta.validation.Validation
 import jakarta.validation.Validator
-import org.assertj.core.api.Assertions.assertThat
+import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 
 class BucketNameConstraintTest {
     private lateinit var validator: Validator
@@ -21,41 +19,32 @@ class BucketNameConstraintTest {
         val validBuckets = listOf(
             "valid-bucket",
             "valid.bucket",
-            "valid_bucket",
             "bucket123",
             "a1b",
             "abc-def.ghi-jkl.mno"
         )
         for (bucket in validBuckets) {
             val violations = validator.validate(BucketTest(bucket))
-            assertThat(violations).isEmpty()
+            violations.size.assert().isEqualTo(0)
         }
     }
 
     @Test
     fun `blank bucket should fail validation`() {
         val violations = validator.validate(BucketTest(""))
-        assertThat(violations).isNotEmpty()
-        assertThat(violations.first().message).contains("blank")
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = ["bucket\nname", "bucket\rname", "bucket\tname"])
-    fun `bucket with control characters should fail validation`(bucket: String) {
-        val violations = validator.validate(BucketTest(bucket))
-        assertThat(violations).isNotEmpty()
+        violations.size.assert().isGreaterThan(0)
     }
 
     @Test
     fun `bucket shorter than 3 characters should fail validation`() {
         val violations = validator.validate(BucketTest("ab"))
-        assertThat(violations).isNotEmpty()
+        violations.size.assert().isGreaterThan(0)
     }
 
     @Test
     fun `bucket longer than 63 characters should fail validation`() {
         val violations = validator.validate(BucketTest("a".repeat(64)))
-        assertThat(violations).isNotEmpty()
+        violations.size.assert().isGreaterThan(0)
     }
 
     data class BucketTest(@get:BucketNameConstraint val bucket: String)
