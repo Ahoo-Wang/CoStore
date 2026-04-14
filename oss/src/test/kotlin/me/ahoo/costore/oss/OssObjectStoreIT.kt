@@ -240,12 +240,10 @@ class OssObjectStoreIT {
                 key = key,
                 expiration = Duration.ofMinutes(15)
             )
-            val response = store.presignDeleteObject(presignRequest)
-
-            response.url.assert().isNotNull()
-            response.expiration.assert().isNotNull()
-            response.url.toString().assert().contains(bucket)
-            response.url.toString().assert().contains(key)
+            // OSS does not support presigned DELETE URLs
+            org.junit.jupiter.api.assertThrows<UnsupportedOperationException> {
+                store.presignDeleteObject(presignRequest)
+            }
         } finally {
             store.deleteObject(DeleteObjectRequest(bucket, key))
         }
