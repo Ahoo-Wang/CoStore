@@ -2,6 +2,7 @@ package me.ahoo.costore.oss
 
 import com.aliyun.oss.OSS
 import com.aliyun.oss.model.PutObjectResult
+import io.mockk.every
 import io.mockk.mockk
 import me.ahoo.costore.core.model.BatchPresignRequest
 import me.ahoo.costore.core.model.BucketName
@@ -62,7 +63,7 @@ class OssObjectStoreTest {
 
         val response = store.putObject(request)
 
-        response.eTag.assert().isNotNull()
+        response.assert().isNotNull()
     }
 
     @Test

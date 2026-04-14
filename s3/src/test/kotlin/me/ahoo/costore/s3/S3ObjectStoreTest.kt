@@ -61,7 +61,7 @@ class S3ObjectStoreTest {
 
         val response = store.putObject(request)
 
-        response.eTag.assert().isNotNull()
+        response.assert().isNotNull()
     }
 
     @Test
