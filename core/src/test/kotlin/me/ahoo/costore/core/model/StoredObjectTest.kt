@@ -125,4 +125,40 @@ class StoredObjectTest {
 
         bytes.assert().isEqualTo("test-bucket".toByteArray())
     }
+
+    @Test
+    fun `normalizeEtag should return null for null input`() {
+        val result = null.normalizeEtag()
+        result.assert().isNull()
+    }
+
+    @Test
+    fun `normalizeEtag should return null for empty string`() {
+        val result = "".normalizeEtag()
+        result.assert().isNull()
+    }
+
+    @Test
+    fun `normalizeEtag should add quotes for unquoted ETag`() {
+        val result = "abc".normalizeEtag()
+        result.assert().isEqualTo("\"abc\"")
+    }
+
+    @Test
+    fun `normalizeEtag should keep quotes for fully quoted ETag`() {
+        val result = "\"abc\"".normalizeEtag()
+        result.assert().isEqualTo("\"abc\"")
+    }
+
+    @Test
+    fun `normalizeEtag should add closing quote for partially quoted ETag`() {
+        val result = "\"abc".normalizeEtag()
+        result.assert().isEqualTo("\"abc\"")
+    }
+
+    @Test
+    fun `normalizeEtag should trim whitespace`() {
+        val result = "  abc  ".normalizeEtag()
+        result.assert().isEqualTo("\"abc\"")
+    }
 }
