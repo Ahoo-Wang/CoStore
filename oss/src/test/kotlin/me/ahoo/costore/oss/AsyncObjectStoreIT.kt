@@ -31,6 +31,7 @@ class AsyncObjectStoreIT : AbstractObjectStoreIT() {
                 bucket = bucket,
                 key = key,
                 content = content.byteInputStream(),
+                contentLength = content.toByteArray().size.toLong(),
                 contentType = "text/plain"
             )
         ).toCompletableFuture().join()

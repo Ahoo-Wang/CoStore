@@ -1,6 +1,7 @@
 package me.ahoo.costore.oss
 
 import com.aliyun.oss.OSS
+import com.aliyun.oss.model.PutObjectResult
 import io.mockk.mockk
 import me.ahoo.costore.core.model.BatchPresignRequest
 import me.ahoo.costore.core.model.BucketName
@@ -52,8 +53,12 @@ class OssObjectStoreTest {
             bucket = bucket,
             key = key,
             content = content,
+            contentLength = "test content".toByteArray().size.toLong(),
             contentType = "text/plain"
         )
+
+        val mockResult = mockk<PutObjectResult>(relaxed = true)
+        every { client.putObject(request.bucket, request.key, content, any()) } returns mockResult
 
         val response = store.putObject(request)
 
