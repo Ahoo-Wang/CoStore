@@ -4,6 +4,9 @@ changelog:
       - ignore-for-release
 
   categories:
+    - title: 🔧 Breaking Changes
+      labels:
+        - breaking-change
     - title: 🎉 New Features
       labels:
         - enhancement
@@ -13,18 +16,21 @@ changelog:
     - title: ⚡ Performance Improvements
       labels:
         - performance
-    - title: 🔧 Breaking Changes
-      labels:
-        - breaking-change
     - title: 📚 Documentation Updates
       labels:
         - documentation
-    - title: 🔨 Maintenance
+    - title: 🔨 Refactoring
       labels:
-        - maintenance
+        - refactoring
+    - title: 🧪 Testing
+      labels:
+        - testing
     - title: 🤖 Dependency Updates
       labels:
         - dependency
+    - title: 🔧 Maintenance
+      labels:
+        - maintenance
     - title: Other Changes
       labels:
         - '*'
