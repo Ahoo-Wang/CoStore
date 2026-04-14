@@ -39,11 +39,10 @@ interface ObjectStore :
     AutoCloseable
 
 /**
- * Retrieves an object from the store.
+ * Deletes an object from the store.
  *
- * @param request The get object request containing bucket, key, and optional parameters
- * @return The object content and metadata
- * @throws ObjectNotFoundError if the object does not exist
+ * @param request The delete object request containing bucket and key
+ * @return The result of the delete operation
  */
 interface DeleteObjectOperations {
     fun deleteObject(request: DeleteObjectRequest): DeleteObjectResponse
