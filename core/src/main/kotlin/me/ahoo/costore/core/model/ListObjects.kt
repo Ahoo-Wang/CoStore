@@ -8,7 +8,6 @@ data class ListObjectsRequest(
     val maxKeys: Int = 100
 ) : BucketCapable {
     init {
-        ObjectStoreValidation.validateBucketName(bucket)
         require(maxKeys > 0) { "maxKeys must be positive, but was $maxKeys" }
         require(maxKeys <= 1000) { "maxKeys must not exceed 1000, but was $maxKeys" }
     }
