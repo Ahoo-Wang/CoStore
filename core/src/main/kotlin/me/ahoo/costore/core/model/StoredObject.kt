@@ -13,9 +13,34 @@ interface NullableContentLengthCapable {
     val contentLength: Long?
 }
 
+interface ContentCapable {
+    val content: InputStream
+}
+
 /** Indicates the object may have a content type (MIME type). */
 interface NullableContentTypeCapable {
     val contentType: String?
+}
+
+interface NullableETagCapable {
+    val eTag: String?
+}
+
+interface NullableLastModifiedCapable {
+    val lastModified: Instant?
+}
+
+/**
+ * Normalizes an ETag value by ensuring it is wrapped in double quotes.
+ *
+ * Some S3-compatible services return ETags without quotes, while the S3 API
+ * specification requires quotes. This function ensures consistent formatting.
+ *
+ * @receiver The ETag string, possibly null
+ * @return The normalized ETag with surrounding quotes, or null if input was null
+ */
+fun String?.normalizeEtag(): String? = this?.let {
+    if (it.startsWith("\"")) it else "\"$it\""
 }
 
 /**
@@ -25,15 +50,21 @@ interface NullableContentTypeCapable {
  * ETag, and custom user metadata.
  */
 data class StoredObjectMetadata(
-    val bucket: BucketName,
-    val key: ObjectKey,
-    val contentLength: Long? = null,
-    val contentType: String? = null,
-    val lastModified: Instant? = null,
-    val eTag: String? = null,
+    override val bucket: BucketName,
+    override val key: ObjectKey,
+    override val contentLength: Long? = null,
+    override val contentType: String? = null,
+    override val lastModified: Instant? = null,
+    override val eTag: String? = null,
     val metadata: Map<String, String> = emptyMap(),
-    val versionId: String? = null
-)
+    override val versionId: String? = null,
+) : BucketCapable,
+    ObjectKeyCapable,
+    NullableContentLengthCapable,
+    NullableContentTypeCapable,
+    NullableETagCapable,
+    NullableVersionIdCapable,
+    NullableLastModifiedCapable
 
 /**
  * A stored object including both metadata and content.
@@ -41,6 +72,6 @@ data class StoredObjectMetadata(
  * Use [content] to read the object's data as an [InputStream].
  */
 data class StoredObject(
-    val content: InputStream,
-    val metadata: StoredObjectMetadata
-)
+    override val content: InputStream,
+    val metadata: StoredObjectMetadata,
+) : ContentCapable

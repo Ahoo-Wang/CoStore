@@ -6,13 +6,13 @@ import java.time.Instant
 data class PutObjectRequest(
     override val bucket: BucketName,
     override val key: ObjectKey,
-    val content: InputStream,
-    val contentType: String? = null,
-    val metadata: Map<String, String> = emptyMap()
-) : BucketCapable, ObjectKeyCapable
+    override val content: InputStream,
+    override val contentType: String? = null,
+    val metadata: Map<String, String> = emptyMap(),
+) : BucketCapable, NullableContentTypeCapable, ObjectKeyCapable, ContentCapable
 
 data class PutObjectResponse(
-    val eTag: String? = null,
-    val versionId: String? = null,
-    val lastModified: Instant? = null
-)
+    override val eTag: String? = null,
+    override val versionId: String? = null,
+    override val lastModified: Instant? = null,
+) : NullableETagCapable, NullableVersionIdCapable, NullableLastModifiedCapable
