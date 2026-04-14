@@ -1,0 +1,23 @@
+package me.ahoo.costore.starter.s3
+
+import me.ahoo.costore.core.CoStore
+import me.ahoo.costore.core.provider.CommonStoreProviderCredentials
+import me.ahoo.costore.core.provider.NullableEndpointCapable
+import me.ahoo.costore.core.provider.NullableRegionCapable
+import me.ahoo.costore.s3.provider.S3Credentials
+import org.springframework.boot.context.properties.ConfigurationProperties
+
+@ConfigurationProperties(prefix = "${CoStore.BRAND_PREFIX}s3")
+class S3Properties(
+    override var accessKeyId: String = "",
+    override var secretAccessKey: String = "",
+    override var region: String? = null,
+    override var endpoint: String? = null,
+) : NullableRegionCapable, CommonStoreProviderCredentials, NullableEndpointCapable {
+
+    fun toCredentials(): S3Credentials = S3Credentials(
+        region = region,
+        accessKeyId = accessKeyId,
+        secretAccessKey = secretAccessKey
+    )
+}
