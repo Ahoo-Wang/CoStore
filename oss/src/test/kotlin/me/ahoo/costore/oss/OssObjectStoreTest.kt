@@ -10,6 +10,7 @@ import me.ahoo.costore.core.model.ObjectKey
 import me.ahoo.costore.core.model.PresignRequest
 import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.test.asserts.assert
+import me.ahoo.test.asserts.assertThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Duration
@@ -124,7 +125,7 @@ class OssObjectStoreTest {
     }
 
     @Test
-    fun `should presign delete object`() {
+    fun `should presign delete object throw`() {
         val bucket: BucketName = "test-bucket"
         val key: ObjectKey = "test-key"
         val request = PresignRequest.Delete(
@@ -133,9 +134,8 @@ class OssObjectStoreTest {
             expiration = Duration.ofMinutes(15)
         )
 
-        val response = store.presignDeleteObject(request)
-
-        response.url.assert().isNotNull()
-        response.expiration.assert().isNotNull()
+        assertThrownBy<UnsupportedOperationException> {
+            store.presignDeleteObject(request)
+        }.hasMessage("OSS does not support presigned DELETE URLs")
     }
 }
