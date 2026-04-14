@@ -1,7 +1,7 @@
 [versions]
 # Libs
 aws-sdk = "2.42.34"
-aliyun-oss = "3.17.4"
+aliyun-oss = "3.18.5"
 reactor = "3.7.3"
 spring-boot = "4.0.5"
 jackson-annotations = "2.21"
