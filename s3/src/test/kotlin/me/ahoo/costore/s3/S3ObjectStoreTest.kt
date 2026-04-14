@@ -5,11 +5,9 @@ import me.ahoo.costore.core.model.BucketName
 import me.ahoo.costore.core.model.DefaultDeleteObjectRequest
 import me.ahoo.costore.core.model.DefaultHeadObjectRequest
 import me.ahoo.costore.core.model.DefaultListObjectsRequest
-import me.ahoo.costore.core.model.DefaultPresignDeleteObjectRequest
-import me.ahoo.costore.core.model.DefaultPresignGetObjectRequest
-import me.ahoo.costore.core.model.DefaultPresignPutObjectRequest
 import me.ahoo.costore.core.model.DefaultPutObjectRequest
 import me.ahoo.costore.core.model.ObjectKey
+import me.ahoo.costore.core.model.PresignRequest
 import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -100,7 +98,7 @@ class S3ObjectStoreTest {
     fun `should presign get object`() {
         val bucket: BucketName = "test-bucket"
         val key: ObjectKey = "test-key"
-        val request = DefaultPresignGetObjectRequest(
+        val request = PresignRequest.Get(
             bucket = bucket,
             key = key,
             expiration = Duration.ofMinutes(15)
@@ -116,7 +114,7 @@ class S3ObjectStoreTest {
     fun `should presign put object`() {
         val bucket: BucketName = "test-bucket"
         val key: ObjectKey = "test-key"
-        val request = DefaultPresignPutObjectRequest(
+        val request = PresignRequest.Put(
             bucket = bucket,
             key = key,
             expiration = Duration.ofMinutes(15),
@@ -133,7 +131,7 @@ class S3ObjectStoreTest {
     fun `should presign delete object`() {
         val bucket: BucketName = "test-bucket"
         val key: ObjectKey = "test-key"
-        val request = DefaultPresignDeleteObjectRequest(
+        val request = PresignRequest.Delete(
             bucket = bucket,
             key = key,
             expiration = Duration.ofMinutes(15)
