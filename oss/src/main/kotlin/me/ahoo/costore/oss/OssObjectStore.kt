@@ -140,6 +140,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
         val sdkRequest = GeneratePresignedUrlRequest(request.bucket, request.key, HttpMethod.PUT).apply {
             expiration = java.util.Date(expirationAt.toEpochMilli())
             request.contentType?.let { contentType = it }
+            userMetadata = request.metadata
         }
         val url = client.generatePresignedUrl(sdkRequest)
         val headers = request.contentType?.let {

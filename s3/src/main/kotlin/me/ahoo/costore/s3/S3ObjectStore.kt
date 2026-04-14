@@ -165,6 +165,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
                     it.bucket(request.bucket)
                         .key(request.key)
                         .contentType(request.contentType)
+                        .metadata(request.metadata)
                 }
         }
         return PresignObjectResponse.Put(
