@@ -1,5 +1,7 @@
 package me.ahoo.costore.core.model
 
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.PositiveOrZero
 import java.io.Closeable
 import java.io.IOException
 import java.io.InputStream
@@ -7,18 +9,18 @@ import java.time.Instant
 
 /** Indicates the object may have a version ID (for versioned buckets). */
 interface NullableVersionIdCapable {
-    @get:VersionIdConstraint
+    @get:NotBlank
     val versionId: String?
 }
 
 /** Indicates the object may have a content length. */
 interface NullableContentLengthCapable {
-    @get:ContentLengthConstraint
+    @get:PositiveOrZero
     val contentLength: Long?
 }
 
 interface ContentLengthCapable {
-    @get:ContentLengthConstraint
+    @get:PositiveOrZero
     val contentLength: Long
 }
 
