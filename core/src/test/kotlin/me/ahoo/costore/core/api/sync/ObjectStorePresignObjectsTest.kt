@@ -4,27 +4,24 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import me.ahoo.costore.core.model.BatchPresignRequest
-import me.ahoo.costore.core.model.BatchPresignResponse
-import me.ahoo.costore.core.model.PresignGetObjectRequest
-import me.ahoo.costore.core.model.PresignGetObjectResponse
-import me.ahoo.costore.core.model.PresignPutObjectRequest
-import me.ahoo.costore.core.model.PresignPutObjectResponse
-import me.ahoo.costore.core.model.PresignDeleteObjectRequest
-import me.ahoo.costore.core.model.PresignDeleteObjectResponse
 import me.ahoo.costore.core.model.BucketName
-import me.ahoo.costore.core.model.ObjectKey
+import me.ahoo.costore.core.model.DeleteObjectRequest
+import me.ahoo.costore.core.model.DeleteObjectResponse
 import me.ahoo.costore.core.model.GetObjectRequest
 import me.ahoo.costore.core.model.GetObjectResponse
 import me.ahoo.costore.core.model.HeadObjectRequest
 import me.ahoo.costore.core.model.HeadObjectResponse
-import me.ahoo.costore.core.model.PutObjectRequest
-import me.ahoo.costore.core.model.PutObjectResponse
-import me.ahoo.costore.core.model.DeleteObjectRequest
-import me.ahoo.costore.core.model.DeleteObjectResponse
 import me.ahoo.costore.core.model.ListObjectsRequest
 import me.ahoo.costore.core.model.ListObjectsResponse
-import me.ahoo.costore.core.model.PresignRequest
-import me.ahoo.costore.core.model.PresignObjectResponse
+import me.ahoo.costore.core.model.ObjectKey
+import me.ahoo.costore.core.model.PresignDeleteObjectRequest
+import me.ahoo.costore.core.model.PresignDeleteObjectResponse
+import me.ahoo.costore.core.model.PresignGetObjectRequest
+import me.ahoo.costore.core.model.PresignGetObjectResponse
+import me.ahoo.costore.core.model.PresignPutObjectRequest
+import me.ahoo.costore.core.model.PresignPutObjectResponse
+import me.ahoo.costore.core.model.PutObjectRequest
+import me.ahoo.costore.core.model.PutObjectResponse
 import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.Test
 import java.net.URL
@@ -57,19 +54,7 @@ class MockObjectStore : ObjectStore {
     override fun presignDeleteObject(request: PresignDeleteObjectRequest): PresignDeleteObjectResponse =
         presignDeleteObjectMock.invoke(request)
 
-    // Use the same dispatch logic as the default implementation
-    override fun presignObjects(request: BatchPresignRequest): BatchPresignResponse {
-        val responses = request.requests.map { presignRequest ->
-            when (presignRequest) {
-                is PresignRequest.Get -> presignGetObject(presignRequest)
-                is PresignRequest.Put -> presignPutObject(presignRequest)
-                is PresignRequest.Delete -> presignDeleteObject(presignRequest)
-            }
-        }
-        return BatchPresignResponse(responses)
-    }
-
-    override fun close() {}
+    override fun close() = Unit
 }
 
 class ObjectStorePresignObjectsTest {
