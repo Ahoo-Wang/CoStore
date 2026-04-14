@@ -10,5 +10,6 @@ typealias ObjectKey = String
  */
 interface ObjectKeyCapable {
     /** The object key that uniquely identifies the object within its bucket. */
+    @get:ObjectKeyConstraint
     val key: ObjectKey
 }
