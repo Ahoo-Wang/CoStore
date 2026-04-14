@@ -58,8 +58,8 @@ sealed interface PresignRequest :
         override val bucket: BucketName,
         override val key: ObjectKey,
         override val expiration: Duration,
-        val contentType: String? = null,
-    ) : PresignRequest {
+        override val contentType: String? = null,
+    ) : PresignRequest, NullableContentTypeCapable {
         override val method: PresignMethod = PresignMethods.PUT
     }
 
