@@ -54,7 +54,7 @@ fun String?.normalizeEtag(): String? = this?.let {
     when {
         trimmed.isEmpty() -> null
         trimmed.startsWith("\"") && trimmed.endsWith("\"") -> trimmed
-        trimmed.startsWith("\"") -> "\"$trimmed\""
+        trimmed.startsWith("\"") && !trimmed.endsWith("\"") -> "\"$trimmed\""
         else -> "\"$trimmed\""
     }
 }
@@ -88,13 +88,20 @@ data class StoredObjectMetadata(
  *
  * Use [content] to read the object's data as an [InputStream].
  *
- * This object implements [Closeable] - closing this object will also close the
- * underlying content stream. Use try-with-resources to ensure proper cleanup:
+ * This object implements [Closeable] and **MUST be closed by the caller**
+ * after reading to release underlying resources (e.g., HTTP connections).
+ *
+ * Example - REQUIRED usage with try-with-resources:
  * ```kotlin
  * store.getObject(request).use { obj ->
  *     obj.content.readBytes()
  * }
  * ```
+ *
+ * WARNING: Failure to close this object will cause resource leaks.
+ * The object MUST be closed even if an exception occurs during reading.
+ *
+ * @see Closeable
  */
 data class StoredObject(
     override val content: InputStream,
