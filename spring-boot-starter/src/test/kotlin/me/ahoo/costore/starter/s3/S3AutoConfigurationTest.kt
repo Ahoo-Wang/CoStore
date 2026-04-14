@@ -2,6 +2,7 @@ package me.ahoo.costore.starter.s3
 
 import me.ahoo.costore.core.api.sync.ObjectStore
 import me.ahoo.costore.s3.provider.S3ObjectStoreProvider
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.autoconfigure.AutoConfigurations.of
 import org.springframework.boot.test.context.runner.ApplicationContextRunner
@@ -24,7 +25,7 @@ class S3AutoConfigurationTest {
                 "costore.s3.secret-access-key=test-secret-key"
             )
             .run { context ->
-                context.assertThat()
+                assertThat(context)
                     .hasSingleBean(S3ObjectStoreProvider::class.java)
                     .hasSingleBean(ObjectStore::class.java)
             }
@@ -38,7 +39,7 @@ class S3AutoConfigurationTest {
                 "costore.s3.secret-access-key=test-secret-key"
             )
             .run { context ->
-                context.assertThat()
+                assertThat(context)
                     .doesNotHaveBean(S3ObjectStoreProvider::class.java)
                     .doesNotHaveBean(ObjectStore::class.java)
             }
@@ -47,7 +48,7 @@ class S3AutoConfigurationTest {
     @Test
     fun `should not configure when properties are empty`() {
         contextRunner.run { context ->
-            context.assertThat()
+            assertThat(context)
                 .doesNotHaveBean(S3ObjectStoreProvider::class.java)
                 .doesNotHaveBean(ObjectStore::class.java)
         }
