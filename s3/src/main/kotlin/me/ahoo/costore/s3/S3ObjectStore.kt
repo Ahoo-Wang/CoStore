@@ -3,9 +3,6 @@ package me.ahoo.costore.s3
 import me.ahoo.costore.core.api.sync.ObjectStore
 import me.ahoo.costore.core.model.DefaultDeleteObjectResponse
 import me.ahoo.costore.core.model.DefaultListObjectsResponse
-import me.ahoo.costore.core.model.DefaultPresignDeleteObjectResponse
-import me.ahoo.costore.core.model.DefaultPresignGetObjectResponse
-import me.ahoo.costore.core.model.DefaultPresignPutObjectResponse
 import me.ahoo.costore.core.model.DefaultPutObjectResponse
 import me.ahoo.costore.core.model.DefaultStoredObject
 import me.ahoo.costore.core.model.DefaultStoredObjectMetadata
@@ -17,6 +14,7 @@ import me.ahoo.costore.core.model.HeadObjectResponse
 import me.ahoo.costore.core.model.ListObjectsRequest
 import me.ahoo.costore.core.model.PresignDeleteObjectRequest
 import me.ahoo.costore.core.model.PresignGetObjectRequest
+import me.ahoo.costore.core.model.PresignObjectResponse
 import me.ahoo.costore.core.model.PresignPutObjectRequest
 import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.normalizeEtag
@@ -142,7 +140,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
         )
     }
 
-    override fun presignGetObject(request: PresignGetObjectRequest): DefaultPresignGetObjectResponse {
+    override fun presignGetObject(request: PresignGetObjectRequest): PresignObjectResponse.Get {
         val presignedRequest: PresignedGetObjectRequest = presigner.presignGetObject {
             it.signatureDuration(request.expiration)
                 .getObjectRequest {
@@ -150,7 +148,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
                         .key(request.key)
                 }
         }
-        return DefaultPresignGetObjectResponse(
+        return PresignObjectResponse.Get(
             url = presignedRequest.url(),
             expiration = Instant.ofEpochSecond(
                 presignedRequest.expiration().epochSecond,
@@ -160,7 +158,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
         )
     }
 
-    override fun presignPutObject(request: PresignPutObjectRequest): DefaultPresignPutObjectResponse {
+    override fun presignPutObject(request: PresignPutObjectRequest): PresignObjectResponse.Put {
         val presignedRequest: PresignedPutObjectRequest = presigner.presignPutObject {
             it.signatureDuration(request.expiration)
                 .putObjectRequest {
@@ -169,7 +167,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
                         .contentType(request.contentType)
                 }
         }
-        return DefaultPresignPutObjectResponse(
+        return PresignObjectResponse.Put(
             url = presignedRequest.url(),
             expiration = Instant.ofEpochSecond(
                 presignedRequest.expiration().epochSecond,
@@ -179,7 +177,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
         )
     }
 
-    override fun presignDeleteObject(request: PresignDeleteObjectRequest): DefaultPresignDeleteObjectResponse {
+    override fun presignDeleteObject(request: PresignDeleteObjectRequest): PresignObjectResponse.Delete {
         val presignedRequest: PresignedDeleteObjectRequest = presigner.presignDeleteObject {
             it.signatureDuration(request.expiration)
                 .deleteObjectRequest {
@@ -188,7 +186,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
                         .versionId(request.versionId)
                 }
         }
-        return DefaultPresignDeleteObjectResponse(
+        return PresignObjectResponse.Delete(
             url = presignedRequest.url(),
             expiration = Instant.ofEpochSecond(
                 presignedRequest.expiration().epochSecond,

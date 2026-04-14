@@ -8,32 +8,31 @@ import java.time.Instant
 
 class PresignObjectTest {
     @Test
-    fun `should create PresignGetObjectRequest instance`() {
+    fun `should create PresignRequest_Get instance`() {
         val bucket = "test-bucket"
         val key = "test/key"
         val expiration = Duration.ofHours(1)
 
-        val request =
-            object : PresignGetObjectRequest {
-                override val bucket: BucketName = bucket
-                override val key: ObjectKey = key
-                override val expiration: Duration = expiration
-            }
+        val request = PresignRequest.Get(
+            bucket = bucket,
+            key = key,
+            expiration = expiration
+        )
 
         with(request) {
-            bucket.assert().isEqualTo(bucket)
-            key.assert().isEqualTo(key)
+            this.bucket.assert().isEqualTo(bucket)
+            this.key.assert().isEqualTo(key)
             this.expiration.assert().isEqualTo(expiration)
         }
     }
 
     @Test
-    fun `should create PresignGetObjectResponse instance`() {
+    fun `should create PresignObjectResponse_Get instance`() {
         val url = URL("https://s3.amazonaws.com/bucket/key?signature=...")
         val expiration = Instant.now()
         val headers = mapOf("Content-Type" to listOf("application/json"))
 
-        val response = DefaultPresignGetObjectResponse(
+        val response = PresignObjectResponse.Get(
             url = url,
             expiration = expiration,
             headers = headers
@@ -47,34 +46,33 @@ class PresignObjectTest {
     }
 
     @Test
-    fun `should create PresignPutObjectRequest instance`() {
+    fun `should create PresignRequest_Put instance`() {
         val bucket = "test-bucket"
         val key = "test/key"
         val expiration = Duration.ofHours(1)
         val contentType = "application/json"
 
-        val request =
-            object : PresignPutObjectRequest {
-                override val bucket: BucketName = bucket
-                override val key: ObjectKey = key
-                override val expiration: Duration = expiration
-                override val contentType: String? = contentType
-            }
+        val request = PresignRequest.Put(
+            bucket = bucket,
+            key = key,
+            expiration = expiration,
+            contentType = contentType
+        )
 
         with(request) {
-            bucket.assert().isEqualTo(bucket)
-            key.assert().isEqualTo(key)
+            this.bucket.assert().isEqualTo(bucket)
+            this.key.assert().isEqualTo(key)
             this.expiration.assert().isEqualTo(expiration)
             contentType.assert().isNotNull().isEqualTo(contentType)
         }
     }
 
     @Test
-    fun `should create PresignPutObjectResponse instance`() {
+    fun `should create PresignObjectResponse_Put instance`() {
         val url = URL("https://s3.amazonaws.com/bucket/key?signature=...")
         val expiration = Instant.now()
 
-        val response = DefaultPresignPutObjectResponse(
+        val response = PresignObjectResponse.Put(
             url = url,
             expiration = expiration,
             headers = emptyMap()
@@ -88,34 +86,33 @@ class PresignObjectTest {
     }
 
     @Test
-    fun `should create PresignDeleteObjectRequest instance`() {
+    fun `should create PresignRequest_Delete instance`() {
         val bucket = "test-bucket"
         val key = "test/key"
         val expiration = Duration.ofHours(1)
         val versionId = "version-123"
 
-        val request =
-            object : PresignDeleteObjectRequest {
-                override val bucket: BucketName = bucket
-                override val key: ObjectKey = key
-                override val expiration: Duration = expiration
-                override val versionId: String? = versionId
-            }
+        val request = PresignRequest.Delete(
+            bucket = bucket,
+            key = key,
+            expiration = expiration,
+            versionId = versionId
+        )
 
         with(request) {
-            bucket.assert().isEqualTo(bucket)
-            key.assert().isEqualTo(key)
+            this.bucket.assert().isEqualTo(bucket)
+            this.key.assert().isEqualTo(key)
             this.expiration.assert().isEqualTo(expiration)
             this.versionId.assert().isNotNull().isEqualTo(versionId)
         }
     }
 
     @Test
-    fun `should create PresignDeleteObjectResponse instance`() {
+    fun `should create PresignObjectResponse_Delete instance`() {
         val url = URL("https://s3.amazonaws.com/bucket/key?signature=...")
         val expiration = Instant.now()
 
-        val response = DefaultPresignDeleteObjectResponse(
+        val response = PresignObjectResponse.Delete(
             url = url,
             expiration = expiration,
             headers = emptyMap()

@@ -6,9 +6,6 @@ import com.aliyun.oss.model.ObjectMetadata
 import me.ahoo.costore.core.api.sync.ObjectStore
 import me.ahoo.costore.core.model.DefaultDeleteObjectResponse
 import me.ahoo.costore.core.model.DefaultListObjectsResponse
-import me.ahoo.costore.core.model.DefaultPresignDeleteObjectResponse
-import me.ahoo.costore.core.model.DefaultPresignGetObjectResponse
-import me.ahoo.costore.core.model.DefaultPresignPutObjectResponse
 import me.ahoo.costore.core.model.DefaultPutObjectResponse
 import me.ahoo.costore.core.model.DefaultStoredObject
 import me.ahoo.costore.core.model.DefaultStoredObjectMetadata
@@ -20,6 +17,7 @@ import me.ahoo.costore.core.model.HeadObjectResponse
 import me.ahoo.costore.core.model.ListObjectsRequest
 import me.ahoo.costore.core.model.PresignDeleteObjectRequest
 import me.ahoo.costore.core.model.PresignGetObjectRequest
+import me.ahoo.costore.core.model.PresignObjectResponse
 import me.ahoo.costore.core.model.PresignPutObjectRequest
 import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.normalizeEtag
@@ -122,39 +120,39 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
         )
     }
 
-    override fun presignGetObject(request: PresignGetObjectRequest): DefaultPresignGetObjectResponse {
+    override fun presignGetObject(request: PresignGetObjectRequest): PresignObjectResponse.Get {
         val expirationAt = Instant.now().plus(request.expiration)
         val sdkRequest = GeneratePresignedUrlRequest(request.bucket, request.key).apply {
             expiration = java.util.Date(expirationAt.toEpochMilli())
         }
         val url = client.generatePresignedUrl(sdkRequest)
-        return DefaultPresignGetObjectResponse(
+        return PresignObjectResponse.Get(
             url = url,
             expiration = expirationAt,
             headers = emptyMap()
         )
     }
 
-    override fun presignPutObject(request: PresignPutObjectRequest): DefaultPresignPutObjectResponse {
+    override fun presignPutObject(request: PresignPutObjectRequest): PresignObjectResponse.Put {
         val expirationAt = Instant.now().plus(request.expiration)
         val sdkRequest = GeneratePresignedUrlRequest(request.bucket, request.key).apply {
             expiration = java.util.Date(expirationAt.toEpochMilli())
         }
         val url = client.generatePresignedUrl(sdkRequest)
-        return DefaultPresignPutObjectResponse(
+        return PresignObjectResponse.Put(
             url = url,
             expiration = expirationAt,
             headers = emptyMap()
         )
     }
 
-    override fun presignDeleteObject(request: PresignDeleteObjectRequest): DefaultPresignDeleteObjectResponse {
+    override fun presignDeleteObject(request: PresignDeleteObjectRequest): PresignObjectResponse.Delete {
         val expirationAt = Instant.now().plus(request.expiration)
         val sdkRequest = GeneratePresignedUrlRequest(request.bucket, request.key).apply {
             expiration = java.util.Date(expirationAt.toEpochMilli())
         }
         val url = client.generatePresignedUrl(sdkRequest)
-        return DefaultPresignDeleteObjectResponse(
+        return PresignObjectResponse.Delete(
             url = url,
             expiration = expirationAt,
             headers = emptyMap()

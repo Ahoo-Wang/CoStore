@@ -1,8 +1,28 @@
 package me.ahoo.costore.core.model
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import java.net.URL
 import java.time.Duration
 import java.time.Instant
+
+typealias PresignMethod = String
+
+interface PresignMethodCapable {
+    val method: PresignMethod
+
+    companion object {
+        const val PROPERTY_NAME = "method"
+    }
+}
+
+object PresignMethods {
+
+    const val GET = "GET"
+    const val PUT = "PUT"
+    const val DELETE = "DELETE"
+    const val HEAD = "HEAD"
+}
 
 /**
  * Base interface for pre-signed URL requests.
@@ -10,11 +30,57 @@ import java.time.Instant
  * Pre-signed URLs grant temporary access to private objects without requiring
  * AWS credentials in the request. The URL is valid for a limited time period.
  */
-interface PresignRequest :
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = PresignMethodCapable.PROPERTY_NAME
+)
+@JsonSubTypes(
+    JsonSubTypes.Type(value = PresignRequest.Head::class, name = PresignMethods.HEAD),
+    JsonSubTypes.Type(value = PresignRequest.Get::class, name = PresignMethods.GET),
+    JsonSubTypes.Type(value = PresignRequest.Put::class, name = PresignMethods.PUT),
+    JsonSubTypes.Type(value = PresignRequest.Delete::class, name = PresignMethods.DELETE),
+)
+sealed interface PresignRequest :
     BucketCapable,
-    ObjectKeyCapable {
+    ObjectKeyCapable,
+    PresignMethodCapable {
     /** How long the pre-signed URL should remain valid. */
     val expiration: Duration
+
+    data class Head(
+        override val bucket: BucketName,
+        override val key: ObjectKey,
+        override val expiration: Duration,
+    ) : PresignRequest {
+        override val method: PresignMethod = PresignMethods.HEAD
+    }
+
+    data class Get(
+        override val bucket: BucketName,
+        override val key: ObjectKey,
+        override val expiration: Duration,
+    ) : PresignRequest {
+        override val method: PresignMethod = PresignMethods.GET
+    }
+
+    data class Put(
+        override val bucket: BucketName,
+        override val key: ObjectKey,
+        override val expiration: Duration,
+        val contentType: String? = null,
+    ) : PresignRequest {
+        override val method: PresignMethod = PresignMethods.PUT
+    }
+
+    data class Delete(
+        override val bucket: BucketName,
+        override val key: ObjectKey,
+        override val expiration: Duration,
+        override val versionId: String? = null,
+    ) : PresignRequest, NullableVersionIdCapable {
+        override val method: PresignMethod = PresignMethods.DELETE
+    }
 }
 
 /**
@@ -22,7 +88,18 @@ interface PresignRequest :
  *
  * Contains the generated URL and metadata about when it expires.
  */
-interface PresignObjectResponse {
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = PresignMethodCapable.PROPERTY_NAME
+)
+@JsonSubTypes(
+    JsonSubTypes.Type(value = PresignObjectResponse.Head::class, name = PresignMethods.HEAD),
+    JsonSubTypes.Type(value = PresignObjectResponse.Get::class, name = PresignMethods.GET),
+    JsonSubTypes.Type(value = PresignObjectResponse.Put::class, name = PresignMethods.PUT),
+    JsonSubTypes.Type(value = PresignObjectResponse.Delete::class, name = PresignMethods.DELETE),
+)
+sealed interface PresignObjectResponse : PresignMethodCapable {
     /** The pre-signed URL that can be used to access the object. */
     val url: URL
 
@@ -31,70 +108,47 @@ interface PresignObjectResponse {
 
     /** Headers that must be included with requests using this URL. */
     val headers: Map<String, List<String>>
+
+    data class Head(
+        override val url: URL,
+        override val expiration: Instant,
+        override val headers: Map<String, List<String>> = emptyMap(),
+    ) : PresignObjectResponse {
+        override val method: PresignMethod = PresignMethods.HEAD
+    }
+
+    data class Get(
+        override val url: URL,
+        override val expiration: Instant,
+        override val headers: Map<String, List<String>> = emptyMap(),
+    ) : PresignObjectResponse {
+        override val method: PresignMethod = PresignMethods.GET
+    }
+
+    data class Put(
+        override val url: URL,
+        override val expiration: Instant,
+        override val headers: Map<String, List<String>> = emptyMap(),
+    ) : PresignObjectResponse {
+        override val method: PresignMethod = PresignMethods.PUT
+    }
+
+    data class Delete(
+        override val url: URL,
+        override val expiration: Instant,
+        override val headers: Map<String, List<String>>,
+        override val versionId: String? = null,
+    ) : PresignObjectResponse, NullableVersionIdCapable {
+        override val method: PresignMethod = PresignMethods.DELETE
+    }
 }
 
-/** Request to generate a pre-signed URL for reading an object. */
-interface PresignGetObjectRequest : PresignRequest
+typealias PresignGetObjectRequest = PresignRequest.Get
+typealias PresignPutObjectRequest = PresignRequest.Put
+typealias PresignDeleteObjectRequest = PresignRequest.Delete
+typealias PresignHeadObjectRequest = PresignRequest.Head
 
-/** Response containing a pre-signed URL for reading an object. */
-interface PresignGetObjectResponse : PresignObjectResponse
-
-/**
- * Request to generate a pre-signed URL for uploading an object.
- *
- * @property contentType The Content-Type header that must be used when uploading.
- */
-interface PresignPutObjectRequest : PresignRequest {
-    val contentType: String?
-}
-
-/** Response containing a pre-signed URL for uploading an object. */
-interface PresignPutObjectResponse : PresignObjectResponse
-
-/**
- * Request to generate a pre-signed URL for deleting an object.
- *
- * May optionally specify a version ID for deleting specific versions in versioned buckets.
- */
-interface PresignDeleteObjectRequest : PresignRequest, NullableVersionIdCapable
-
-/** Response containing a pre-signed URL for deleting an object. */
-interface PresignDeleteObjectResponse : PresignObjectResponse
-
-data class DefaultPresignGetObjectRequest(
-    override val bucket: BucketName,
-    override val key: ObjectKey,
-    override val expiration: Duration
-) : PresignGetObjectRequest
-
-data class DefaultPresignPutObjectRequest(
-    override val bucket: BucketName,
-    override val key: ObjectKey,
-    override val expiration: Duration,
-    override val contentType: String? = null
-) : PresignPutObjectRequest
-
-data class DefaultPresignDeleteObjectRequest(
-    override val bucket: BucketName,
-    override val key: ObjectKey,
-    override val expiration: Duration,
-    override val versionId: String? = null
-) : PresignDeleteObjectRequest
-
-data class DefaultPresignGetObjectResponse(
-    override val url: URL,
-    override val expiration: Instant,
-    override val headers: Map<String, List<String>> = emptyMap()
-) : PresignGetObjectResponse
-
-data class DefaultPresignPutObjectResponse(
-    override val url: URL,
-    override val expiration: Instant,
-    override val headers: Map<String, List<String>> = emptyMap()
-) : PresignPutObjectResponse
-
-data class DefaultPresignDeleteObjectResponse(
-    override val url: URL,
-    override val expiration: Instant,
-    override val headers: Map<String, List<String>> = emptyMap()
-) : PresignDeleteObjectResponse
+typealias PresignGetObjectResponse = PresignObjectResponse.Get
+typealias PresignPutObjectResponse = PresignObjectResponse.Put
+typealias PresignDeleteObjectResponse = PresignObjectResponse.Delete
+typealias PresignHeadObjectResponse = PresignObjectResponse.Head
