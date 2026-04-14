@@ -13,17 +13,16 @@ class GetObjectTest {
         val contentType = "application/json"
         val versionId = "version-123"
 
-        val request =
-            object : GetObjectRequest {
-                override val bucket: BucketName = bucket
-                override val key: ObjectKey = key
-                override val contentType: String? = contentType
-                override val versionId: String? = versionId
-            }
+        val request = GetObjectRequest(
+            bucket = bucket,
+            key = key,
+            contentType = contentType,
+            versionId = versionId
+        )
 
         with(request) {
-            bucket.assert().isEqualTo(bucket)
-            key.assert().isEqualTo(key)
+            this.bucket.assert().isEqualTo(bucket)
+            this.key.assert().isEqualTo(key)
             contentType.assert().isNotNull().isEqualTo(contentType)
             this.versionId.assert().isNotNull().isEqualTo(versionId)
         }
@@ -40,7 +39,7 @@ class GetObjectTest {
         val eTag = "\"d41d8cd98f00b204e9800998ecf8427e\""
         val userMetadata = mapOf("x-custom" to "value")
 
-        val storedMetadata = DefaultStoredObjectMetadata(
+        val storedMetadata = StoredObjectMetadata(
             bucket = bucket,
             key = key,
             contentLength = contentLength,
@@ -50,7 +49,7 @@ class GetObjectTest {
             metadata = userMetadata
         )
 
-        val response = DefaultStoredObject(
+        val response = StoredObject(
             content = content,
             metadata = storedMetadata
         )
@@ -62,7 +61,7 @@ class GetObjectTest {
             contentType.assert().isNotNull().isEqualTo(contentType)
             lastModified.assert().isNotNull().isEqualTo(lastModified)
             eTag.assert().isNotNull().isEqualTo(eTag)
-            this.metadata.assert().isEqualTo(userMetadata)
+            metadata.assert().isEqualTo(userMetadata)
         }
     }
 }

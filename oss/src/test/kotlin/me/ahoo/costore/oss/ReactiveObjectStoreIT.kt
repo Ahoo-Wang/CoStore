@@ -2,14 +2,14 @@ package me.ahoo.costore.oss
 
 import me.ahoo.costore.core.api.reactive.ReactiveObjectStore
 import me.ahoo.costore.core.api.reactive.asReactive
-import me.ahoo.costore.core.model.DefaultDeleteObjectRequest
-import me.ahoo.costore.core.model.DefaultGetObjectRequest
-import me.ahoo.costore.core.model.DefaultHeadObjectRequest
-import me.ahoo.costore.core.model.DefaultPutObjectRequest
+import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.DeleteObjectResponse
+import me.ahoo.costore.core.model.GetObjectRequest
 import me.ahoo.costore.core.model.GetObjectResponse
+import me.ahoo.costore.core.model.HeadObjectRequest
 import me.ahoo.costore.core.model.HeadObjectResponse
 import me.ahoo.costore.core.model.ObjectKey
+import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.PutObjectResponse
 import org.junit.jupiter.api.Test
 import reactor.core.publisher.Mono
@@ -28,7 +28,7 @@ class ReactiveObjectStoreIT : AbstractObjectStoreIT() {
 
     override fun doPutObject(key: ObjectKey, content: String): PutObjectResponse {
         return reactiveStore.putObject(
-            DefaultPutObjectRequest(
+            PutObjectRequest(
                 bucket = bucket,
                 key = key,
                 content = content.byteInputStream(),
@@ -39,19 +39,19 @@ class ReactiveObjectStoreIT : AbstractObjectStoreIT() {
 
     override fun doGetObject(key: ObjectKey): GetObjectResponse {
         return reactiveStore.getObject(
-            DefaultGetObjectRequest(bucket, key)
+            GetObjectRequest(bucket, key)
         ).block()!!
     }
 
     override fun doHeadObject(key: ObjectKey): HeadObjectResponse {
         return reactiveStore.headObject(
-            DefaultHeadObjectRequest(bucket, key)
+            HeadObjectRequest(bucket, key)
         ).block()!!
     }
 
     override fun doDeleteObject(key: ObjectKey): DeleteObjectResponse {
         return reactiveStore.deleteObject(
-            DefaultDeleteObjectRequest(bucket, key)
+            DeleteObjectRequest(bucket, key)
         ).block()!!
     }
 

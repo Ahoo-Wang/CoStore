@@ -14,18 +14,17 @@ class PutObjectTest {
         val contentType = "application/json"
         val metadata = mapOf("x-custom" to "value")
 
-        val request =
-            object : PutObjectRequest {
-                override val bucket: BucketName = bucket
-                override val key: ObjectKey = key
-                override val content: InputStream = content
-                override val contentType: String? = contentType
-                override val metadata: Map<String, String> = metadata
-            }
+        val request = PutObjectRequest(
+            bucket = bucket,
+            key = key,
+            content = content,
+            contentType = contentType,
+            metadata = metadata
+        )
 
         with(request) {
-            bucket.assert().isEqualTo(bucket)
-            key.assert().isEqualTo(key)
+            this.bucket.assert().isEqualTo(bucket)
+            this.key.assert().isEqualTo(key)
             contentType.assert().isNotNull().isEqualTo(contentType)
             this.metadata.assert().isEqualTo(metadata)
         }
@@ -37,16 +36,16 @@ class PutObjectTest {
         val versionId = "version-123"
         val lastModified = Instant.now()
 
-        val response = DefaultPutObjectResponse(
+        val response = PutObjectResponse(
             eTag = eTag,
             versionId = versionId,
             lastModified = lastModified
         )
 
         with(response) {
-            eTag.assert().isNotNull().isEqualTo(eTag)
+            this.eTag.assert().isNotNull().isEqualTo(eTag)
             this.versionId.assert().isNotNull().isEqualTo(versionId)
-            this.lastModified.assert().isNotNull().isEqualTo(lastModified)
+            lastModified.assert().isNotNull().isEqualTo(lastModified)
         }
     }
 }
