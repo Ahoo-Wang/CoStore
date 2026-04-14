@@ -16,7 +16,6 @@ import me.ahoo.costore.core.model.PresignGetObjectRequest
 import me.ahoo.costore.core.model.PresignGetObjectResponse
 import me.ahoo.costore.core.model.PresignPutObjectRequest
 import me.ahoo.costore.core.model.PresignPutObjectResponse
-import me.ahoo.costore.core.model.PresignRequest
 import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.PutObjectResponse
 

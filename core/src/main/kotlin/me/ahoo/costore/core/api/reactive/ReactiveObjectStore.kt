@@ -16,7 +16,6 @@ import me.ahoo.costore.core.model.PresignGetObjectRequest
 import me.ahoo.costore.core.model.PresignGetObjectResponse
 import me.ahoo.costore.core.model.PresignPutObjectRequest
 import me.ahoo.costore.core.model.PresignPutObjectResponse
-import me.ahoo.costore.core.model.PresignRequest
 import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.PutObjectResponse
 import reactor.core.publisher.Mono
@@ -73,16 +72,5 @@ interface ReactivePresignObjectOperations {
 
     fun presignDeleteObject(request: PresignDeleteObjectRequest): Mono<PresignDeleteObjectResponse>
 
-    fun presignObjects(request: BatchPresignRequest): Mono<BatchPresignResponse> {
-        val monos = request.requests.map { presignRequest ->
-            when (presignRequest) {
-                is PresignRequest.Get -> presignGetObject(presignRequest)
-                is PresignRequest.Put -> presignPutObject(presignRequest)
-                is PresignRequest.Delete -> presignDeleteObject(presignRequest)
-            }
-        }
-        return Mono.zip(monos) { results ->
-            BatchPresignResponse(results.map { it as me.ahoo.costore.core.model.PresignObjectResponse }.toList())
-        }
-    }
+    fun presignObjects(request: BatchPresignRequest): Mono<BatchPresignResponse>
 }

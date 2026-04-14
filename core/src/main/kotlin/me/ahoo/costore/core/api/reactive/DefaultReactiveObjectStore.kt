@@ -1,6 +1,8 @@
 package me.ahoo.costore.core.api.reactive
 
 import me.ahoo.costore.core.api.sync.ObjectStore
+import me.ahoo.costore.core.model.BatchPresignRequest
+import me.ahoo.costore.core.model.BatchPresignResponse
 import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.DeleteObjectResponse
 import me.ahoo.costore.core.model.GetObjectRequest
@@ -62,6 +64,9 @@ class DefaultReactiveObjectStore(
 
     override fun presignDeleteObject(request: PresignDeleteObjectRequest): Mono<PresignDeleteObjectResponse> =
         Mono.fromCallable { delegate.presignDeleteObject(request) }
+
+    override fun presignObjects(request: BatchPresignRequest): Mono<BatchPresignResponse> =
+        Mono.fromCallable { delegate.presignObjects(request) }
 }
 
 fun ObjectStore.asReactive(): ReactiveObjectStore = DefaultReactiveObjectStore(this)
