@@ -72,14 +72,5 @@ interface CoroutinesPresignObjectOperations {
 
     suspend fun presignDeleteObject(request: PresignDeleteObjectRequest): PresignDeleteObjectResponse
 
-    suspend fun presignObjects(request: BatchPresignRequest): BatchPresignResponse {
-        val responses = request.requests.map { presignRequest ->
-            when (presignRequest) {
-                is PresignRequest.Get -> presignGetObject(presignRequest)
-                is PresignRequest.Put -> presignPutObject(presignRequest)
-                is PresignRequest.Delete -> presignDeleteObject(presignRequest)
-            }
-        }
-        return BatchPresignResponse(responses)
-    }
+    suspend fun presignObjects(request: BatchPresignRequest): BatchPresignResponse
 }
