@@ -54,7 +54,15 @@ interface DeleteObjectOperations {
  * @param request The get object request containing bucket, key, and optional parameters
  * @return The object content and metadata
  * @throws ObjectNotFoundError if the object does not exist
- * @see StoredObject.content The returned InputStream must be closed by the caller to avoid resource leaks
+ *
+ * @see GetObjectOperations.getObject IMPORTANT: The returned [StoredObject] must be
+ * closed by the caller after use to release underlying resources. Use try-with-resources:
+ * ```kotlin
+ * store.getObject(request).use { obj ->
+ *     obj.content.readBytes()
+ * }
+ * ```
+ * Failure to close the returned [StoredObject] will result in resource leaks.
  */
 interface GetObjectOperations {
     fun getObject(request: GetObjectRequest): GetObjectResponse
