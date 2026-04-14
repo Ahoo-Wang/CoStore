@@ -54,6 +54,7 @@ interface DeleteObjectOperations {
  * @param request The get object request containing bucket, key, and optional parameters
  * @return The object content and metadata
  * @throws ObjectNotFoundError if the object does not exist
+ * @see StoredObject.content The returned InputStream must be closed by the caller to avoid resource leaks
  */
 interface GetObjectOperations {
     fun getObject(request: GetObjectRequest): GetObjectResponse

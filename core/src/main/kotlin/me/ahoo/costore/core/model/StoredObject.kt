@@ -85,6 +85,9 @@ data class StoredObjectMetadata(
  * A stored object including both metadata and content.
  *
  * Use [content] to read the object's data as an [InputStream].
+ *
+ * **Important:** The [content] InputStream must be closed by the caller after reading
+ * to avoid resource leaks. Use try-with-resources or manually close the stream.
  */
 data class StoredObject(
     override val content: InputStream,
