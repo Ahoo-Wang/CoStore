@@ -77,11 +77,17 @@ val store: ObjectStore = provider.sync(credentials)
 
 ```kotlin
 val response = store.getObject(GetObjectRequest(bucket, key))
-response.content.use { inputStream ->
-    // read bytes
+response.use { obj ->  // StoredObject implements Closeable - MUST close!
+    obj.content.readBytes()
 }
 
-store.putObject(PutObjectRequest(bucket, key, contentStream, "application/json"))
+store.putObject(PutObjectRequest(
+    bucket = bucket,
+    key = key,
+    content = contentStream,
+    contentLength = contentSize,  // Required for presigned URLs
+    contentType = "application/json"
+))
 store.deleteObject(DeleteObjectRequest(bucket, key))
 ```
 
@@ -140,7 +146,9 @@ val coroutinesStore: CoroutinesObjectStore = syncStore.asCoroutines()
 ```kotlin
 // Get
 val getResponse: GetObjectResponse = store.getObject(GetObjectRequest(bucket, key))
-// getResponse.content: InputStream
+getResponse.use { obj ->  // StoredObject implements Closeable - MUST close!
+    obj.content.readBytes()
+}
 // getResponse.metadata: StoredObjectMetadata (bucket, key, contentLength, contentType, eTag, lastModified, metadata)
 
 // Put
@@ -148,10 +156,11 @@ val putResponse = store.putObject(PutObjectRequest(
     bucket = bucket,
     key = key,
     content = inputStream,
+    contentLength = contentSize,  // Required - needed for presigned URLs and streaming
     contentType = "application/json",
     metadata = mapOf("x-custom" to "value")
 ))
-// putResponse.eTag, putResponse.versionId, putResponse.lastModified
+// putResponse.eTag, putResponse.versionId
 
 // Delete
 val deleteResponse = store.deleteObject(DeleteObjectRequest(bucket, key))
@@ -171,6 +180,13 @@ val headResponse = store.headObject(HeadObjectRequest(bucket, key))
 val presignResponse = store.presignGetObject(PresignGetObjectRequest(bucket, key, Duration.ofMinutes(15)))
 // presignResponse.url, presignResponse.expiration, presignResponse.headers
 ```
+
+### Validation
+
+Request models validate inputs in their `init` blocks:
+- `bucket` - must not be blank or contain `\n`, `\r`, `\t`
+- `key` - must not be blank or contain `\n`, `\r`, `\t`
+- `maxKeys` (ListObjectsRequest) - must be 1-1000
 
 ---
 
@@ -262,11 +278,12 @@ Auto-configuration is activated automatically when the respective Spring Boot st
 
 ```bash
 ./gradlew assemble          # Build without tests
-./gradlew build             # Full build with tests
-./gradlew test              # Run all tests
-./gradlew :core:test        # Test specific module
-./gradlew detekt            # Lint
-./gradlew koverReport       # Code coverage report
+./gradlew build            # Full build with tests
+./gradlew test             # Run all tests
+./gradlew :core:test       # Test specific module (:core, :s3, :oss)
+./gradlew detekt           # Lint
+./gradlew :core:koverHtmlReportJvm  # Coverage report for core
+./gradlew :code-coverage-report:codeCoverageReport  # Aggregated coverage
 ./gradlew publishToMavenLocal
 ```
 
