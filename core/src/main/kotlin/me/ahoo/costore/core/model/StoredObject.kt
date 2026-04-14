@@ -1,5 +1,7 @@
 package me.ahoo.costore.core.model
 
+import java.io.Closeable
+import java.io.IOException
 import java.io.InputStream
 import java.time.Instant
 
@@ -86,10 +88,26 @@ data class StoredObjectMetadata(
  *
  * Use [content] to read the object's data as an [InputStream].
  *
- * **Important:** The [content] InputStream must be closed by the caller after reading
- * to avoid resource leaks. Use try-with-resources or manually close the stream.
+ * This object implements [Closeable] - closing this object will also close the
+ * underlying content stream. Use try-with-resources to ensure proper cleanup:
+ * ```kotlin
+ * store.getObject(request).use { obj ->
+ *     obj.content.readBytes()
+ * }
+ * ```
  */
 data class StoredObject(
     override val content: InputStream,
     val metadata: StoredObjectMetadata,
-) : ContentCapable
+) : ContentCapable, Closeable {
+
+    /**
+     * Closes this stored object and its underlying content stream.
+     *
+     * @throws IOException if an I/O error occurs while closing the stream
+     */
+    @Throws(IOException::class)
+    override fun close() {
+        content.close()
+    }
+}

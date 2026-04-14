@@ -2,6 +2,8 @@ package me.ahoo.costore.core.model
 
 import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.Test
+import java.io.ByteArrayInputStream
+import java.io.Closeable
 import java.io.InputStream
 import java.time.Instant
 
@@ -72,5 +74,55 @@ class StoredObjectTest {
             eTag.assert().isNotNull().isEqualTo(eTag)
             metadata.assert().isEqualTo(userMetadata)
         }
+    }
+
+    @Test
+    fun `StoredObject should implement Closeable`() {
+        val metadata = StoredObjectMetadata(
+            bucket = "test-bucket",
+            key = "test/key"
+        )
+        val content = ByteArrayInputStream("test content".toByteArray())
+
+        val instance = StoredObject(
+            content = content,
+            metadata = metadata
+        )
+
+        instance.assert().isInstanceOf(AutoCloseable::class.java)
+        instance.assert().isInstanceOf(java.io.Closeable::class.java)
+    }
+
+    @Test
+    fun `StoredObject close should close content stream`() {
+        val metadata = StoredObjectMetadata(
+            bucket = "test-bucket",
+            key = "test/key"
+        )
+        val content = ByteArrayInputStream("test content".toByteArray())
+
+        val instance = StoredObject(
+            content = content,
+            metadata = metadata
+        )
+
+        instance.close()
+
+        // Verify close was called - content implements Closeable
+        (instance.content is Closeable).assert().isTrue()
+    }
+
+    @Test
+    fun `StoredObject should work with use extension`() {
+        val metadata = StoredObjectMetadata(
+            bucket = "test-bucket",
+            key = "test/key"
+        )
+
+        val bytes = metadata.bucket.byteInputStream().use { inputStream ->
+            inputStream.readAllBytes()
+        }
+
+        bytes.assert().isEqualTo("test-bucket".toByteArray())
     }
 }
