@@ -4,6 +4,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import me.ahoo.costore.core.api.sync.ObjectStore
+import me.ahoo.costore.core.model.BatchPresignRequest
+import me.ahoo.costore.core.model.BatchPresignResponse
 import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.DeleteObjectResponse
 import me.ahoo.costore.core.model.GetObjectRequest
@@ -128,5 +130,16 @@ class DefaultReactiveObjectStoreTest {
         store.close().block()
 
         verify { delegate.close() }
+    }
+
+    @Test
+    fun `should delegate presignObjects`() {
+        val request = mockk<BatchPresignRequest>()
+        val response = mockk<BatchPresignResponse>()
+        every { delegate.presignObjects(request) } returns response
+
+        store.presignObjects(request).block()
+
+        verify { delegate.presignObjects(request) }
     }
 }
