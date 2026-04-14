@@ -1,5 +1,6 @@
 package me.ahoo.costore.core.api.coroutines
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.ahoo.costore.core.api.sync.ObjectStore
@@ -24,53 +25,55 @@ import me.ahoo.costore.core.model.PutObjectResponse
 
 class DefaultCoroutinesObjectStore(
     private val delegate: ObjectStore,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : CoroutinesObjectStore {
     override suspend fun close() {
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             delegate.close()
         }
     }
 
     override suspend fun getObject(request: GetObjectRequest): GetObjectResponse =
-        withContext(Dispatchers.IO) { delegate.getObject(request) }
+        withContext(dispatcher) { delegate.getObject(request) }
 
     override suspend fun putObject(request: PutObjectRequest): PutObjectResponse =
-        withContext(Dispatchers.IO) { delegate.putObject(request) }
+        withContext(dispatcher) { delegate.putObject(request) }
 
     override suspend fun deleteObject(request: DeleteObjectRequest): DeleteObjectResponse =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             delegate.deleteObject(request)
         }
 
     override suspend fun listObjects(request: ListObjectsRequest): ListObjectsResponse =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             delegate.listObjects(request)
         }
 
     override suspend fun headObject(request: HeadObjectRequest): HeadObjectResponse =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             delegate.headObject(request)
         }
 
     override suspend fun presignGetObject(request: PresignGetObjectRequest): PresignGetObjectResponse =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             delegate.presignGetObject(request)
         }
 
     override suspend fun presignPutObject(request: PresignPutObjectRequest): PresignPutObjectResponse =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             delegate.presignPutObject(request)
         }
 
     override suspend fun presignDeleteObject(request: PresignDeleteObjectRequest): PresignDeleteObjectResponse =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             delegate.presignDeleteObject(request)
         }
 
     override suspend fun presignObjects(request: BatchPresignRequest): BatchPresignResponse =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             delegate.presignObjects(request)
         }
 }
 
-fun ObjectStore.asCoroutines(): CoroutinesObjectStore = DefaultCoroutinesObjectStore(this)
+fun ObjectStore.asCoroutines(dispatcher: CoroutineDispatcher = Dispatchers.IO): CoroutinesObjectStore =
+    DefaultCoroutinesObjectStore(this, dispatcher)
