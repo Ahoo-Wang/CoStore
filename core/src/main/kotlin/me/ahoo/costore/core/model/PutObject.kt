@@ -8,8 +8,8 @@ data class PutObjectRequest(
     override val key: ObjectKey,
     override val content: InputStream,
     override val contentType: String? = null,
-    val metadata: Map<String, String> = emptyMap(),
-) : BucketCapable, NullableContentTypeCapable, ObjectKeyCapable, ContentCapable
+    override val metadata: Map<String, String> = emptyMap(),
+) : BucketCapable, NullableContentTypeCapable, ObjectKeyCapable, ContentCapable, UserMetadataCapable
 
 data class PutObjectResponse(
     override val eTag: String? = null,

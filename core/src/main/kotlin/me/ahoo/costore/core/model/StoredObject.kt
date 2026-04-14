@@ -30,6 +30,10 @@ interface NullableLastModifiedCapable {
     val lastModified: Instant?
 }
 
+interface UserMetadataCapable {
+    val metadata: Map<String, String>
+}
+
 /**
  * Normalizes an ETag value by ensuring it is wrapped in double quotes.
  *
@@ -56,13 +60,14 @@ data class StoredObjectMetadata(
     override val contentType: String? = null,
     override val lastModified: Instant? = null,
     override val eTag: String? = null,
-    val metadata: Map<String, String> = emptyMap(),
+    override val metadata: Map<String, String> = emptyMap(),
     override val versionId: String? = null,
 ) : BucketCapable,
     ObjectKeyCapable,
     NullableContentLengthCapable,
     NullableContentTypeCapable,
     NullableETagCapable,
+    UserMetadataCapable,
     NullableVersionIdCapable,
     NullableLastModifiedCapable
 
