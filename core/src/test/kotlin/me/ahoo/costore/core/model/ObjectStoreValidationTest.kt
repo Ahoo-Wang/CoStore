@@ -18,7 +18,8 @@ class ObjectStoreValidationTest {
     fun `validateBucketName should throw for blank bucket`() {
         assertThrows<IllegalArgumentException> {
             ObjectStoreValidation.validateBucketName("")
-        }.also { it.message.assert().contains("blank")
+        }.also {
+            it.message.assert().contains("blank")
         }
     }
 
@@ -26,7 +27,8 @@ class ObjectStoreValidationTest {
     fun `validateBucketName should throw for bucket with newline`() {
         assertThrows<IllegalArgumentException> {
             ObjectStoreValidation.validateBucketName("bucket\nname")
-        }.also { it.message.assert().contains("newline")
+        }.also {
+            it.message.assert().contains("newline")
         }
     }
 
@@ -34,7 +36,8 @@ class ObjectStoreValidationTest {
     fun `validateBucketName should throw for bucket with carriage return`() {
         assertThrows<IllegalArgumentException> {
             ObjectStoreValidation.validateBucketName("bucket\rname")
-        }.also { it.message.assert().contains("carriage return")
+        }.also {
+            it.message.assert().contains("carriage return")
         }
     }
 
@@ -42,7 +45,8 @@ class ObjectStoreValidationTest {
     fun `validateBucketName should throw for bucket with tab`() {
         assertThrows<IllegalArgumentException> {
             ObjectStoreValidation.validateBucketName("bucket\tname")
-        }.also { it.message.assert().contains("tab")
+        }.also {
+            it.message.assert().contains("tab")
         }
     }
 
@@ -58,7 +62,8 @@ class ObjectStoreValidationTest {
     fun `validateObjectKey should throw for blank key`() {
         assertThrows<IllegalArgumentException> {
             ObjectStoreValidation.validateObjectKey("")
-        }.also { it.message.assert().contains("blank")
+        }.also {
+            it.message.assert().contains("blank")
         }
     }
 
@@ -66,7 +71,8 @@ class ObjectStoreValidationTest {
     fun `validateObjectKey should throw for key with newline`() {
         assertThrows<IllegalArgumentException> {
             ObjectStoreValidation.validateObjectKey("key\nname")
-        }.also { it.message.assert().contains("newline")
+        }.also {
+            it.message.assert().contains("newline")
         }
     }
 
@@ -74,7 +80,8 @@ class ObjectStoreValidationTest {
     fun `validateObjectKey should throw for key with carriage return`() {
         assertThrows<IllegalArgumentException> {
             ObjectStoreValidation.validateObjectKey("key\rname")
-        }.also { it.message.assert().contains("carriage return")
+        }.also {
+            it.message.assert().contains("carriage return")
         }
     }
 
@@ -82,7 +89,8 @@ class ObjectStoreValidationTest {
     fun `validateObjectKey should throw for key with tab`() {
         assertThrows<IllegalArgumentException> {
             ObjectStoreValidation.validateObjectKey("key\tname")
-        }.also { it.message.assert().contains("tab")
+        }.also {
+            it.message.assert().contains("tab")
         }
     }
 }
