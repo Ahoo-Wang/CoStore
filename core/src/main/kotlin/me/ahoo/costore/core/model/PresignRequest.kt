@@ -9,6 +9,7 @@ import java.time.Instant
 typealias PresignMethod = String
 
 interface PresignMethodCapable {
+
     val method: PresignMethod
 
     companion object {
@@ -52,10 +53,6 @@ sealed interface PresignRequest :
         override val expiration: Duration,
     ) : PresignRequest {
         override val method: PresignMethod = PresignMethods.GET
-        init {
-            ObjectStoreValidation.validateBucketName(bucket)
-            ObjectStoreValidation.validateObjectKey(key)
-        }
     }
 
     data class Put(
@@ -66,10 +63,6 @@ sealed interface PresignRequest :
         override val metadata: Map<String, String> = emptyMap(),
     ) : PresignRequest, NullableContentTypeCapable, UserMetadataCapable {
         override val method: PresignMethod = PresignMethods.PUT
-        init {
-            ObjectStoreValidation.validateBucketName(bucket)
-            ObjectStoreValidation.validateObjectKey(key)
-        }
     }
 
     data class Delete(
@@ -79,10 +72,6 @@ sealed interface PresignRequest :
         override val versionId: String? = null,
     ) : PresignRequest, NullableVersionIdCapable {
         override val method: PresignMethod = PresignMethods.DELETE
-        init {
-            ObjectStoreValidation.validateBucketName(bucket)
-            ObjectStoreValidation.validateObjectKey(key)
-        }
     }
 }
 
