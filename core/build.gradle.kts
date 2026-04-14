@@ -10,7 +10,11 @@ java {
 }
 
 dependencies {
-    api(libs.jackson.annotations)
+    compileOnly(libs.jackson.annotations)
+    compileOnly(libs.jakarta.validation.api)
+    testImplementation(libs.jakarta.validation.api)
+    testImplementation(libs.hibernate.validator)
+    testImplementation(libs.jakarta.el)
     "coroutinesSupportImplementation"(libs.kotlinx.coroutines.core)
     "reactorSupportImplementation"(libs.reactor.core)
     testImplementation(libs.reactor.test)
