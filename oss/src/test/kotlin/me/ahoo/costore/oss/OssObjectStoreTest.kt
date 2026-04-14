@@ -2,6 +2,7 @@ package me.ahoo.costore.oss
 
 import com.aliyun.oss.OSS
 import io.mockk.mockk
+import me.ahoo.costore.core.model.BatchPresignRequest
 import me.ahoo.costore.core.model.BucketName
 import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.HeadObjectRequest
@@ -157,5 +158,34 @@ class OssObjectStoreTest {
         assertThrownBy<UnsupportedOperationException> {
             store.presignDeleteObject(request)
         }.hasMessage("OSS does not support presigned DELETE URLs")
+    }
+
+    @Test
+    fun `should presign objects in batch`() {
+        val bucket: BucketName = "test-bucket"
+        val getRequest = PresignRequest.Get(
+            bucket = bucket,
+            key = "test-get-key",
+            expiration = Duration.ofMinutes(15)
+        )
+        val putRequest = PresignRequest.Put(
+            bucket = bucket,
+            key = "test-put-key",
+            expiration = Duration.ofMinutes(15),
+            contentType = "text/plain"
+        )
+        val batchRequest = BatchPresignRequest(
+            requests = listOf(getRequest, putRequest)
+        )
+
+        val response = store.presignObjects(batchRequest)
+
+        with(response) {
+            responses.assert().hasSize(2)
+            responses[0].url.assert().isNotNull()
+            (responses[0] as me.ahoo.costore.core.model.PresignObjectResponse.Get).expiration.assert().isNotNull()
+            responses[1].url.assert().isNotNull()
+            (responses[1] as me.ahoo.costore.core.model.PresignObjectResponse.Put).expiration.assert().isNotNull()
+        }
     }
 }

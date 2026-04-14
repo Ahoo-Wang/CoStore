@@ -132,3 +132,25 @@ typealias PresignDeleteObjectRequest = PresignRequest.Delete
 typealias PresignGetObjectResponse = PresignObjectResponse.Get
 typealias PresignPutObjectResponse = PresignObjectResponse.Put
 typealias PresignDeleteObjectResponse = PresignObjectResponse.Delete
+
+/**
+ * Request for batch pre-signed URL generation.
+ *
+ * Allows generating multiple pre-signed URLs in a single request.
+ *
+ * @param requests The list of individual pre-sign requests
+ */
+data class BatchPresignRequest(
+    val requests: List<PresignRequest>,
+)
+
+/**
+ * Response for batch pre-signed URL generation.
+ *
+ * Contains the generated pre-signed URLs corresponding to each request.
+ *
+ * @param responses The list of pre-signed URL responses
+ */
+data class BatchPresignResponse(
+    val responses: List<PresignObjectResponse>,
+)
