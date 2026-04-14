@@ -99,6 +99,14 @@ interface PutObjectOperations {
 interface PresignObjectOperations {
     fun presignGetObject(request: PresignGetObjectRequest): PresignGetObjectResponse
     fun presignPutObject(request: PresignPutObjectRequest): PresignPutObjectResponse
+
+    /**
+     * Generates a pre-signed URL for deleting an object.
+     *
+     * @throws UnsupportedOperationException if the underlying storage does not support
+     *         pre-signed delete URLs (e.g., OSS)
+     */
+    @Throws(UnsupportedOperationException::class)
     fun presignDeleteObject(request: PresignDeleteObjectRequest): PresignDeleteObjectResponse
 
     fun presignObjects(request: BatchPresignRequest): BatchPresignResponse {

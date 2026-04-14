@@ -5,6 +5,11 @@ data class GetObjectRequest(
     override val key: ObjectKey,
     override val contentType: String? = null,
     override val versionId: String? = null
-) : BucketCapable, ObjectKeyCapable, NullableContentTypeCapable, NullableVersionIdCapable
+) : BucketCapable, ObjectKeyCapable, NullableContentTypeCapable, NullableVersionIdCapable {
+    init {
+        ObjectStoreValidation.validateBucketName(bucket)
+        ObjectStoreValidation.validateObjectKey(key)
+    }
+}
 
 typealias GetObjectResponse = StoredObject

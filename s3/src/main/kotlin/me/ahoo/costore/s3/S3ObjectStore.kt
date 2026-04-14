@@ -50,20 +50,22 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
             .versionId(request.versionId)
             .build()
 
-        val contentBytes = client.getObject(sdkRequest) { _, inputStream ->
-            inputStream.readAllBytes()
+        return client.getObject(sdkRequest) { response, inputStream ->
+            val metadata = StoredObjectMetadata(
+                bucket = request.bucket,
+                key = request.key,
+                contentLength = response.contentLength(),
+                contentType = response.contentType(),
+                lastModified = response.lastModified(),
+                eTag = response.eTag(),
+                metadata = response.metadata() ?: emptyMap(),
+                versionId = request.versionId
+            )
+            StoredObject(
+                content = inputStream,
+                metadata = metadata
+            )
         }
-
-        val objectMetadata = StoredObjectMetadata(
-            bucket = request.bucket,
-            key = request.key,
-            contentType = request.contentType,
-            versionId = request.versionId
-        )
-        return StoredObject(
-            content = java.io.ByteArrayInputStream(contentBytes),
-            metadata = objectMetadata
-        )
     }
 
     override fun headObject(request: HeadObjectRequest): HeadObjectResponse {
@@ -84,20 +86,19 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
     }
 
     override fun putObject(request: PutObjectRequest): PutObjectResponse {
-        val contentBytes = request.content.readAllBytes()
         val sdkRequest = S3PutObjectRequest.builder()
             .bucket(request.bucket)
             .key(request.key)
             .contentType(request.contentType)
             .metadata(request.metadata)
-            .contentLength(contentBytes.size.toLong())
+            .contentLength(request.contentLength)
             .build()
+        val requestBody = RequestBody.fromInputStream(request.content, request.contentLength)
+        val sdkResponse = client.putObject(sdkRequest, requestBody)
 
-        val sdkResponse = client.putObject(sdkRequest, RequestBody.fromBytes(contentBytes))
         return PutObjectResponse(
             eTag = sdkResponse.eTag().normalizeEtag(),
             versionId = sdkResponse.versionId(),
-            lastModified = null
         )
     }
 
