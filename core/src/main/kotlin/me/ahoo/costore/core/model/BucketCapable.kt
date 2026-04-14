@@ -10,5 +10,6 @@ typealias BucketName = String
  */
 interface BucketCapable {
     /** The name of the bucket. */
+    @get:BucketNameConstraint
     val bucket: BucketName
 }
