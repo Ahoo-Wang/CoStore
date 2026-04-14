@@ -1,10 +1,19 @@
 package me.ahoo.costore.core.model
 
+import jakarta.validation.Validation
+import jakarta.validation.Validator
 import me.ahoo.test.asserts.assert
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 class ListObjectsTest {
+    private lateinit var validator: Validator
+
+    @BeforeEach
+    fun setup() {
+        validator = Validation.buildDefaultValidatorFactory().validator
+    }
+
     @Test
     fun `should create ListObjectsRequest instance`() {
         val bucket = "test-bucket"
@@ -67,16 +76,16 @@ class ListObjectsTest {
     }
 
     @Test
-    fun `should throw for maxKeys less than 1`() {
-        assertThrows<IllegalArgumentException> {
-            ListObjectsRequest(bucket = "bucket", maxKeys = 0)
-        }
+    fun `should fail validation for maxKeys less than 1`() {
+        val request = ListObjectsRequest(bucket = "bucket", maxKeys = 0)
+        val violations = validator.validate(request)
+        violations.size.assert().isGreaterThan(0)
     }
 
     @Test
-    fun `should throw for maxKeys greater than 1000`() {
-        assertThrows<IllegalArgumentException> {
-            ListObjectsRequest(bucket = "bucket", maxKeys = 1001)
-        }
+    fun `should fail validation for maxKeys greater than 1000`() {
+        val request = ListObjectsRequest(bucket = "bucket", maxKeys = 1001)
+        val violations = validator.validate(request)
+        violations.size.assert().isGreaterThan(0)
     }
 }

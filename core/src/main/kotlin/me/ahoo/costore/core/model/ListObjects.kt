@@ -1,15 +1,30 @@
 package me.ahoo.costore.core.model
 
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.Pattern
+
 data class ListObjectsRequest(
     override val bucket: BucketName,
+    @field:Pattern(regexp = OBJECT_KEY_PATTERN, message = PREFIX_MESSAGE)
     val prefix: String? = null,
+    @field:Pattern(regexp = OBJECT_KEY_PATTERN, message = DELIMITER_MESSAGE)
     val delimiter: String? = null,
+    @field:Pattern(regexp = OBJECT_KEY_PATTERN, message = MARKER_MESSAGE)
     val marker: String? = null,
+    @field:Min(value = 1, message = MIN_MAX_KEYS_MESSAGE)
+    @field:Max(value = 1000, message = MAX_MAX_KEYS_MESSAGE)
     val maxKeys: Int = 100
 ) : BucketCapable {
-    init {
-        require(maxKeys > 0) { "maxKeys must be positive, but was $maxKeys" }
-        require(maxKeys <= 1000) { "maxKeys must not exceed 1000, but was $maxKeys" }
+    companion object {
+        const val OBJECT_KEY_PATTERN = "^[^\\n\\r\\t]*$"
+        const val PREFIX_MESSAGE = "Prefix must not contain control characters"
+        const val DELIMITER_MESSAGE = "Delimiter must not contain control characters"
+        const val MARKER_MESSAGE = "Marker must not contain control characters"
+        const val MIN_MAX_KEYS = 1
+        const val MIN_MAX_KEYS_MESSAGE = "Max keys must be at least 1"
+        const val MAX_MAX_KEYS = 1000
+        const val MAX_MAX_KEYS_MESSAGE = "Max keys must not exceed 1000"
     }
 }
 
