@@ -125,6 +125,26 @@ class OssObjectStoreTest {
     }
 
     @Test
+    fun `should presign put object with metadata`() {
+        val bucket: BucketName = "test-bucket"
+        val key: ObjectKey = "test-key"
+        val metadata = mapOf("X-Custom-Header" to "custom-value", "X-Another-Header" to "another-value")
+        val request = PresignRequest.Put(
+            bucket = bucket,
+            key = key,
+            expiration = Duration.ofMinutes(15),
+            contentType = "text/plain",
+            metadata = metadata
+        )
+
+        val response = store.presignPutObject(request)
+
+        response.url.assert().isNotNull()
+        response.expiration.assert().isNotNull()
+        response.headers["Content-Type"].assert().isEqualTo(listOf("text/plain"))
+    }
+
+    @Test
     fun `should presign delete object throw`() {
         val bucket: BucketName = "test-bucket"
         val key: ObjectKey = "test-key"

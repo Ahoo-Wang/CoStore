@@ -59,7 +59,8 @@ sealed interface PresignRequest :
         override val key: ObjectKey,
         override val expiration: Duration,
         override val contentType: String? = null,
-    ) : PresignRequest, NullableContentTypeCapable {
+        override val metadata: Map<String, String> = emptyMap(),
+    ) : PresignRequest, NullableContentTypeCapable, UserMetadataCapable {
         override val method: PresignMethod = PresignMethods.PUT
     }
 
