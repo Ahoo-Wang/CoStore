@@ -88,6 +88,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
     }
 
     override fun deleteObject(request: DeleteObjectRequest): DeleteObjectResponse {
+        client.deleteObject(request.bucket, request.key)
         return DeleteObjectResponse(
             deleteMarker = false,
             versionId = null
