@@ -1,5 +1,6 @@
 package me.ahoo.costore.oss
 
+import com.aliyun.oss.HttpMethod
 import com.aliyun.oss.OSS
 import com.aliyun.oss.model.GeneratePresignedUrlRequest
 import com.aliyun.oss.model.ObjectMetadata
@@ -135,7 +136,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
 
     override fun presignPutObject(request: PresignPutObjectRequest): PresignObjectResponse.Put {
         val expirationAt = Instant.now().plus(request.expiration)
-        val sdkRequest = GeneratePresignedUrlRequest(request.bucket, request.key).apply {
+        val sdkRequest = GeneratePresignedUrlRequest(request.bucket, request.key, HttpMethod.PUT).apply {
             expiration = java.util.Date(expirationAt.toEpochMilli())
         }
         val url = client.generatePresignedUrl(sdkRequest)
@@ -147,16 +148,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
     }
 
     override fun presignDeleteObject(request: PresignDeleteObjectRequest): PresignObjectResponse.Delete {
-        val expirationAt = Instant.now().plus(request.expiration)
-        val sdkRequest = GeneratePresignedUrlRequest(request.bucket, request.key).apply {
-            expiration = java.util.Date(expirationAt.toEpochMilli())
-        }
-        val url = client.generatePresignedUrl(sdkRequest)
-        return PresignObjectResponse.Delete(
-            url = url,
-            expiration = expirationAt,
-            headers = emptyMap()
-        )
+        throw UnsupportedOperationException("OSS does not support presigned DELETE URLs")
     }
 
     override fun close() {
