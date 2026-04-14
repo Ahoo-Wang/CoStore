@@ -60,13 +60,20 @@ class OssObjectStoreIT : AbstractObjectStoreIT() {
 
     @Test
     fun `should list objects`() {
-        val prefix = "costore/test/list"
-        val key1 = newKey("$prefix-1")
-        val key2 = newKey("$prefix-2")
+        val prefix = "costore/test/list-${System.currentTimeMillis()}"
+        val key1: ObjectKey = "$prefix-1"
+        val key2: ObjectKey = "$prefix-2"
 
         try {
             listOf(key1, key2).forEach { k ->
-                doPutObject(k, "content")
+                store.putObject(
+                    PutObjectRequest(
+                        bucket = bucket,
+                        key = k,
+                        content = "content".byteInputStream(),
+                        contentType = "text/plain"
+                    )
+                )
             }
 
             val listResponse = store.listObjects(
