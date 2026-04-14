@@ -10,6 +10,7 @@ typealias PresignMethod = String
 
 interface PresignMethodCapable {
 
+    @get:PresignMethodConstraint
     val method: PresignMethod
 
     companion object {
