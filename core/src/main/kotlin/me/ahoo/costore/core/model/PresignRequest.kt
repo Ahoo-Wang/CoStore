@@ -21,7 +21,6 @@ object PresignMethods {
     const val GET = "GET"
     const val PUT = "PUT"
     const val DELETE = "DELETE"
-    const val HEAD = "HEAD"
 }
 
 /**
@@ -36,7 +35,6 @@ object PresignMethods {
     property = PresignMethodCapable.PROPERTY_NAME
 )
 @JsonSubTypes(
-    JsonSubTypes.Type(value = PresignRequest.Head::class, name = PresignMethods.HEAD),
     JsonSubTypes.Type(value = PresignRequest.Get::class, name = PresignMethods.GET),
     JsonSubTypes.Type(value = PresignRequest.Put::class, name = PresignMethods.PUT),
     JsonSubTypes.Type(value = PresignRequest.Delete::class, name = PresignMethods.DELETE),
@@ -47,14 +45,6 @@ sealed interface PresignRequest :
     PresignMethodCapable {
     /** How long the pre-signed URL should remain valid. */
     val expiration: Duration
-
-    data class Head(
-        override val bucket: BucketName,
-        override val key: ObjectKey,
-        override val expiration: Duration,
-    ) : PresignRequest {
-        override val method: PresignMethod = PresignMethods.HEAD
-    }
 
     data class Get(
         override val bucket: BucketName,
@@ -94,7 +84,6 @@ sealed interface PresignRequest :
     property = PresignMethodCapable.PROPERTY_NAME
 )
 @JsonSubTypes(
-    JsonSubTypes.Type(value = PresignObjectResponse.Head::class, name = PresignMethods.HEAD),
     JsonSubTypes.Type(value = PresignObjectResponse.Get::class, name = PresignMethods.GET),
     JsonSubTypes.Type(value = PresignObjectResponse.Put::class, name = PresignMethods.PUT),
     JsonSubTypes.Type(value = PresignObjectResponse.Delete::class, name = PresignMethods.DELETE),
@@ -108,14 +97,6 @@ sealed interface PresignObjectResponse : PresignMethodCapable {
 
     /** Headers that must be included with requests using this URL. */
     val headers: Map<String, List<String>>
-
-    data class Head(
-        override val url: URL,
-        override val expiration: Instant,
-        override val headers: Map<String, List<String>> = emptyMap(),
-    ) : PresignObjectResponse {
-        override val method: PresignMethod = PresignMethods.HEAD
-    }
 
     data class Get(
         override val url: URL,
@@ -146,9 +127,7 @@ sealed interface PresignObjectResponse : PresignMethodCapable {
 typealias PresignGetObjectRequest = PresignRequest.Get
 typealias PresignPutObjectRequest = PresignRequest.Put
 typealias PresignDeleteObjectRequest = PresignRequest.Delete
-typealias PresignHeadObjectRequest = PresignRequest.Head
 
 typealias PresignGetObjectResponse = PresignObjectResponse.Get
 typealias PresignPutObjectResponse = PresignObjectResponse.Put
 typealias PresignDeleteObjectResponse = PresignObjectResponse.Delete
-typealias PresignHeadObjectResponse = PresignObjectResponse.Head
