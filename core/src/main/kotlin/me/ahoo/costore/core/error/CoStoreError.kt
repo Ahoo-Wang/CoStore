@@ -29,6 +29,7 @@ class ObjectNotFoundError(
     override val bucket: BucketName,
     override val key: ObjectKey,
     message: String = "Object not found: bucket='$bucket', key='$key'",
+    cause: Throwable? = null
 ) :
     BucketCapable,
-    ObjectKeyCapable, CoStoreError(message)
+    ObjectKeyCapable, CoStoreError(message, cause)

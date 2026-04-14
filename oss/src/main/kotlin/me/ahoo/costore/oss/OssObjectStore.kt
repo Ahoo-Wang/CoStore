@@ -22,7 +22,6 @@ import me.ahoo.costore.core.model.PutObjectResponse
 import me.ahoo.costore.core.model.StoredObject
 import me.ahoo.costore.core.model.StoredObjectMetadata
 import me.ahoo.costore.core.model.normalizeEtag
-import java.io.ByteArrayInputStream
 import java.time.Instant
 import com.aliyun.oss.model.GetObjectRequest as OssGetObjectRequest
 import com.aliyun.oss.model.ListObjectsRequest as OssListObjectsRequest
@@ -40,7 +39,6 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
     override fun getObject(request: GetObjectRequest): GetObjectResponse {
         val sdkRequest = OssGetObjectRequest(request.bucket, request.key)
         client.getObject(sdkRequest).use { ossObject ->
-            val contentBytes = ossObject.objectContent.readAllBytes()
             val objectMetadata = ossObject.objectMetadata
             val storedMetadata = StoredObjectMetadata(
                 bucket = request.bucket,
@@ -53,7 +51,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
                 versionId = objectMetadata.versionId
             )
             return StoredObject(
-                content = ByteArrayInputStream(contentBytes),
+                content = ossObject.objectContent,
                 metadata = storedMetadata
             )
         }
@@ -74,20 +72,21 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
     }
 
     override fun putObject(request: PutObjectRequest): PutObjectResponse {
-        val contentBytes = request.content.readAllBytes()
         val objectMetadata = ObjectMetadata().apply {
             contentType = request.contentType
             userMetadata = request.metadata
+            contentLength = request.contentLength
         }
-        val result = client.putObject(request.bucket, request.key, ByteArrayInputStream(contentBytes), objectMetadata)
+        val result = client.putObject(request.bucket, request.key, request.content, objectMetadata)
         return PutObjectResponse(
             eTag = result.eTag.normalizeEtag(),
             versionId = result.versionId,
-            lastModified = null
         )
     }
 
     override fun deleteObject(request: DeleteObjectRequest): DeleteObjectResponse {
+        // Note: OSS SDK's deleteObject returns void or DeleteObjectResult without
+        // deleteMarker/versionId. Versioning support is limited in OSS.
         client.deleteObject(request.bucket, request.key)
         return DeleteObjectResponse(
             deleteMarker = false,
@@ -153,6 +152,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
         )
     }
 
+    @Throws(UnsupportedOperationException::class)
     override fun presignDeleteObject(request: PresignDeleteObjectRequest): PresignObjectResponse.Delete {
         throw UnsupportedOperationException("OSS does not support presigned DELETE URLs")
     }

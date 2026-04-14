@@ -13,6 +13,10 @@ interface NullableContentLengthCapable {
     val contentLength: Long?
 }
 
+interface ContentLengthCapable {
+    val contentLength: Long
+}
+
 interface ContentCapable {
     val content: InputStream
 }
@@ -44,7 +48,13 @@ interface UserMetadataCapable {
  * @return The normalized ETag with surrounding quotes, or null if input was null
  */
 fun String?.normalizeEtag(): String? = this?.let {
-    if (it.startsWith("\"")) it else "\"$it\""
+    val trimmed = it.trim()
+    when {
+        trimmed.isEmpty() -> null
+        trimmed.startsWith("\"") && trimmed.endsWith("\"") -> trimmed
+        trimmed.startsWith("\"") -> "\"$trimmed\""
+        else -> "\"$trimmed\""
+    }
 }
 
 /**

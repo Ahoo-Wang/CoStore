@@ -54,7 +54,7 @@ class S3ObjectStoreProvider : AbstractObjectStoreProvider<S3Credentials>() {
             .credentialsProvider(awsCredentialsProvider)
             .build()
         val presigner = S3Presigner.builder()
-            .region(awsRegion)
+            .region(awsRegion ?: Region.US_EAST_1)
             .credentialsProvider(awsCredentialsProvider)
             .build()
         return S3ObjectStore(client, presigner)
