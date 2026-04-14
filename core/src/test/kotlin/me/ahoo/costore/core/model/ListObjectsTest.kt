@@ -2,6 +2,7 @@ package me.ahoo.costore.core.model
 
 import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class ListObjectsTest {
     @Test
@@ -62,6 +63,20 @@ class ListObjectsTest {
             commonPrefixes.assert().hasSize(2).containsExactly("prefix1/", "prefix2/")
             this.isTruncated.assert().isTrue()
             nextMarker.assert().isNotNull().isEqualTo(nextMarker)
+        }
+    }
+
+    @Test
+    fun `should throw for maxKeys less than 1`() {
+        assertThrows<IllegalArgumentException> {
+            ListObjectsRequest(bucket = "bucket", maxKeys = 0)
+        }
+    }
+
+    @Test
+    fun `should throw for maxKeys greater than 1000`() {
+        assertThrows<IllegalArgumentException> {
+            ListObjectsRequest(bucket = "bucket", maxKeys = 1001)
         }
     }
 }

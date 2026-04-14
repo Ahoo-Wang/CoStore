@@ -54,7 +54,7 @@ fun String?.normalizeEtag(): String? = this?.let {
     when {
         trimmed.isEmpty() -> null
         trimmed.startsWith("\"") && trimmed.endsWith("\"") -> trimmed
-        trimmed.startsWith("\"") && !trimmed.endsWith("\"") -> "\"$trimmed\""
+        trimmed.startsWith("\"") && !trimmed.endsWith("\"") -> trimmed + "\""
         else -> "\"$trimmed\""
     }
 }
