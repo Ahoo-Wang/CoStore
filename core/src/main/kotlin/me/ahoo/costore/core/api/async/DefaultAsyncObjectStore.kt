@@ -1,6 +1,8 @@
 package me.ahoo.costore.core.api.async
 
 import me.ahoo.costore.core.api.sync.ObjectStore
+import me.ahoo.costore.core.model.BatchPresignRequest
+import me.ahoo.costore.core.model.BatchPresignResponse
 import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.DeleteObjectResponse
 import me.ahoo.costore.core.model.GetObjectRequest
@@ -50,6 +52,9 @@ class DefaultAsyncObjectStore(
 
     override fun presignDeleteObject(request: PresignDeleteObjectRequest): CompletableFuture<PresignDeleteObjectResponse> =
         CompletableFuture.supplyAsync({ delegate.presignDeleteObject(request) }, executor)
+
+    override fun presignObjects(request: BatchPresignRequest): CompletableFuture<BatchPresignResponse> =
+        CompletableFuture.supplyAsync({ delegate.presignObjects(request) }, executor)
 }
 
 fun ObjectStore.asAsync(

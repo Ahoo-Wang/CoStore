@@ -3,6 +3,8 @@ package me.ahoo.costore.core.api.coroutines
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.ahoo.costore.core.api.sync.ObjectStore
+import me.ahoo.costore.core.model.BatchPresignRequest
+import me.ahoo.costore.core.model.BatchPresignResponse
 import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.DeleteObjectResponse
 import me.ahoo.costore.core.model.GetObjectRequest
@@ -63,6 +65,11 @@ class DefaultCoroutinesObjectStore(
     override suspend fun presignDeleteObject(request: PresignDeleteObjectRequest): PresignDeleteObjectResponse =
         withContext(Dispatchers.IO) {
             delegate.presignDeleteObject(request)
+        }
+
+    override suspend fun presignObjects(request: BatchPresignRequest): BatchPresignResponse =
+        withContext(Dispatchers.IO) {
+            delegate.presignObjects(request)
         }
 }
 

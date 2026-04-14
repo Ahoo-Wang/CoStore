@@ -73,15 +73,5 @@ interface AsyncPresignObjectOperations {
 
     fun presignDeleteObject(request: PresignDeleteObjectRequest): CompletableFuture<PresignDeleteObjectResponse>
 
-    fun presignObjects(request: BatchPresignRequest): CompletableFuture<BatchPresignResponse> {
-        val futures = request.requests.map { presignRequest ->
-            when (presignRequest) {
-                is PresignRequest.Get -> presignGetObject(presignRequest)
-                is PresignRequest.Put -> presignPutObject(presignRequest)
-                is PresignRequest.Delete -> presignDeleteObject(presignRequest)
-            }
-        }
-        return CompletableFuture.allOf(*futures.toTypedArray())
-            .thenApply { BatchPresignResponse(futures.map { it.join() }) }
-    }
+    fun presignObjects(request: BatchPresignRequest): CompletableFuture<BatchPresignResponse>
 }
