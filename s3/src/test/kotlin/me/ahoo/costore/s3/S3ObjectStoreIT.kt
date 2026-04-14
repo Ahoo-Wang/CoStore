@@ -1,13 +1,13 @@
 package me.ahoo.costore.s3
 
 import me.ahoo.costore.core.model.BucketName
-import me.ahoo.costore.core.model.DefaultDeleteObjectRequest
-import me.ahoo.costore.core.model.DefaultGetObjectRequest
-import me.ahoo.costore.core.model.DefaultHeadObjectRequest
-import me.ahoo.costore.core.model.DefaultListObjectsRequest
-import me.ahoo.costore.core.model.DefaultPutObjectRequest
+import me.ahoo.costore.core.model.DeleteObjectRequest
+import me.ahoo.costore.core.model.GetObjectRequest
+import me.ahoo.costore.core.model.HeadObjectRequest
+import me.ahoo.costore.core.model.ListObjectsRequest
 import me.ahoo.costore.core.model.ObjectKey
 import me.ahoo.costore.core.model.PresignRequest
+import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -75,7 +75,7 @@ class S3ObjectStoreIT {
         val key = generateKey("head")
         try {
             store.putObject(
-                DefaultPutObjectRequest(
+                PutObjectRequest(
                     bucket = bucket,
                     key = key,
                     content = "content".byteInputStream(),
@@ -83,7 +83,7 @@ class S3ObjectStoreIT {
                 )
             )
 
-            val headRequest = DefaultHeadObjectRequest(bucket = bucket, key = key)
+            val headRequest = HeadObjectRequest(bucket = bucket, key = key)
             val response = store.headObject(headRequest)
 
             with(response) {
@@ -92,7 +92,7 @@ class S3ObjectStoreIT {
                 eTag.assert().isNotNull()
             }
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            store.deleteObject(DeleteObjectRequest(bucket, key))
         }
     }
 
@@ -101,7 +101,7 @@ class S3ObjectStoreIT {
         val key = generateKey("put-get")
         val content = "Hello S3 via OSS!".repeat(100)
         try {
-            val putRequest = DefaultPutObjectRequest(
+            val putRequest = PutObjectRequest(
                 bucket = bucket,
                 key = key,
                 content = content.byteInputStream(),
@@ -110,14 +110,14 @@ class S3ObjectStoreIT {
             val putResponse = store.putObject(putRequest)
             putResponse.eTag.assert().isNotNull()
 
-            val getRequest = DefaultGetObjectRequest(bucket = bucket, key = key)
+            val getRequest = GetObjectRequest(bucket = bucket, key = key)
             val getResponse = store.getObject(getRequest)
             getResponse.metadata.bucket.assert().isEqualTo(bucket)
             getResponse.metadata.key.assert().isEqualTo(key)
             val readContent = getResponse.content.bufferedReader().readText()
             readContent.assert().isEqualTo(content)
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            store.deleteObject(DeleteObjectRequest(bucket, key))
         }
     }
 
@@ -126,7 +126,7 @@ class S3ObjectStoreIT {
         val key = generateKey("delete")
         try {
             store.putObject(
-                DefaultPutObjectRequest(
+                PutObjectRequest(
                     bucket = bucket,
                     key = key,
                     content = "to be deleted".byteInputStream(),
@@ -134,10 +134,10 @@ class S3ObjectStoreIT {
                 )
             )
 
-            val deleteResponse = store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            val deleteResponse = store.deleteObject(DeleteObjectRequest(bucket, key))
             deleteResponse.deleteMarker.assert().isFalse()
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            store.deleteObject(DeleteObjectRequest(bucket, key))
         }
     }
 
@@ -150,7 +150,7 @@ class S3ObjectStoreIT {
         try {
             listOf(key1, key2).forEach { k ->
                 store.putObject(
-                    DefaultPutObjectRequest(
+                    PutObjectRequest(
                         bucket = bucket,
                         key = k,
                         content = "content".byteInputStream(),
@@ -159,7 +159,7 @@ class S3ObjectStoreIT {
                 )
             }
 
-            val listRequest = DefaultListObjectsRequest(
+            val listRequest = ListObjectsRequest(
                 bucket = bucket,
                 prefix = "$prefix-",
                 maxKeys = 100
@@ -169,7 +169,7 @@ class S3ObjectStoreIT {
             listResponse.isTruncated.assert().isFalse()
         } finally {
             listOf(key1, key2).forEach { k ->
-                store.deleteObject(DefaultDeleteObjectRequest(bucket, k))
+                store.deleteObject(DeleteObjectRequest(bucket, k))
             }
         }
     }
@@ -179,7 +179,7 @@ class S3ObjectStoreIT {
         val key = generateKey("presign-get")
         try {
             store.putObject(
-                DefaultPutObjectRequest(
+                PutObjectRequest(
                     bucket = bucket,
                     key = key,
                     content = "content".byteInputStream(),
@@ -197,7 +197,7 @@ class S3ObjectStoreIT {
             response.url.assert().isNotNull()
             response.expiration.assert().isNotNull()
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            store.deleteObject(DeleteObjectRequest(bucket, key))
         }
     }
 
@@ -217,7 +217,7 @@ class S3ObjectStoreIT {
             response.url.assert().isNotNull()
             response.expiration.assert().isNotNull()
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            store.deleteObject(DeleteObjectRequest(bucket, key))
         }
     }
 
@@ -227,7 +227,7 @@ class S3ObjectStoreIT {
 
         try {
             store.putObject(
-                DefaultPutObjectRequest(
+                PutObjectRequest(
                     bucket = bucket,
                     key = key,
                     content = "content".byteInputStream(),
@@ -245,7 +245,7 @@ class S3ObjectStoreIT {
             response.url.assert().isNotNull()
             response.expiration.assert().isNotNull()
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            store.deleteObject(DeleteObjectRequest(bucket, key))
         }
     }
 }

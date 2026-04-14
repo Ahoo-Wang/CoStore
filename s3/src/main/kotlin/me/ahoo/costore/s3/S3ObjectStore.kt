@@ -1,22 +1,22 @@
 package me.ahoo.costore.s3
 
 import me.ahoo.costore.core.api.sync.ObjectStore
-import me.ahoo.costore.core.model.DefaultDeleteObjectResponse
-import me.ahoo.costore.core.model.DefaultListObjectsResponse
-import me.ahoo.costore.core.model.DefaultPutObjectResponse
-import me.ahoo.costore.core.model.DefaultStoredObject
-import me.ahoo.costore.core.model.DefaultStoredObjectMetadata
 import me.ahoo.costore.core.model.DeleteObjectRequest
+import me.ahoo.costore.core.model.DeleteObjectResponse
 import me.ahoo.costore.core.model.GetObjectRequest
 import me.ahoo.costore.core.model.GetObjectResponse
 import me.ahoo.costore.core.model.HeadObjectRequest
 import me.ahoo.costore.core.model.HeadObjectResponse
 import me.ahoo.costore.core.model.ListObjectsRequest
+import me.ahoo.costore.core.model.ListObjectsResponse
 import me.ahoo.costore.core.model.PresignDeleteObjectRequest
 import me.ahoo.costore.core.model.PresignGetObjectRequest
 import me.ahoo.costore.core.model.PresignObjectResponse
 import me.ahoo.costore.core.model.PresignPutObjectRequest
 import me.ahoo.costore.core.model.PutObjectRequest
+import me.ahoo.costore.core.model.PutObjectResponse
+import me.ahoo.costore.core.model.StoredObject
+import me.ahoo.costore.core.model.StoredObjectMetadata
 import me.ahoo.costore.core.model.normalizeEtag
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
@@ -54,13 +54,13 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
             inputStream.readAllBytes()
         }
 
-        val objectMetadata = DefaultStoredObjectMetadata(
+        val objectMetadata = StoredObjectMetadata(
             bucket = request.bucket,
             key = request.key,
             contentType = request.contentType,
             versionId = request.versionId
         )
-        return DefaultStoredObject(
+        return StoredObject(
             content = java.io.ByteArrayInputStream(contentBytes),
             metadata = objectMetadata
         )
@@ -71,7 +71,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
             it.bucket(request.bucket)
                 .key(request.key)
         }
-        return DefaultStoredObjectMetadata(
+        return StoredObjectMetadata(
             bucket = request.bucket,
             key = request.key,
             contentLength = sdkResponse.contentLength(),
@@ -83,7 +83,7 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
         )
     }
 
-    override fun putObject(request: PutObjectRequest): DefaultPutObjectResponse {
+    override fun putObject(request: PutObjectRequest): PutObjectResponse {
         val contentBytes = request.content.readAllBytes()
         val sdkRequest = S3PutObjectRequest.builder()
             .bucket(request.bucket)
@@ -94,26 +94,26 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
             .build()
 
         val sdkResponse = client.putObject(sdkRequest, RequestBody.fromBytes(contentBytes))
-        return DefaultPutObjectResponse(
+        return PutObjectResponse(
             eTag = sdkResponse.eTag().normalizeEtag(),
             versionId = sdkResponse.versionId(),
             lastModified = null
         )
     }
 
-    override fun deleteObject(request: DeleteObjectRequest): DefaultDeleteObjectResponse {
+    override fun deleteObject(request: DeleteObjectRequest): DeleteObjectResponse {
         val sdkResponse = client.deleteObject {
             it.bucket(request.bucket)
                 .key(request.key)
                 .versionId(request.versionId)
         }
-        return DefaultDeleteObjectResponse(
+        return DeleteObjectResponse(
             deleteMarker = sdkResponse.deleteMarker() ?: false,
             versionId = sdkResponse.versionId()
         )
     }
 
-    override fun listObjects(request: ListObjectsRequest): DefaultListObjectsResponse {
+    override fun listObjects(request: ListObjectsRequest): ListObjectsResponse {
         val sdkResponse: S3ListObjectsResponse = client.listObjects {
             it.bucket(request.bucket)
                 .prefix(request.prefix)
@@ -121,9 +121,9 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
                 .marker(request.marker)
                 .maxKeys(request.maxKeys)
         }
-        return DefaultListObjectsResponse(
+        return ListObjectsResponse(
             objects = sdkResponse.contents().map { s3Object: S3ObjectSummary ->
-                DefaultStoredObjectMetadata(
+                StoredObjectMetadata(
                     bucket = request.bucket,
                     key = s3Object.key(),
                     contentLength = s3Object.size(),

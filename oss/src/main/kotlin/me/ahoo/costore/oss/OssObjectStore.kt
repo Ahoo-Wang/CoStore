@@ -4,22 +4,22 @@ import com.aliyun.oss.OSS
 import com.aliyun.oss.model.GeneratePresignedUrlRequest
 import com.aliyun.oss.model.ObjectMetadata
 import me.ahoo.costore.core.api.sync.ObjectStore
-import me.ahoo.costore.core.model.DefaultDeleteObjectResponse
-import me.ahoo.costore.core.model.DefaultListObjectsResponse
-import me.ahoo.costore.core.model.DefaultPutObjectResponse
-import me.ahoo.costore.core.model.DefaultStoredObject
-import me.ahoo.costore.core.model.DefaultStoredObjectMetadata
 import me.ahoo.costore.core.model.DeleteObjectRequest
+import me.ahoo.costore.core.model.DeleteObjectResponse
 import me.ahoo.costore.core.model.GetObjectRequest
 import me.ahoo.costore.core.model.GetObjectResponse
 import me.ahoo.costore.core.model.HeadObjectRequest
 import me.ahoo.costore.core.model.HeadObjectResponse
 import me.ahoo.costore.core.model.ListObjectsRequest
+import me.ahoo.costore.core.model.ListObjectsResponse
 import me.ahoo.costore.core.model.PresignDeleteObjectRequest
 import me.ahoo.costore.core.model.PresignGetObjectRequest
 import me.ahoo.costore.core.model.PresignObjectResponse
 import me.ahoo.costore.core.model.PresignPutObjectRequest
 import me.ahoo.costore.core.model.PutObjectRequest
+import me.ahoo.costore.core.model.PutObjectResponse
+import me.ahoo.costore.core.model.StoredObject
+import me.ahoo.costore.core.model.StoredObjectMetadata
 import me.ahoo.costore.core.model.normalizeEtag
 import java.io.ByteArrayInputStream
 import java.time.Instant
@@ -41,7 +41,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
         client.getObject(sdkRequest).use { ossObject ->
             val contentBytes = ossObject.objectContent.readAllBytes()
             val objectMetadata = ossObject.objectMetadata
-            val storedMetadata = DefaultStoredObjectMetadata(
+            val storedMetadata = StoredObjectMetadata(
                 bucket = request.bucket,
                 key = request.key,
                 contentLength = objectMetadata.contentLength,
@@ -51,7 +51,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
                 metadata = objectMetadata.userMetadata ?: emptyMap(),
                 versionId = objectMetadata.versionId
             )
-            return DefaultStoredObject(
+            return StoredObject(
                 content = ByteArrayInputStream(contentBytes),
                 metadata = storedMetadata
             )
@@ -60,7 +60,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
 
     override fun headObject(request: HeadObjectRequest): HeadObjectResponse {
         val metadata = client.getObjectMetadata(request.bucket, request.key)
-        return DefaultStoredObjectMetadata(
+        return StoredObjectMetadata(
             bucket = request.bucket,
             key = request.key,
             contentLength = metadata.contentLength,
@@ -72,28 +72,28 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
         )
     }
 
-    override fun putObject(request: PutObjectRequest): DefaultPutObjectResponse {
+    override fun putObject(request: PutObjectRequest): PutObjectResponse {
         val contentBytes = request.content.readAllBytes()
         val objectMetadata = ObjectMetadata().apply {
             contentType = request.contentType
             userMetadata = request.metadata
         }
         val result = client.putObject(request.bucket, request.key, ByteArrayInputStream(contentBytes), objectMetadata)
-        return DefaultPutObjectResponse(
+        return PutObjectResponse(
             eTag = result.eTag.normalizeEtag(),
             versionId = result.versionId,
             lastModified = null
         )
     }
 
-    override fun deleteObject(request: DeleteObjectRequest): DefaultDeleteObjectResponse {
-        return DefaultDeleteObjectResponse(
+    override fun deleteObject(request: DeleteObjectRequest): DeleteObjectResponse {
+        return DeleteObjectResponse(
             deleteMarker = false,
             versionId = null
         )
     }
 
-    override fun listObjects(request: ListObjectsRequest): DefaultListObjectsResponse {
+    override fun listObjects(request: ListObjectsRequest): ListObjectsResponse {
         val sdkRequest = OssListObjectsRequest(request.bucket).apply {
             prefix = request.prefix
             delimiter = request.delimiter
@@ -101,9 +101,9 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
             maxKeys = request.maxKeys
         }
         val result = client.listObjects(sdkRequest)
-        return DefaultListObjectsResponse(
+        return ListObjectsResponse(
             objects = result.objectSummaries.map { summary ->
-                DefaultStoredObjectMetadata(
+                StoredObjectMetadata(
                     bucket = request.bucket,
                     key = summary.key,
                     contentLength = summary.size,

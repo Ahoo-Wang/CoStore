@@ -10,17 +10,16 @@ class DeleteObjectTest {
         val key = "test/key"
         val versionId = "version-123"
 
-        val request =
-            object : DeleteObjectRequest {
-                override val bucket: BucketName = bucket
-                override val key: ObjectKey = key
-                override val versionId: String? = versionId
-            }
+        val request = DeleteObjectRequest(
+            bucket = bucket,
+            key = key,
+            versionId = versionId
+        )
 
         with(request) {
-            bucket.assert().isEqualTo(bucket)
-            key.assert().isEqualTo(key)
-            this.versionId.assert().isNotNull().isEqualTo(versionId)
+            this.bucket.assert().isEqualTo(bucket)
+            this.key.assert().isEqualTo(key)
+            versionId.assert().isNotNull().isEqualTo(versionId)
         }
     }
 
@@ -29,13 +28,13 @@ class DeleteObjectTest {
         val deleteMarker = true
         val versionId = "version-123"
 
-        val response = DefaultDeleteObjectResponse(
+        val response = DeleteObjectResponse(
             deleteMarker = deleteMarker,
             versionId = versionId
         )
 
         with(response) {
-            deleteMarker.assert().isTrue()
+            this.deleteMarker.assert().isTrue()
             this.versionId.assert().isNotNull().isEqualTo(versionId)
         }
     }

@@ -12,18 +12,17 @@ class ListObjectsTest {
         val marker = "marker-key"
         val maxKeys = 100
 
-        val request =
-            object : ListObjectsRequest {
-                override val bucket: BucketName = bucket
-                override val prefix: String? = prefix
-                override val delimiter: String? = delimiter
-                override val marker: String? = marker
-                override val maxKeys: Int = maxKeys
-            }
+        val request = ListObjectsRequest(
+            bucket = bucket,
+            prefix = prefix,
+            delimiter = delimiter,
+            marker = marker,
+            maxKeys = maxKeys
+        )
 
         with(request) {
-            bucket.assert().isEqualTo(bucket)
-            prefix.assert().isNotNull().isEqualTo(prefix)
+            this.bucket.assert().isEqualTo(bucket)
+            this.prefix.assert().isNotNull().isEqualTo(prefix)
             delimiter.assert().isNotNull().isEqualTo(delimiter)
             marker.assert().isNotNull().isEqualTo(marker)
             maxKeys.assert().isEqualTo(maxKeys)
@@ -34,13 +33,13 @@ class ListObjectsTest {
     fun `should create ListObjectsResponse instance`() {
         val objects =
             listOf(
-                DefaultStoredObjectMetadata(
+                StoredObjectMetadata(
                     bucket = "test-bucket",
                     key = "key1",
                     contentLength = 1024L,
                     contentType = "application/json"
                 ),
-                DefaultStoredObjectMetadata(
+                StoredObjectMetadata(
                     bucket = "test-bucket",
                     key = "key2",
                     contentLength = 2048L,
@@ -51,7 +50,7 @@ class ListObjectsTest {
         val isTruncated = true
         val nextMarker = "next-marker"
 
-        val response = DefaultListObjectsResponse(
+        val response = ListObjectsResponse(
             objects = objects,
             commonPrefixes = commonPrefixes,
             isTruncated = isTruncated,
@@ -61,7 +60,7 @@ class ListObjectsTest {
         with(response) {
             objects.assert().hasSize(2)
             commonPrefixes.assert().hasSize(2).containsExactly("prefix1/", "prefix2/")
-            isTruncated.assert().isTrue()
+            this.isTruncated.assert().isTrue()
             nextMarker.assert().isNotNull().isEqualTo(nextMarker)
         }
     }

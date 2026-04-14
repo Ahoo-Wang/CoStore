@@ -10,15 +10,14 @@ class HeadObjectTest {
         val bucket = "test-bucket"
         val key = "test/key"
 
-        val request =
-            object : HeadObjectRequest {
-                override val bucket: BucketName = bucket
-                override val key: ObjectKey = key
-            }
+        val request = HeadObjectRequest(
+            bucket = bucket,
+            key = key
+        )
 
         with(request) {
-            bucket.assert().isEqualTo(bucket)
-            key.assert().isEqualTo(key)
+            this.bucket.assert().isEqualTo(bucket)
+            this.key.assert().isEqualTo(key)
         }
     }
 
@@ -32,7 +31,7 @@ class HeadObjectTest {
         val eTag = "\"d41d8cd98f00b204e9800998ecf8427e\""
         val metadata = mapOf("x-custom" to "value")
 
-        val response = DefaultStoredObjectMetadata(
+        val response = StoredObjectMetadata(
             bucket = bucket,
             key = key,
             contentLength = contentLength,

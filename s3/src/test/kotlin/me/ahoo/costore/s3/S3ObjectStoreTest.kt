@@ -2,12 +2,12 @@ package me.ahoo.costore.s3
 
 import io.mockk.mockk
 import me.ahoo.costore.core.model.BucketName
-import me.ahoo.costore.core.model.DefaultDeleteObjectRequest
-import me.ahoo.costore.core.model.DefaultHeadObjectRequest
-import me.ahoo.costore.core.model.DefaultListObjectsRequest
-import me.ahoo.costore.core.model.DefaultPutObjectRequest
+import me.ahoo.costore.core.model.DeleteObjectRequest
+import me.ahoo.costore.core.model.HeadObjectRequest
+import me.ahoo.costore.core.model.ListObjectsRequest
 import me.ahoo.costore.core.model.ObjectKey
 import me.ahoo.costore.core.model.PresignRequest
+import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,7 +29,7 @@ class S3ObjectStoreTest {
     fun `should head object`() {
         val bucket: BucketName = "test-bucket"
         val key: ObjectKey = "test-key"
-        val request = DefaultHeadObjectRequest(
+        val request = HeadObjectRequest(
             bucket = bucket,
             key = key
         )
@@ -49,7 +49,7 @@ class S3ObjectStoreTest {
         val content = "test content".byteInputStream()
         val contentType = "text/plain"
         val metadata = mapOf("meta1" to "value1")
-        val request = DefaultPutObjectRequest(
+        val request = PutObjectRequest(
             bucket = bucket,
             key = key,
             content = content,
@@ -66,7 +66,7 @@ class S3ObjectStoreTest {
     fun `should delete object`() {
         val bucket: BucketName = "test-bucket"
         val key: ObjectKey = "test-key"
-        val request = DefaultDeleteObjectRequest(
+        val request = DeleteObjectRequest(
             bucket = bucket,
             key = key
         )
@@ -79,7 +79,7 @@ class S3ObjectStoreTest {
     @Test
     fun `should list objects`() {
         val bucket: BucketName = "test-bucket"
-        val request = DefaultListObjectsRequest(
+        val request = ListObjectsRequest(
             bucket = bucket,
             prefix = "prefix/",
             delimiter = "/",

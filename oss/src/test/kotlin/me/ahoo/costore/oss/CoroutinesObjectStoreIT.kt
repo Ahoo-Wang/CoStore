@@ -3,14 +3,14 @@ package me.ahoo.costore.oss
 import kotlinx.coroutines.runBlocking
 import me.ahoo.costore.core.api.coroutines.CoroutinesObjectStore
 import me.ahoo.costore.core.api.coroutines.asCoroutines
-import me.ahoo.costore.core.model.DefaultDeleteObjectRequest
-import me.ahoo.costore.core.model.DefaultGetObjectRequest
-import me.ahoo.costore.core.model.DefaultHeadObjectRequest
-import me.ahoo.costore.core.model.DefaultPutObjectRequest
+import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.DeleteObjectResponse
+import me.ahoo.costore.core.model.GetObjectRequest
 import me.ahoo.costore.core.model.GetObjectResponse
+import me.ahoo.costore.core.model.HeadObjectRequest
 import me.ahoo.costore.core.model.HeadObjectResponse
 import me.ahoo.costore.core.model.ObjectKey
+import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.PutObjectResponse
 import org.junit.jupiter.api.Test
 
@@ -31,7 +31,7 @@ class CoroutinesObjectStoreIT : AbstractObjectStoreIT() {
     override fun doPutObject(key: ObjectKey, content: String): PutObjectResponse {
         return runBlocking {
             coroutinesStore.putObject(
-                DefaultPutObjectRequest(
+                PutObjectRequest(
                     bucket = bucket,
                     key = key,
                     content = content.byteInputStream(),
@@ -44,7 +44,7 @@ class CoroutinesObjectStoreIT : AbstractObjectStoreIT() {
     override fun doGetObject(key: ObjectKey): GetObjectResponse {
         return runBlocking {
             coroutinesStore.getObject(
-                DefaultGetObjectRequest(bucket, key)
+                GetObjectRequest(bucket, key)
             )
         }
     }
@@ -52,7 +52,7 @@ class CoroutinesObjectStoreIT : AbstractObjectStoreIT() {
     override fun doHeadObject(key: ObjectKey): HeadObjectResponse {
         return runBlocking {
             coroutinesStore.headObject(
-                DefaultHeadObjectRequest(bucket, key)
+                HeadObjectRequest(bucket, key)
             )
         }
     }
@@ -60,7 +60,7 @@ class CoroutinesObjectStoreIT : AbstractObjectStoreIT() {
     override fun doDeleteObject(key: ObjectKey): DeleteObjectResponse {
         return runBlocking {
             coroutinesStore.deleteObject(
-                DefaultDeleteObjectRequest(bucket, key)
+                DeleteObjectRequest(bucket, key)
             )
         }
     }

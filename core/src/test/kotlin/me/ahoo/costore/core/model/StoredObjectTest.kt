@@ -16,7 +16,7 @@ class StoredObjectTest {
         val eTag = "\"d41d8cd98f00b204e9800998ecf8427e\""
         val metadata = mapOf("x-custom" to "value")
 
-        val instance = DefaultStoredObjectMetadata(
+        val instance = StoredObjectMetadata(
             bucket = bucket,
             key = key,
             contentLength = contentLength,
@@ -27,10 +27,10 @@ class StoredObjectTest {
         )
 
         with(instance) {
-            bucket.assert().isEqualTo(bucket)
-            key.assert().isEqualTo(key)
+            this.bucket.assert().isEqualTo(bucket)
+            this.key.assert().isEqualTo(key)
             contentLength.assert().isEqualTo(contentLength)
-            contentType.assert().isEqualTo(contentType)
+            this.contentType.assert().isEqualTo(contentType)
             lastModified.assert().isNotNull().isEqualTo(lastModified)
             eTag.assert().isNotNull().isEqualTo(eTag)
             this.metadata.assert().isEqualTo(metadata)
@@ -48,7 +48,7 @@ class StoredObjectTest {
         val userMetadata = mapOf("x-custom" to "value")
         val content: InputStream = "test content".byteInputStream()
 
-        val storedMetadata = DefaultStoredObjectMetadata(
+        val storedMetadata = StoredObjectMetadata(
             bucket = bucket,
             key = key,
             contentLength = contentLength,
@@ -58,7 +58,7 @@ class StoredObjectTest {
             metadata = userMetadata
         )
 
-        val instance = DefaultStoredObject(
+        val instance = StoredObject(
             content = content,
             metadata = storedMetadata
         )
@@ -70,7 +70,7 @@ class StoredObjectTest {
             contentType.assert().isEqualTo(contentType)
             lastModified.assert().isNotNull().isEqualTo(lastModified)
             eTag.assert().isNotNull().isEqualTo(eTag)
-            this.metadata.assert().isEqualTo(userMetadata)
+            metadata.assert().isEqualTo(userMetadata)
         }
     }
 }

@@ -3,13 +3,13 @@ package me.ahoo.costore.oss
 import com.aliyun.oss.OSS
 import com.aliyun.oss.OSSClientBuilder
 import me.ahoo.costore.core.model.BucketName
-import me.ahoo.costore.core.model.DefaultDeleteObjectRequest
-import me.ahoo.costore.core.model.DefaultGetObjectRequest
-import me.ahoo.costore.core.model.DefaultHeadObjectRequest
-import me.ahoo.costore.core.model.DefaultListObjectsRequest
-import me.ahoo.costore.core.model.DefaultPutObjectRequest
+import me.ahoo.costore.core.model.DeleteObjectRequest
+import me.ahoo.costore.core.model.GetObjectRequest
+import me.ahoo.costore.core.model.HeadObjectRequest
+import me.ahoo.costore.core.model.ListObjectsRequest
 import me.ahoo.costore.core.model.ObjectKey
 import me.ahoo.costore.core.model.PresignRequest
+import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.test.asserts.assert
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -46,7 +46,7 @@ class OssObjectStoreIT {
         val key: ObjectKey = "costore/test/head-${System.currentTimeMillis()}"
         try {
             // Put first
-            val putRequest = DefaultPutObjectRequest(
+            val putRequest = PutObjectRequest(
                 bucket = bucket,
                 key = key,
                 content = "content".byteInputStream(),
@@ -55,7 +55,7 @@ class OssObjectStoreIT {
             store.putObject(putRequest)
 
             // Head
-            val headRequest = DefaultHeadObjectRequest(
+            val headRequest = HeadObjectRequest(
                 bucket = bucket,
                 key = key
             )
@@ -68,7 +68,7 @@ class OssObjectStoreIT {
                 eTag.assert().isNotNull()
             }
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            store.deleteObject(DeleteObjectRequest(bucket, key))
         }
     }
 
@@ -77,7 +77,7 @@ class OssObjectStoreIT {
         val key: ObjectKey = "costore/test/put-get-${System.currentTimeMillis()}"
         val content = "Hello OSS!".repeat(100)
         try {
-            val putRequest = DefaultPutObjectRequest(
+            val putRequest = PutObjectRequest(
                 bucket = bucket,
                 key = key,
                 content = content.byteInputStream(),
@@ -86,7 +86,7 @@ class OssObjectStoreIT {
             val putResponse = store.putObject(putRequest)
             putResponse.eTag.assert().isNotNull()
 
-            val getRequest = DefaultGetObjectRequest(
+            val getRequest = GetObjectRequest(
                 bucket = bucket,
                 key = key
             )
@@ -97,7 +97,7 @@ class OssObjectStoreIT {
             val readContent = getResponse.content.bufferedReader().readText()
             readContent.assert().isEqualTo(content)
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket = bucket, key = key))
+            store.deleteObject(DeleteObjectRequest(bucket = bucket, key = key))
         }
     }
 
@@ -106,7 +106,7 @@ class OssObjectStoreIT {
         val key: ObjectKey = "costore/test/delete-${System.currentTimeMillis()}"
         try {
             // Put first
-            val putRequest = DefaultPutObjectRequest(
+            val putRequest = PutObjectRequest(
                 bucket = bucket,
                 key = key,
                 content = "to be deleted".byteInputStream(),
@@ -115,13 +115,13 @@ class OssObjectStoreIT {
             store.putObject(putRequest)
 
             // Delete
-            val deleteRequest = DefaultDeleteObjectRequest(bucket = bucket, key = key)
+            val deleteRequest = DeleteObjectRequest(bucket = bucket, key = key)
             val deleteResponse = store.deleteObject(deleteRequest)
             deleteResponse.deleteMarker.assert().isFalse()
         } finally {
             // Cleanup in case test failed before delete
             try {
-                store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+                store.deleteObject(DeleteObjectRequest(bucket, key))
             } catch (_: Exception) {
                 // Ignore
             }
@@ -138,7 +138,7 @@ class OssObjectStoreIT {
             // Put objects
             listOf(key1, key2).forEach { k ->
                 store.putObject(
-                    DefaultPutObjectRequest(
+                    PutObjectRequest(
                         bucket = bucket,
                         key = k,
                         content = "content".byteInputStream(),
@@ -148,7 +148,7 @@ class OssObjectStoreIT {
             }
 
             // List
-            val listRequest = DefaultListObjectsRequest(
+            val listRequest = ListObjectsRequest(
                 bucket = bucket,
                 prefix = "$prefix-",
                 maxKeys = 100
@@ -160,7 +160,7 @@ class OssObjectStoreIT {
             // Cleanup
             listOf(key1, key2).forEach { k ->
                 try {
-                    store.deleteObject(DefaultDeleteObjectRequest(bucket, k))
+                    store.deleteObject(DeleteObjectRequest(bucket, k))
                 } catch (_: Exception) {
                     // Ignore
                 }
@@ -174,7 +174,7 @@ class OssObjectStoreIT {
         try {
             // Put first
             store.putObject(
-                DefaultPutObjectRequest(
+                PutObjectRequest(
                     bucket = bucket,
                     key = key,
                     content = "content".byteInputStream(),
@@ -194,7 +194,7 @@ class OssObjectStoreIT {
             response.url.toString().assert().contains(bucket)
             response.url.toString().assert().contains(key)
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            store.deleteObject(DeleteObjectRequest(bucket, key))
         }
     }
 
@@ -216,7 +216,7 @@ class OssObjectStoreIT {
             response.url.toString().assert().contains(bucket)
             response.url.toString().assert().contains(key)
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            store.deleteObject(DeleteObjectRequest(bucket, key))
         }
     }
 
@@ -227,7 +227,7 @@ class OssObjectStoreIT {
         try {
             // Put first
             store.putObject(
-                DefaultPutObjectRequest(
+                PutObjectRequest(
                     bucket = bucket,
                     key = key,
                     content = "content".byteInputStream(),
@@ -247,7 +247,7 @@ class OssObjectStoreIT {
             response.url.toString().assert().contains(bucket)
             response.url.toString().assert().contains(key)
         } finally {
-            store.deleteObject(DefaultDeleteObjectRequest(bucket, key))
+            store.deleteObject(DeleteObjectRequest(bucket, key))
         }
     }
 }

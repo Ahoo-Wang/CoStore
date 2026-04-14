@@ -24,49 +24,23 @@ interface NullableContentTypeCapable {
  * Provides access to all object attributes such as size, type, modification time,
  * ETag, and custom user metadata.
  */
-interface StoredObjectMetadata :
-    BucketCapable,
-    ObjectKeyCapable,
-    NullableContentLengthCapable,
-    NullableContentTypeCapable,
-    NullableVersionIdCapable {
-    /** Last modification timestamp, if available. */
-    val lastModified: Instant?
-
-    /** ETag value for content identification, typically an MD5 hash. */
-    val eTag: String?
-
-    /** Custom user-defined metadata key-value pairs. */
-    val metadata: Map<String, String>
-}
-
-/** Interface for types that carry object metadata. */
-interface StoredObjectMetadataCapable {
-    val metadata: StoredObjectMetadata
-}
+data class StoredObjectMetadata(
+    val bucket: BucketName,
+    val key: ObjectKey,
+    val contentLength: Long? = null,
+    val contentType: String? = null,
+    val lastModified: Instant? = null,
+    val eTag: String? = null,
+    val metadata: Map<String, String> = emptyMap(),
+    val versionId: String? = null
+)
 
 /**
  * A stored object including both metadata and content.
  *
  * Use [content] to read the object's data as an [InputStream].
  */
-interface StoredObject : StoredObjectMetadataCapable {
-    /** The object's content as a stream. */
-    val content: InputStream
-}
-
-data class DefaultStoredObjectMetadata(
-    override val bucket: BucketName,
-    override val key: ObjectKey,
-    override val contentLength: Long? = null,
-    override val contentType: String? = null,
-    override val lastModified: Instant? = null,
-    override val eTag: String? = null,
-    override val metadata: Map<String, String> = emptyMap(),
-    override val versionId: String? = null
-) : StoredObjectMetadata
-
-data class DefaultStoredObject(
-    override val content: InputStream,
-    override val metadata: StoredObjectMetadata
-) : StoredObject
+data class StoredObject(
+    val content: InputStream,
+    val metadata: StoredObjectMetadata
+)
