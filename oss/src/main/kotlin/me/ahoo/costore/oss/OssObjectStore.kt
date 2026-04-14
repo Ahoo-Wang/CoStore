@@ -38,7 +38,7 @@ class OssObjectStore(private val client: OSS) : ObjectStore {
 
     override fun getObject(request: GetObjectRequest): GetObjectResponse {
         val sdkRequest = OssGetObjectRequest(request.bucket, request.key)
-        client.getObject(sdkRequest).use { ossObject ->
+        client.getObject(sdkRequest).let { ossObject ->
             val objectMetadata = ossObject.objectMetadata
             val storedMetadata = StoredObjectMetadata(
                 bucket = request.bucket,

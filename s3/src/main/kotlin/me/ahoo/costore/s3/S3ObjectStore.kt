@@ -50,22 +50,22 @@ class S3ObjectStore(private val client: S3Client, private val presigner: S3Presi
             .versionId(request.versionId)
             .build()
 
-        return client.getObject(sdkRequest) { response, inputStream ->
-            val metadata = StoredObjectMetadata(
-                bucket = request.bucket,
-                key = request.key,
-                contentLength = response.contentLength(),
-                contentType = response.contentType(),
-                lastModified = response.lastModified(),
-                eTag = response.eTag(),
-                metadata = response.metadata() ?: emptyMap(),
-                versionId = request.versionId
-            )
-            StoredObject(
-                content = inputStream,
-                metadata = metadata
-            )
-        }
+        val responseInputStream = client.getObject(sdkRequest)
+        val response = responseInputStream.response()
+        val metadata = StoredObjectMetadata(
+            bucket = request.bucket,
+            key = request.key,
+            contentLength = response.contentLength(),
+            contentType = response.contentType(),
+            lastModified = response.lastModified(),
+            eTag = response.eTag(),
+            metadata = response.metadata() ?: emptyMap(),
+            versionId = request.versionId
+        )
+        return StoredObject(
+            content = responseInputStream,
+            metadata = metadata
+        )
     }
 
     override fun headObject(request: HeadObjectRequest): HeadObjectResponse {
