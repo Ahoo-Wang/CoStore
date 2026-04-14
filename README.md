@@ -1,81 +1,114 @@
 # CoStore
 
-A Kotlin multi-module library providing unified object storage abstractions for S3 and OSS-compatible backends.
+A Kotlin multi-module library providing unified object storage abstractions for S3 and OSS-compatible backends. JVM 17.
 
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://github.com/Ahoo-Wang/CoStore/blob/main/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/Ahoo-Wang/CoStore.svg)](https://github.com/Ahoo-Wang/CoStore/releases)
-[![Maven Central Version](https://img.shields.io/maven-central/v/me.ahoo.costore/costore-core)](https://central.sonatype.com/artifact/me.ahoo.costore/costore-core)
+[![Maven Central](https://img.shields.io/maven-central/v/me.ahoo.costore/costore-core)](https://central.sonatype.com/artifact/me.ahoo.costore/costore-core)
 [![codecov](https://codecov.io/gh/Ahoo-Wang/CoStore/branch/main/graph/badge.svg?token=uloJrLoQir)](https://codecov.io/gh/Ahoo-Wang/CoStore)
 
 ---
 
 ## Features
 
-- **Unified API** for object storage operations across S3 and OSS providers
-- **Four programming models** — Sync, Async (`CompletableFuture`), Reactive (`Mono`), and Coroutines
+- **Unified API** for S3 and Aliyun OSS providers
+- **Four programming models** — Sync, Async (`CompletableFuture`), Reactive (`Mono`), Coroutines
 - **Provider pattern** for flexible credential management
-- **Request/Response pairs** for type-safe operations
-- **Spring Boot starter** for quick integration
+- **Type-safe request/response** model pairs
+- **Spring Boot auto-configuration** for quick integration
 
 ---
 
-## Module Structure
+## Modules
 
 | Module | Description |
 |--------|-------------|
 | `:core` | Interfaces, models, provider abstractions, error types |
-| `:s3` | AWS S3 implementation using AWS SDK v2 |
-| `:oss` | Aliyun OSS implementation using Aliyun OSS SDK |
+| `:s3` | AWS S3 implementation (AWS SDK v2) |
+| `:oss` | Aliyun OSS implementation (Aliyun OSS SDK) |
 | `:bom` | Bill of Materials for dependency management |
 | `:spring-boot-starter` | Spring Boot auto-configuration |
 
 ---
 
-## Programming Models
+## Quick Start
 
-CoStore provides four parallel interface hierarchies. Choose the one that fits your application's architecture:
+### Gradle
+
+```kotlin
+dependencies {
+    implementation("me.ahoo.costore:costore-s3")
+    implementation("me.ahoo.costore:costore-oss")
+}
+```
+
+### Create a Store
+
+**S3:**
+
+```kotlin
+val credentials = S3Credentials(
+    accessKeyId = "your-access-key-id",
+    secretAccessKey = "your-secret-access-key",
+    region = "us-east-1"
+)
+
+val provider = S3ObjectStoreProvider()
+val store: ObjectStore = provider.sync(credentials)
+```
+
+**OSS:**
+
+```kotlin
+val credentials = OssCredentials(
+    endpoint = "https://oss-cn-hangzhou.aliyuncs.com",
+    accessKeyId = "your-access-key-id",
+    secretAccessKey = "your-secret-access-key"
+)
+
+val provider = OssObjectStoreProvider()
+val store: ObjectStore = provider.sync(credentials)
+```
+
+---
+
+## Programming Models
 
 ### Sync (Blocking)
 
 ```kotlin
-val store: ObjectStore = s3Provider.sync(credentials)
-
 val response = store.getObject(GetObjectRequest(bucket, key))
 response.content.use { inputStream ->
     // read bytes
 }
 
-store.putObject(PutObjectRequest(bucket, key, contentStream, contentType))
+store.putObject(PutObjectRequest(bucket, key, contentStream, "application/json"))
 store.deleteObject(DeleteObjectRequest(bucket, key))
 ```
 
 ### Async (`CompletableFuture`)
 
 ```kotlin
-val store: AsyncObjectStore = s3Provider.async(credentials)
-
-val future: CompletableFuture<GetObjectResponse> = store.getObject(GetObjectRequest(bucket, key))
+val asyncStore: AsyncObjectStore = provider.async(credentials)
+val future: CompletableFuture<GetObjectResponse> = asyncStore.getObject(GetObjectRequest(bucket, key))
 ```
 
 ### Reactive (`Mono`)
 
 ```kotlin
-val store: ReactiveObjectStore = s3Provider.reactive(credentials)
-
-val mono: Mono<GetObjectResponse> = store.getObject(GetObjectRequest(bucket, key))
+val reactiveStore: ReactiveObjectStore = provider.reactive(credentials)
+val mono: Mono<GetObjectResponse> = reactiveStore.getObject(GetObjectRequest(bucket, key))
 ```
 
 ### Coroutines (Suspend Functions)
 
 ```kotlin
-val store: CoroutinesObjectStore = s3Provider.coroutines(credentials)
-
-val response = store.getObject(GetObjectRequest(bucket, key))
+val coroutinesStore: CoroutinesObjectStore = provider.coroutines(credentials)
+val response = coroutinesStore.getObject(GetObjectRequest(bucket, key))
 ```
 
 ### Adapters
 
-Convert between models using extension functions:
+Convert between models on an existing store:
 
 ```kotlin
 val syncStore: ObjectStore = s3Provider.sync(credentials)
@@ -91,44 +124,89 @@ val coroutinesStore: CoroutinesObjectStore = syncStore.asCoroutines()
 
 | Operation | Method | Description |
 |-----------|--------|-------------|
-| **Get** | `getObject(request)` | Download an object |
+| **Get** | `getObject(request)` | Download an object (content + metadata) |
 | **Put** | `putObject(request)` | Upload an object |
 | **Delete** | `deleteObject(request)` | Delete an object |
 | **List** | `listObjects(request)` | List objects with prefix/delimiter |
 | **Head** | `headObject(request)` | Get metadata without content |
 | **Presign Get** | `presignGetObject(request)` | Generate a pre-signed GET URL |
 | **Presign Put** | `presignPutObject(request)` | Generate a pre-signed PUT URL |
-| **Presign Delete** | `presignDeleteObject(request)` | Generate a pre-signed DELETE URL |
+| **Presign Delete** | `presignDeleteObject(request)` | Generate a pre-signed DELETE URL (S3 only) |
 
 ---
 
-## Providers
-
-### S3 Provider
+## Request / Response Models
 
 ```kotlin
-val credentials = S3Credentials(
-    accessKeyId = "your-access-key-id",
-    secretAccessKey = "your-secret-access-key",
-    region = "us-east-1"         // optional
-    endpoint = "https://..."     // optional, for S3-compatible stores
-)
+// Get
+val getResponse: GetObjectResponse = store.getObject(GetObjectRequest(bucket, key))
+// getResponse.content: InputStream
+// getResponse.metadata: StoredObjectMetadata (bucket, key, contentLength, contentType, eTag, lastModified, metadata)
 
-val provider = S3ObjectStoreProvider()
-val store = provider.sync(credentials)
+// Put
+val putResponse = store.putObject(PutObjectRequest(
+    bucket = bucket,
+    key = key,
+    content = inputStream,
+    contentType = "application/json",
+    metadata = mapOf("x-custom" to "value")
+))
+// putResponse.eTag, putResponse.versionId, putResponse.lastModified
+
+// Delete
+val deleteResponse = store.deleteObject(DeleteObjectRequest(bucket, key))
+// deleteResponse.deleteMarker, deleteResponse.versionId
+
+// List
+val listResponse = store.listObjects(ListObjectsRequest(bucket, prefix = "prefix/"))
+// listResponse.objects: List<StoredObjectMetadata>
+// listResponse.commonPrefixes: List<String>
+// listResponse.isTruncated, listResponse.nextMarker
+
+// Head
+val headResponse = store.headObject(HeadObjectRequest(bucket, key))
+// headResponse.contentLength, headResponse.contentType, headResponse.lastModified, etc.
+
+// Presign
+val presignResponse = store.presignGetObject(PresignGetObjectRequest(bucket, key, Duration.ofMinutes(15)))
+// presignResponse.url, presignResponse.expiration, presignResponse.headers
 ```
 
-### OSS Provider
+---
+
+## Pre-signed URLs
+
+Pre-signed URLs grant temporary access to private objects without credentials.
 
 ```kotlin
-val credentials = OssCredentials(
-    endpoint = "https://oss-cn-hangzhou.aliyuncs.com",  // required
-    accessKeyId = "your-access-key-id",
-    secretAccessKey = "your-secret-access-key"
-)
+// S3 presigned PUT (includes Content-Type header)
+val presignedPut = store.presignPutObject(PresignPutObjectRequest(
+    bucket = bucket,
+    key = key,
+    expiration = Duration.ofMinutes(15),
+    contentType = "application/json",
+    metadata = mapOf("x-custom" to "value")
+))
+// presignedPut.url, presignedPut.headers["Content-Type"]
 
-val provider = OssObjectStoreProvider()
-val store = provider.sync(credentials)
+// S3 presigned DELETE
+val presignedDelete = store.presignDeleteObject(PresignDeleteObjectRequest(bucket, key, Duration.ofMinutes(15)))
+
+// Note: OSS does not support presigned DELETE URLs
+```
+
+---
+
+## Error Handling
+
+```kotlin
+try {
+    store.getObject(GetObjectRequest(bucket, "nonexistent-key"))
+} catch (e: ObjectNotFoundError) {
+    println("Bucket: ${e.bucket}, Key: ${e.key}")
+} catch (e: CoStoreError) {
+    println("Error: ${e.message}")
+}
 ```
 
 ---
@@ -153,6 +231,7 @@ costore:
     access-key-id: ${AWS_ACCESS_KEY_ID}
     secret-access-key: ${AWS_SECRET_ACCESS_KEY}
     region: us-east-1
+    endpoint: https://...  # optional, for S3-compatible stores
 ```
 
 **OSS:**
@@ -175,57 +254,7 @@ class StorageConfig {
 }
 ```
 
----
-
-## Request / Response Models
-
-```kotlin
-// Get
-val getRequest = GetObjectRequest(bucket, key)
-val getResponse: GetObjectResponse = store.getObject(getRequest)
-// getResponse.content: InputStream
-// getResponse.metadata: StoredObjectMetadata
-
-// Put
-val putRequest = PutObjectRequest(
-    bucket = bucket,
-    key = key,
-    content = inputStream,
-    contentType = "application/json"
-)
-val putResponse = store.putObject(putRequest)
-// putResponse.eTag, putResponse.versionId
-
-// Delete
-val deleteRequest = DeleteObjectRequest(bucket, key)
-val deleteResponse = store.deleteObject(deleteRequest)
-// deleteResponse.deleteMarker, deleteResponse.versionId
-
-// List
-val listRequest = ListObjectsRequest(bucket, prefix = "prefix/")
-val listResponse = store.listObjects(listRequest)
-// listResponse.objects: List<StoredObject>
-// listResponse.commonPrefixes: List<String>
-
-// Head
-val headRequest = HeadObjectRequest(bucket, key)
-val headResponse = store.headObject(headRequest)
-// headResponse.contentLength, headResponse.contentType, headResponse.lastModified
-```
-
----
-
-## Error Handling
-
-```kotlin
-try {
-    store.getObject(GetObjectRequest(bucket, "nonexistent-key"))
-} catch (e: ObjectNotFoundError) {
-    println("Bucket: ${e.bucket}, Key: ${e.key}")
-} catch (e: CoStoreError) {
-    println("Error: ${e.message}")
-}
-```
+Auto-configuration is activated automatically when the respective Spring Boot starter is on the classpath and the required properties are set (`costore.s3.region` for S3, `costore.oss.endpoint` for OSS).
 
 ---
 
@@ -233,11 +262,12 @@ try {
 
 ```bash
 ./gradlew assemble          # Build without tests
-./gradlew build            # Full build with tests
-./gradlew test             # Run all tests
-./gradlew :core:test       # Test specific module
-./gradlew detekt           # Lint
-./gradlew koverReport      # Code coverage
+./gradlew build             # Full build with tests
+./gradlew test              # Run all tests
+./gradlew :core:test        # Test specific module
+./gradlew detekt            # Lint
+./gradlew koverReport       # Code coverage report
+./gradlew publishToMavenLocal
 ```
 
 ---
