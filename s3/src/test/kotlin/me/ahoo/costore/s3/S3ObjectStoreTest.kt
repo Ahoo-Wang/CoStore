@@ -47,12 +47,14 @@ class S3ObjectStoreTest {
         val bucket: BucketName = "test-bucket"
         val key: ObjectKey = "test-key"
         val content = "test content".byteInputStream()
+        val contentLength = "test content".toByteArray().size.toLong()
         val contentType = "text/plain"
         val metadata = mapOf("meta1" to "value1")
         val request = PutObjectRequest(
             bucket = bucket,
             key = key,
             content = content,
+            contentLength = contentLength,
             contentType = contentType,
             metadata = metadata
         )

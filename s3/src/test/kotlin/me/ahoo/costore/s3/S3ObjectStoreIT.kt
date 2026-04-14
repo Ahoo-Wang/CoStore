@@ -79,6 +79,7 @@ class S3ObjectStoreIT {
                     bucket = bucket,
                     key = key,
                     content = "content".byteInputStream(),
+                    contentLength = "content".toByteArray().size.toLong(),
                     contentType = "text/plain"
                 )
             )
@@ -105,6 +106,7 @@ class S3ObjectStoreIT {
                 bucket = bucket,
                 key = key,
                 content = content.byteInputStream(),
+                contentLength = content.toByteArray().size.toLong(),
                 contentType = "text/plain"
             )
             val putResponse = store.putObject(putRequest)
@@ -130,6 +132,7 @@ class S3ObjectStoreIT {
                     bucket = bucket,
                     key = key,
                     content = "to be deleted".byteInputStream(),
+                    contentLength = "to be deleted".length.toLong(),
                     contentType = "text/plain"
                 )
             )
@@ -154,6 +157,7 @@ class S3ObjectStoreIT {
                         bucket = bucket,
                         key = k,
                         content = "content".byteInputStream(),
+                        contentLength = "content".toByteArray().size.toLong(),
                         contentType = "text/plain"
                     )
                 )
@@ -183,6 +187,7 @@ class S3ObjectStoreIT {
                     bucket = bucket,
                     key = key,
                     content = "content".byteInputStream(),
+                    contentLength = "content".toByteArray().size.toLong(),
                     contentType = "text/plain"
                 )
             )
@@ -231,6 +236,7 @@ class S3ObjectStoreIT {
                     bucket = bucket,
                     key = key,
                     content = "content".byteInputStream(),
+                    contentLength = "content".toByteArray().size.toLong(),
                     contentType = "text/plain"
                 )
             )

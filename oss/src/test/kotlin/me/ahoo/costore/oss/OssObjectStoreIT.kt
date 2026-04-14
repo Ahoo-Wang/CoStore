@@ -32,6 +32,7 @@ class OssObjectStoreIT : AbstractObjectStoreIT() {
                 bucket = bucket,
                 key = key,
                 content = content.byteInputStream(),
+                contentLength = content.toByteArray().size.toLong(),
                 contentType = "text/plain"
             )
         )
@@ -71,6 +72,7 @@ class OssObjectStoreIT : AbstractObjectStoreIT() {
                         bucket = bucket,
                         key = k,
                         content = "content".byteInputStream(),
+                        contentLength = "content".length.toLong(),
                         contentType = "text/plain"
                     )
                 )
