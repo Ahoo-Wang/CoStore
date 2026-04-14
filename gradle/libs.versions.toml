@@ -5,6 +5,9 @@ aliyun-oss = "3.18.5"
 reactor = "3.7.3"
 spring-boot = "4.0.5"
 jackson-annotations = "2.21"
+jakarta-validation-api = "3.1.1"
+hibernate-validator = "9.0.0.Final"
+jakarta-el = "4.0.2"
 # Test
 mockk = "1.14.9"
 junit = "6.0.3"
@@ -30,7 +33,10 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 reactor-core = { module = "io.projectreactor:reactor-core", version.ref = "reactor" }
 reactor-test = { module = "io.projectreactor:reactor-test", version.ref = "reactor" }
 
-jackson-annotations= { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson-annotations" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson-annotations" }
+jakarta-validation-api = { module = "jakarta.validation:jakarta.validation-api", version.ref = "jakarta-validation-api" }
+hibernate-validator = { module = "org.hibernate.validator:hibernate-validator", version.ref = "hibernate-validator" }
+jakarta-el = { module = "org.glassfish:jakarta.el", version.ref = "jakarta-el" }
 aws-s3 = { module = "software.amazon.awssdk:s3", version.ref = "aws-sdk" }
 aliyun-oss = { module = "com.aliyun.oss:aliyun-sdk-oss", version.ref = "aliyun-oss" }
 spring-boot = { module = "org.springframework.boot:spring-boot", version.ref = "spring-boot" }
