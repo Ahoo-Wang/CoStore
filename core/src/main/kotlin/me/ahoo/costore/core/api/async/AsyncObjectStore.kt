@@ -1,5 +1,7 @@
 package me.ahoo.costore.core.api.async
 
+import me.ahoo.costore.core.model.BatchPresignRequest
+import me.ahoo.costore.core.model.BatchPresignResponse
 import me.ahoo.costore.core.model.DeleteObjectRequest
 import me.ahoo.costore.core.model.DeleteObjectResponse
 import me.ahoo.costore.core.model.GetObjectRequest
@@ -14,6 +16,7 @@ import me.ahoo.costore.core.model.PresignGetObjectRequest
 import me.ahoo.costore.core.model.PresignGetObjectResponse
 import me.ahoo.costore.core.model.PresignPutObjectRequest
 import me.ahoo.costore.core.model.PresignPutObjectResponse
+import me.ahoo.costore.core.model.PresignRequest
 import me.ahoo.costore.core.model.PutObjectRequest
 import me.ahoo.costore.core.model.PutObjectResponse
 import java.util.concurrent.CompletableFuture
@@ -69,4 +72,16 @@ interface AsyncPresignObjectOperations {
     fun presignPutObject(request: PresignPutObjectRequest): CompletableFuture<PresignPutObjectResponse>
 
     fun presignDeleteObject(request: PresignDeleteObjectRequest): CompletableFuture<PresignDeleteObjectResponse>
+
+    fun presignObjects(request: BatchPresignRequest): CompletableFuture<BatchPresignResponse> {
+        val futures = request.requests.map { presignRequest ->
+            when (presignRequest) {
+                is PresignRequest.Get -> presignGetObject(presignRequest)
+                is PresignRequest.Put -> presignPutObject(presignRequest)
+                is PresignRequest.Delete -> presignDeleteObject(presignRequest)
+            }
+        }
+        return CompletableFuture.allOf(*futures.toTypedArray())
+            .thenApply { BatchPresignResponse(futures.map { it.join() }) }
+    }
 }
