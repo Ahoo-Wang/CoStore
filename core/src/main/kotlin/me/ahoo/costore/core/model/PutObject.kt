@@ -14,12 +14,7 @@ data class PutObjectRequest(
     NullableContentTypeCapable,
     ObjectKeyCapable,
     ContentCapable,
-    UserMetadataCapable {
-    init {
-        ObjectStoreValidation.validateBucketName(bucket)
-        ObjectStoreValidation.validateObjectKey(key)
-    }
-}
+    UserMetadataCapable
 
 data class PutObjectResponse(
     override val eTag: String? = null,
