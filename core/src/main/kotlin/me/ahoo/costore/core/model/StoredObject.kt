@@ -7,15 +7,18 @@ import java.time.Instant
 
 /** Indicates the object may have a version ID (for versioned buckets). */
 interface NullableVersionIdCapable {
+    @get:VersionIdConstraint
     val versionId: String?
 }
 
 /** Indicates the object may have a content length. */
 interface NullableContentLengthCapable {
+    @get:ContentLengthConstraint
     val contentLength: Long?
 }
 
 interface ContentLengthCapable {
+    @get:ContentLengthConstraint
     val contentLength: Long
 }
 
@@ -25,6 +28,7 @@ interface ContentCapable {
 
 /** Indicates the object may have a content type (MIME type). */
 interface NullableContentTypeCapable {
+    @get:ContentTypeConstraint
     val contentType: String?
 }
 
