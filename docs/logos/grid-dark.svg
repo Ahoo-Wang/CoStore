@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80">
+  <title>CoStore Logo - Dark</title>
+  <desc>CoStore object storage library logo with dark background</desc>
+
+  <!-- Dark Background -->
+  <rect width="280" height="80" fill="#1a1a2e" rx="12"/>
+
+  <!-- Grid Icon Section (left side) -->
+  <g transform="translate(12, 12)">
+    <!-- Row 1 -->
+    <rect x="0" y="0" width="14" height="14" rx="3" fill="#4F46E5"/>
+    <rect x="18" y="0" width="14" height="14" rx="3" fill="#4F46E5"/>
+    <rect x="36" y="0" width="14" height="14" rx="3" fill="#4F46E5"/>
+    <rect x="54" y="0" width="14" height="14" rx="3" fill="#818CF8"/>
+
+    <!-- Row 2 -->
+    <rect x="0" y="18" width="14" height="14" rx="3" fill="#4F46E5"/>
+    <rect x="18" y="18" width="14" height="14" rx="3" fill="#6366F1"/>
+    <rect x="36" y="18" width="14" height="14" rx="3" fill="#4F46E5"/>
+    <rect x="54" y="18" width="14" height="14" rx="3" fill="#4F46E5"/>
+
+    <!-- Row 3 -->
+    <rect x="0" y="36" width="14" height="14" rx="3" fill="#4F46E5"/>
+    <rect x="18" y="36" width="14" height="14" rx="3" fill="#818CF8"/>
+    <rect x="36" y="36" width="14" height="14" rx="3" fill="#4F46E5"/>
+    <rect x="54" y="36" width="14" height="14" rx="3" fill="#4F46E5"/>
+
+    <!-- Row 4 -->
+    <rect x="0" y="54" width="14" height="14" rx="3" fill="#818CF8"/>
+    <rect x="18" y="54" width="14" height="14" rx="3" fill="#4F46E5"/>
+    <rect x="36" y="54" width="14" height="14" rx="3" fill="#4F46E5"/>
+    <rect x="54" y="54" width="14" height="14" rx="3" fill="#6366F1"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="96" y="52" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="36" font-weight="700" fill="#FFFFFF">CoStore</text>
+</svg>

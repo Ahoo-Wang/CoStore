@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <title>CoStore Icon</title>
+  <desc>CoStore grid icon for object storage</desc>
+
+  <!-- 4x3 Grid of storage blocks -->
+  <g transform="translate(8, 8)">
+    <!-- Row 1 -->
+    <rect x="0" y="0" width="15" height="15" rx="3" fill="#4F46E5"/>
+    <rect x="18" y="0" width="15" height="15" rx="3" fill="#4F46E5"/>
+    <rect x="36" y="0" width="15" height="15" rx="3" fill="#4F46E5"/>
+    <rect x="54" y="0" width="15" height="15" rx="3" fill="#818CF8"/>
+
+    <!-- Row 2 -->
+    <rect x="0" y="18" width="15" height="15" rx="3" fill="#4F46E5"/>
+    <rect x="18" y="18" width="15" height="15" rx="3" fill="#6366F1"/>
+    <rect x="36" y="18" width="15" height="15" rx="3" fill="#4F46E5"/>
+    <rect x="54" y="18" width="15" height="15" rx="3" fill="#4F46E5"/>
+
+    <!-- Row 3 -->
+    <rect x="0" y="36" width="15" height="15" rx="3" fill="#4F46E5"/>
+    <rect x="18" y="36" width="15" height="15" rx="3" fill="#818CF8"/>
+    <rect x="36" y="36" width="15" height="15" rx="3" fill="#4F46E5"/>
+    <rect x="54" y="36" width="15" height="15" rx="3" fill="#4F46E5"/>
+
+    <!-- Row 4 -->
+    <rect x="0" y="54" width="15" height="15" rx="3" fill="#818CF8"/>
+    <rect x="18" y="54" width="15" height="15" rx="3" fill="#4F46E5"/>
+    <rect x="36" y="54" width="15" height="15" rx="3" fill="#4F46E5"/>
+    <rect x="54" y="54" width="15" height="15" rx="3" fill="#6366F1"/>
+  </g>
+</svg>

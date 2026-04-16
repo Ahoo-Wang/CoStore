@@ -1,4 +1,6 @@
-# CoStore
+<h1>
+  <img src="docs/logos/grid-horizontal.svg" alt="CoStore Logo" width="280" height="80" align="middle">
+</h1>
 
 A Kotlin multi-module library providing unified object storage abstractions for S3 and OSS-compatible backends. JVM 17.
 
