@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150">
+  <title>CoStore Logo - Vertical</title>
+  <desc>CoStore object storage library logo with vertical layout</desc>
+
+  <!-- Grid Icon Section (centered, top) -->
+  <g transform="translate(14, 12)">
+    <!-- Row 1 -->
+    <rect x="0" y="0" width="16" height="16" rx="3" fill="#4F46E5"/>
+    <rect x="20" y="0" width="16" height="16" rx="3" fill="#4F46E5"/>
+    <rect x="40" y="0" width="16" height="16" rx="3" fill="#4F46E5"/>
+    <rect x="0" y="20" width="16" height="16" rx="3" fill="#4F46E5"/>
+    <rect x="20" y="20" width="16" height="16" rx="3" fill="#818CF8"/>
+    <rect x="40" y="20" width="16" height="16" rx="3" fill="#4F46E5"/>
+    <rect x="0" y="40" width="16" height="16" rx="3" fill="#4F46E5"/>
+    <rect x="20" y="40" width="16" height="16" rx="3" fill="#4F46E5"/>
+    <rect x="40" y="40" width="16" height="16" rx="3" fill="#6366F1"/>
+  </g>
+
+  <!-- Wordmark (centered, below icon) -->
+  <text x="50" y="110" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="700" fill="#111827" text-anchor="middle">CoStore</text>
+</svg>
