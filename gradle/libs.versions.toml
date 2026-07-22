@@ -10,7 +10,7 @@ hibernate-validator = "9.1.2.Final"
 jakarta-el = "4.0.2"
 # Test
 mockk = "1.14.11"
-junit = "6.0.3"
+junit = "6.1.2"
 fluent-assert = "0.2.8"
 
 # Plugins
