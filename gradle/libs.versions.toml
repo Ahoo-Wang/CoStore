@@ -1,6 +1,6 @@
 [versions]
 # Libs
-aws-sdk = "2.48.3"
+aws-sdk = "2.49.1"
 aliyun-oss = "3.18.5"
 reactor = "3.8.6"
 spring-boot = "4.0.5"
