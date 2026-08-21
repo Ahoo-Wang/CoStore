@@ -2,7 +2,7 @@
 # Libs
 aws-sdk = "2.54.0"
 aliyun-oss = "3.18.5"
-reactor = "3.8.6"
+reactor = "3.8.7"
 spring-boot = "4.1.0"
 jackson-annotations = "2.22"
 jakarta-validation-api = "3.1.1"
