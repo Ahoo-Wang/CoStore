@@ -3,7 +3,7 @@
 aws-sdk = "2.54.2"
 aliyun-oss = "3.18.5"
 reactor = "3.8.7"
-spring-boot = "4.1.0"
+spring-boot = "4.1.1"
 jackson-annotations = "2.22"
 jakarta-validation-api = "3.1.1"
 hibernate-validator = "9.1.3.Final"
